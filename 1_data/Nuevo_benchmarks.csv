@@ -1,0 +1,16 @@
+benchmark_id,benchmark_name,full_name,category,metric,num_tasks,description,saturated
+mmlu,MMLU,Massive Multitask Language Understanding,Knowledge,Accuracy (%),57.0,General knowledge across 57 academic subjects,1
+mmlu_pro,MMLU-Pro,MMLU Professional,Knowledge,Accuracy (%),57.0,Harder MMLU variant with 10 answer options,0
+gpqa_diamond,GPQA Diamond,Graduate-Level Google-Proof QA Diamond,Science Reasoning,Accuracy (%),198.0,PhD-level science questions in bio/chem/physics,0
+humaneval,HumanEval,HumanEval,Coding,pass@1 (%),164.0,Python function completion with unit tests,1
+swe_bench,SWE-bench Verified,Software Engineering Benchmark Verified,Coding,Resolved (%),500.0,Real GitHub issue resolution,0
+livecode,LiveCodeBench,LiveCodeBench v6,Coding,pass@1 (%),880.0,Contamination-free coding from fresh problems,0
+math500,MATH-500,MATH-500,Mathematics,Accuracy (%),500.0,Competition-level math (AMC/AIME),1
+aime2025,AIME 2025,American Invitational Mathematics Examination 2025,Mathematics,Accuracy (%),30.0,Competition math — frontier differentiator,0
+gsm8k,GSM8K,Grade School Math 8K,Mathematics,Accuracy (%),8500.0,Grade school word problems,1
+arena_elo,Chatbot Arena Elo,LMSYS Chatbot Arena Elo Rating,Human Preference,Elo Rating,,Crowdsourced blind pairwise human preference,0
+ifeval,IFEval,Instruction Following Evaluation,Instruction Following,Accuracy (%),541.0,Verifiable instruction following,0
+hellaswag,HellaSwag,HellaSwag,Commonsense Reasoning,Accuracy (%),10042.0,Sentence completion / commonsense,1
+arc_agi,ARC-AGI v2,Abstraction and Reasoning Corpus AGI v2,Reasoning,Accuracy (%),400.0,Fluid intelligence / novel pattern recognition,0
+bigbench_hard,BIG-Bench Hard,BIG-Bench Hard,Reasoning,Accuracy (%),23.0,Multi-step reasoning across 23 hard tasks,0
+mmmu_pro,MMMU-Pro,Massive Multi-discipline Multimodal Understanding Pro,Multimodal,Accuracy (%),1730.0,Visual reasoning across disciplines,0

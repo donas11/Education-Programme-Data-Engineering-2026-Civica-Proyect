@@ -1,0 +1,9 @@
+Proveedor,Tipo,Precio_OnDemand_hr,Precio_Spot_hr,Egress_Fees_GB
+AWS (p5.48xlarge),Hiperescalador,6.88,3.83,0.12
+Google Cloud (A3),Hiperescalador,3.00,2.50,0.12
+Azure (NC H100 v5),Hiperescalador,12.29,Variable,0.12
+Spheron (H100 SXM5),Neo-Cloud,2.50,1.03,0.00
+RunPod,Neo-Cloud,2.69,Variable,Bajo
+Vast.ai,Marketplace,1.87,Variable,0.00
+Lambda Labs,Especializado,2.99,N/A,0.00
+Oracle Cloud,Enterprise,10.00,N/A,Variable

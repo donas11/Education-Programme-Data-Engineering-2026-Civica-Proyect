@@ -1,0 +1,369 @@
+id,nombre,tipo,es_free,es_reasoning,es_cached,es_batch,input_$/1M,output_$/1M,reasoning_$/1M,cache_read_$/1M,cache_write_$/1M,context_length
+nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free,NVIDIA: Nemotron 3 Nano Omni (free),Free,Sí,Sí,No,No,—,—,—,—,—,256000
+poolside/laguna-xs.2:free,Poolside: Laguna XS.2 (free),Free,Sí,Sí,No,No,—,—,—,—,—,131072
+poolside/laguna-m.1:free,Poolside: Laguna M.1 (free),Free,Sí,Sí,No,No,—,—,—,—,—,131072
+~anthropic/claude-haiku-latest,Anthropic Claude Haiku Latest,Reasoning + Cached,No,Sí,Sí,No,$1.0000,$5.0000,—,$0.1000,$1.2500,200000
+~openai/gpt-mini-latest,OpenAI GPT Mini Latest,Reasoning + Cached,No,Sí,Sí,No,$0.7500,$4.5000,—,$0.0750,—,400000
+~google/gemini-pro-latest,Google Gemini Pro Latest,Reasoning + Cached,No,Sí,Sí,No,$2.0000,$12.0000,$12.0000,$0.2000,$0.3750,1048576
+~moonshotai/kimi-latest,MoonshotAI Kimi Latest,Reasoning + Cached,No,Sí,Sí,No,$0.7500,$3.5000,—,$0.1500,—,262144
+~google/gemini-flash-latest,Google Gemini Flash Latest,Reasoning + Cached,No,Sí,Sí,No,$0.5000,$3.0000,$3.0000,$0.0500,$0.0833,1048576
+~anthropic/claude-sonnet-latest,Anthropic Claude Sonnet Latest,Reasoning + Cached,No,Sí,Sí,No,$3.0000,$15.0000,—,$0.3000,$3.7500,1000000
+~openai/gpt-latest,OpenAI GPT Latest,Reasoning + Cached,No,Sí,Sí,No,$5.0000,$30.0000,—,$0.5000,—,1050000
+qwen/qwen3.5-plus-20260420,Qwen: Qwen3.5 Plus 2026-04-20,Reasoning,No,Sí,No,No,$0.4000,$2.4000,—,—,—,1000000
+qwen/qwen3.6-flash,Qwen: Qwen3.6 Flash,Reasoning + Cached,No,Sí,Sí,No,$0.2500,$1.5000,—,—,$0.3125,1000000
+qwen/qwen3.6-35b-a3b,Qwen: Qwen3.6 35B A3B,Reasoning + Cached,No,Sí,Sí,No,$0.1612,$0.9652,—,$0.1612,—,262144
+qwen/qwen3.6-max-preview,Qwen: Qwen3.6 Max Preview,Reasoning + Cached,No,Sí,Sí,No,$1.0400,$6.2400,—,—,$1.3000,262144
+qwen/qwen3.6-27b,Qwen: Qwen3.6 27B,Reasoning,No,Sí,No,No,$0.3250,$3.2500,—,—,—,256000
+openai/gpt-5.5-pro,OpenAI: GPT-5.5 Pro,Reasoning,No,Sí,No,No,$30.0000,$180.0000,—,—,—,1050000
+openai/gpt-5.5,OpenAI: GPT-5.5,Reasoning + Cached,No,Sí,Sí,No,$5.0000,$30.0000,—,$0.5000,—,1050000
+deepseek/deepseek-v4-pro,DeepSeek: DeepSeek V4 Pro,Reasoning + Cached,No,Sí,Sí,No,$0.4350,$0.8700,—,$0.0036,—,1048576
+deepseek/deepseek-v4-flash,DeepSeek: DeepSeek V4 Flash,Reasoning + Cached,No,Sí,Sí,No,$0.1400,$0.2800,—,$0.0028,—,1048576
+inclusionai/ling-2.6-1t:free,inclusionAI: Ling-2.6-1T (free),Free,Sí,No,No,No,—,—,—,—,—,262144
+tencent/hy3-preview:free,Tencent: Hy3 preview (free),Free,Sí,Sí,No,No,—,—,—,—,—,262144
+xiaomi/mimo-v2.5-pro,Xiaomi: MiMo-V2.5-Pro,Reasoning + Cached,No,Sí,Sí,No,$1.0000,$3.0000,—,$0.2000,—,1048576
+xiaomi/mimo-v2.5,Xiaomi: MiMo-V2.5,Reasoning + Cached,No,Sí,Sí,No,$0.4000,$2.0000,—,$0.0800,—,1048576
+openai/gpt-5.4-image-2,OpenAI: GPT-5.4 Image 2,Reasoning + Cached,No,Sí,Sí,No,$8.0000,$15.0000,—,$2.0000,—,272000
+inclusionai/ling-2.6-flash,inclusionAI: Ling-2.6-flash,Standard + Cached,No,No,Sí,No,$0.0800,$0.2400,—,$0.0160,—,262144
+~anthropic/claude-opus-latest,Anthropic: Claude Opus Latest,Reasoning + Cached,No,Sí,Sí,No,$5.0000,$25.0000,—,$0.5000,$6.2500,1000000
+openrouter/pareto-code,Pareto Code Router,Standard,No,No,No,No,—,—,—,—,—,200000
+baidu/qianfan-ocr-fast:free,Baidu: Qianfan-OCR-Fast (free),Free,Sí,Sí,No,No,—,—,—,—,—,65536
+moonshotai/kimi-k2.6,MoonshotAI: Kimi K2.6,Reasoning + Cached,No,Sí,Sí,No,$0.7500,$3.5000,—,$0.1500,—,262144
+anthropic/claude-opus-4.7,Anthropic: Claude Opus 4.7,Reasoning + Cached,No,Sí,Sí,No,$5.0000,$25.0000,—,$0.5000,$6.2500,1000000
+anthropic/claude-opus-4.6-fast,Anthropic: Claude Opus 4.6 (Fast),Reasoning + Cached,No,Sí,Sí,No,$30.0000,$150.0000,—,$3.0000,$37.5000,1000000
+z-ai/glm-5.1,Z.ai: GLM 5.1,Reasoning + Cached,No,Sí,Sí,No,$1.0500,$3.5000,—,$0.5250,—,202752
+google/gemma-4-26b-a4b-it:free,Google: Gemma 4 26B A4B  (free),Free,Sí,Sí,No,No,—,—,—,—,—,262144
+google/gemma-4-26b-a4b-it,Google: Gemma 4 26B A4B ,Reasoning,No,Sí,No,No,$0.0600,$0.3300,—,—,—,262144
+google/gemma-4-31b-it:free,Google: Gemma 4 31B (free),Free,Sí,Sí,No,No,—,—,—,—,—,262144
+google/gemma-4-31b-it,Google: Gemma 4 31B,Reasoning,No,Sí,No,No,$0.1300,$0.3800,—,—,—,262144
+qwen/qwen3.6-plus,Qwen: Qwen3.6 Plus,Reasoning + Cached,No,Sí,Sí,No,$0.3250,$1.9500,—,—,$0.4062,1000000
+z-ai/glm-5v-turbo,Z.ai: GLM 5V Turbo,Reasoning + Cached,No,Sí,Sí,No,$1.2000,$4.0000,—,$0.2400,—,202752
+arcee-ai/trinity-large-thinking,Arcee AI: Trinity Large Thinking,Reasoning + Cached,No,Sí,Sí,No,$0.2200,$0.8500,—,$0.0600,—,262144
+x-ai/grok-4.20-multi-agent,xAI: Grok 4.20 Multi-Agent,Reasoning + Cached,No,Sí,Sí,No,$2.0000,$6.0000,—,$0.2000,—,2000000
+x-ai/grok-4.20,xAI: Grok 4.20,Reasoning + Cached,No,Sí,Sí,No,$2.0000,$6.0000,—,$0.2000,—,2000000
+google/lyria-3-pro-preview,Google: Lyria 3 Pro Preview,Free,Sí,No,No,No,—,—,—,—,—,1048576
+google/lyria-3-clip-preview,Google: Lyria 3 Clip Preview,Free,Sí,No,No,No,—,—,—,—,—,1048576
+kwaipilot/kat-coder-pro-v2,Kwaipilot: KAT-Coder-Pro V2,Standard + Cached,No,No,Sí,No,$0.3000,$1.2000,—,$0.0600,—,256000
+rekaai/reka-edge,Reka Edge,Standard,No,No,No,No,$0.1000,$0.1000,—,—,—,16384
+xiaomi/mimo-v2-omni,Xiaomi: MiMo-V2-Omni,Reasoning + Cached,No,Sí,Sí,No,$0.4000,$2.0000,—,$0.0800,—,262144
+xiaomi/mimo-v2-pro,Xiaomi: MiMo-V2-Pro,Reasoning + Cached,No,Sí,Sí,No,$1.0000,$3.0000,—,$0.2000,—,1048576
+minimax/minimax-m2.7,MiniMax: MiniMax M2.7,Reasoning + Cached,No,Sí,Sí,No,$0.3000,$1.2000,—,$0.0590,—,196608
+openai/gpt-5.4-nano,OpenAI: GPT-5.4 Nano,Reasoning + Cached,No,Sí,Sí,No,$0.2000,$1.2500,—,$0.0200,—,400000
+openai/gpt-5.4-mini,OpenAI: GPT-5.4 Mini,Reasoning + Cached,No,Sí,Sí,No,$0.7500,$4.5000,—,$0.0750,—,400000
+mistralai/mistral-small-2603,Mistral: Mistral Small 4,Reasoning + Cached,No,Sí,Sí,No,$0.1500,$0.6000,—,$0.0150,—,262144
+z-ai/glm-5-turbo,Z.ai: GLM 5 Turbo,Reasoning + Cached,No,Sí,Sí,No,$1.2000,$4.0000,—,$0.2400,—,202752
+nvidia/nemotron-3-super-120b-a12b:free,NVIDIA: Nemotron 3 Super (free),Free,Sí,Sí,No,No,—,—,—,—,—,262144
+nvidia/nemotron-3-super-120b-a12b,NVIDIA: Nemotron 3 Super,Reasoning,No,Sí,No,No,$0.0900,$0.4500,—,—,—,262144
+bytedance-seed/seed-2.0-lite,ByteDance Seed: Seed-2.0-Lite,Reasoning,No,Sí,No,No,$0.2500,$2.0000,—,—,—,262144
+qwen/qwen3.5-9b,Qwen: Qwen3.5-9B,Reasoning,No,Sí,No,No,$0.1000,$0.1500,—,—,—,262144
+openai/gpt-5.4-pro,OpenAI: GPT-5.4 Pro,Reasoning,No,Sí,No,No,$30.0000,$180.0000,—,—,—,1050000
+openai/gpt-5.4,OpenAI: GPT-5.4,Reasoning + Cached,No,Sí,Sí,No,$2.5000,$15.0000,—,$0.2500,—,1050000
+inception/mercury-2,Inception: Mercury 2,Reasoning + Cached,No,Sí,Sí,No,$0.2500,$0.7500,—,$0.0250,—,128000
+openai/gpt-5.3-chat,OpenAI: GPT-5.3 Chat,Standard + Cached,No,No,Sí,No,$1.7500,$14.0000,—,$0.1750,—,128000
+google/gemini-3.1-flash-lite-preview,Google: Gemini 3.1 Flash Lite Preview,Reasoning + Cached,No,Sí,Sí,No,$0.2500,$1.5000,$1.5000,$0.0250,$0.0833,1048576
+bytedance-seed/seed-2.0-mini,ByteDance Seed: Seed-2.0-Mini,Reasoning,No,Sí,No,No,$0.1000,$0.4000,—,—,—,262144
+google/gemini-3.1-flash-image-preview,Google: Nano Banana 2 (Gemini 3.1 Flash Image Preview),Reasoning,No,Sí,No,No,$0.5000,$3.0000,—,—,—,65536
+qwen/qwen3.5-35b-a3b,Qwen: Qwen3.5-35B-A3B,Reasoning,No,Sí,No,No,$0.1625,$1.3000,—,—,—,262144
+qwen/qwen3.5-27b,Qwen: Qwen3.5-27B,Reasoning,No,Sí,No,No,$0.1950,$1.5600,—,—,—,262144
+qwen/qwen3.5-122b-a10b,Qwen: Qwen3.5-122B-A10B,Reasoning,No,Sí,No,No,$0.2600,$2.0800,—,—,—,262144
+qwen/qwen3.5-flash-02-23,Qwen: Qwen3.5-Flash,Reasoning + Cached,No,Sí,Sí,No,$0.0650,$0.2600,—,—,$0.0813,1000000
+liquid/lfm-2-24b-a2b,LiquidAI: LFM2-24B-A2B,Standard,No,No,No,No,$0.0300,$0.1200,—,—,—,32768
+google/gemini-3.1-pro-preview-customtools,Google: Gemini 3.1 Pro Preview Custom Tools,Reasoning + Cached,No,Sí,Sí,No,$2.0000,$12.0000,$12.0000,$0.2000,$0.3750,1048576
+openai/gpt-5.3-codex,OpenAI: GPT-5.3-Codex,Reasoning + Cached,No,Sí,Sí,No,$1.7500,$14.0000,—,$0.1750,—,400000
+aion-labs/aion-2.0,AionLabs: Aion-2.0,Reasoning + Cached,No,Sí,Sí,No,$0.8000,$1.6000,—,$0.2000,—,131072
+google/gemini-3.1-pro-preview,Google: Gemini 3.1 Pro Preview,Reasoning + Cached,No,Sí,Sí,No,$2.0000,$12.0000,$12.0000,$0.2000,$0.3750,1048576
+anthropic/claude-sonnet-4.6,Anthropic: Claude Sonnet 4.6,Reasoning + Cached,No,Sí,Sí,No,$3.0000,$15.0000,—,$0.3000,$3.7500,1000000
+qwen/qwen3.5-plus-02-15,Qwen: Qwen3.5 Plus 2026-02-15,Reasoning + Cached,No,Sí,Sí,No,$0.2600,$1.5600,—,—,$0.3250,1000000
+qwen/qwen3.5-397b-a17b,Qwen: Qwen3.5 397B A17B,Reasoning + Cached,No,Sí,Sí,No,$0.3900,$2.3400,—,$0.1950,—,262144
+minimax/minimax-m2.5:free,MiniMax: MiniMax M2.5 (free),Free,Sí,Sí,No,No,—,—,—,—,—,196608
+minimax/minimax-m2.5,MiniMax: MiniMax M2.5,Reasoning + Cached,No,Sí,Sí,No,$0.1500,$1.1500,—,$0.0300,—,196608
+z-ai/glm-5,Z.ai: GLM 5,Reasoning + Cached,No,Sí,Sí,No,$0.6000,$2.0800,—,$0.1200,—,202752
+qwen/qwen3-max-thinking,Qwen: Qwen3 Max Thinking,Reasoning,No,Sí,No,No,$0.7800,$3.9000,—,—,—,262144
+anthropic/claude-opus-4.6,Anthropic: Claude Opus 4.6,Reasoning + Cached,No,Sí,Sí,No,$5.0000,$25.0000,—,$0.5000,$6.2500,1000000
+qwen/qwen3-coder-next,Qwen: Qwen3 Coder Next,Standard + Cached,No,No,Sí,No,$0.1400,$0.8000,—,$0.0900,—,262144
+openrouter/free,Free Models Router,Free,Sí,Sí,No,No,—,—,—,—,—,200000
+stepfun/step-3.5-flash,StepFun: Step 3.5 Flash,Reasoning,No,Sí,No,No,$0.1000,$0.3000,—,—,—,262144
+arcee-ai/trinity-large-preview,Arcee AI: Trinity Large Preview,Standard,No,No,No,No,$0.1500,$0.4500,—,—,—,131000
+moonshotai/kimi-k2.5,MoonshotAI: Kimi K2.5,Reasoning + Cached,No,Sí,Sí,No,$0.4400,$2.0000,—,$0.2200,—,262144
+upstage/solar-pro-3,Upstage: Solar Pro 3,Reasoning + Cached,No,Sí,Sí,No,$0.1500,$0.6000,—,$0.0150,—,128000
+minimax/minimax-m2-her,MiniMax: MiniMax M2-her,Standard + Cached,No,No,Sí,No,$0.3000,$1.2000,—,$0.0300,—,65536
+writer/palmyra-x5,Writer: Palmyra X5,Standard,No,No,No,No,$0.6000,$6.0000,—,—,—,1040000
+liquid/lfm-2.5-1.2b-thinking:free,LiquidAI: LFM2.5-1.2B-Thinking (free),Free,Sí,Sí,No,No,—,—,—,—,—,32768
+liquid/lfm-2.5-1.2b-instruct:free,LiquidAI: LFM2.5-1.2B-Instruct (free),Free,Sí,No,No,No,—,—,—,—,—,32768
+openai/gpt-audio,OpenAI: GPT Audio,Standard,No,No,No,No,$2.5000,$10.0000,—,—,—,128000
+openai/gpt-audio-mini,OpenAI: GPT Audio Mini,Standard,No,No,No,No,$0.6000,$2.4000,—,—,—,128000
+z-ai/glm-4.7-flash,Z.ai: GLM 4.7 Flash,Reasoning + Cached,No,Sí,Sí,No,$0.0600,$0.4000,—,$0.0100,—,202752
+openai/gpt-5.2-codex,OpenAI: GPT-5.2-Codex,Reasoning + Cached,No,Sí,Sí,No,$1.7500,$14.0000,—,$0.1750,—,400000
+allenai/olmo-3.1-32b-instruct,AllenAI: Olmo 3.1 32B Instruct,Standard,No,No,No,No,$0.2000,$0.6000,—,—,—,65536
+bytedance-seed/seed-1.6-flash,ByteDance Seed: Seed 1.6 Flash,Reasoning,No,Sí,No,No,$0.0750,$0.3000,—,—,—,262144
+bytedance-seed/seed-1.6,ByteDance Seed: Seed 1.6,Reasoning,No,Sí,No,No,$0.2500,$2.0000,—,—,—,262144
+minimax/minimax-m2.1,MiniMax: MiniMax M2.1,Reasoning + Cached,No,Sí,Sí,No,$0.2900,$0.9500,—,$0.0300,—,196608
+z-ai/glm-4.7,Z.ai: GLM 4.7,Reasoning,No,Sí,No,No,$0.3800,$1.7400,—,—,—,202752
+google/gemini-3-flash-preview,Google: Gemini 3 Flash Preview,Reasoning + Cached,No,Sí,Sí,No,$0.5000,$3.0000,$3.0000,$0.0500,$0.0833,1048576
+xiaomi/mimo-v2-flash,Xiaomi: MiMo-V2-Flash,Reasoning + Cached,No,Sí,Sí,No,$0.0900,$0.2900,—,$0.0450,—,262144
+nvidia/nemotron-3-nano-30b-a3b:free,NVIDIA: Nemotron 3 Nano 30B A3B (free),Free,Sí,Sí,No,No,—,—,—,—,—,256000
+nvidia/nemotron-3-nano-30b-a3b,NVIDIA: Nemotron 3 Nano 30B A3B,Reasoning,No,Sí,No,No,$0.0500,$0.2000,—,—,—,262144
+openai/gpt-5.2-chat,OpenAI: GPT-5.2 Chat,Standard + Cached,No,No,Sí,No,$1.7500,$14.0000,—,$0.1750,—,128000
+openai/gpt-5.2-pro,OpenAI: GPT-5.2 Pro,Reasoning,No,Sí,No,No,$21.0000,$168.0000,—,—,—,400000
+openai/gpt-5.2,OpenAI: GPT-5.2,Reasoning + Cached,No,Sí,Sí,No,$1.7500,$14.0000,—,$0.1750,—,400000
+mistralai/devstral-2512,Mistral: Devstral 2 2512,Standard + Cached,No,No,Sí,No,$0.4000,$2.0000,—,$0.0400,—,262144
+relace/relace-search,Relace: Relace Search,Standard,No,No,No,No,$1.0000,$3.0000,—,—,—,256000
+z-ai/glm-4.6v,Z.ai: GLM 4.6V,Reasoning + Cached,No,Sí,Sí,No,$0.3000,$0.9000,—,$0.0500,—,131072
+nex-agi/deepseek-v3.1-nex-n1,Nex AGI: DeepSeek V3.1 Nex N1,Standard,No,No,No,No,$0.1350,$0.5000,—,—,—,131072
+essentialai/rnj-1-instruct,EssentialAI: Rnj 1 Instruct,Standard,No,No,No,No,$0.1500,$0.1500,—,—,—,32768
+openrouter/bodybuilder,Body Builder (beta),Standard,No,No,No,No,—,—,—,—,—,128000
+openai/gpt-5.1-codex-max,OpenAI: GPT-5.1-Codex-Max,Reasoning + Cached,No,Sí,Sí,No,$1.2500,$10.0000,—,$0.1250,—,400000
+amazon/nova-2-lite-v1,Amazon: Nova 2 Lite,Reasoning,No,Sí,No,No,$0.3000,$2.5000,—,—,—,1000000
+mistralai/ministral-14b-2512,Mistral: Ministral 3 14B 2512,Standard + Cached,No,No,Sí,No,$0.2000,$0.2000,—,$0.0200,—,262144
+mistralai/ministral-8b-2512,Mistral: Ministral 3 8B 2512,Standard + Cached,No,No,Sí,No,$0.1500,$0.1500,—,$0.0150,—,262144
+mistralai/ministral-3b-2512,Mistral: Ministral 3 3B 2512,Standard + Cached,No,No,Sí,No,$0.1000,$0.1000,—,$0.0100,—,131072
+mistralai/mistral-large-2512,Mistral: Mistral Large 3 2512,Standard + Cached,No,No,Sí,No,$0.5000,$1.5000,—,$0.0500,—,262144
+arcee-ai/trinity-mini,Arcee AI: Trinity Mini,Reasoning,No,Sí,No,No,$0.0450,$0.1500,—,—,—,131072
+deepseek/deepseek-v3.2-speciale,DeepSeek: DeepSeek V3.2 Speciale,Reasoning + Cached,No,Sí,Sí,No,$0.4000,$1.2000,—,$0.2000,—,163840
+deepseek/deepseek-v3.2,DeepSeek: DeepSeek V3.2,Reasoning + Cached,No,Sí,Sí,No,$0.2520,$0.3780,—,$0.0252,—,131072
+prime-intellect/intellect-3,Prime Intellect: INTELLECT-3,Reasoning,No,Sí,No,No,$0.2000,$1.1000,—,—,—,131072
+anthropic/claude-opus-4.5,Anthropic: Claude Opus 4.5,Reasoning + Cached,No,Sí,Sí,No,$5.0000,$25.0000,—,$0.5000,$6.2500,200000
+allenai/olmo-3-32b-think,AllenAI: Olmo 3 32B Think,Reasoning,No,Sí,No,No,$0.1500,$0.5000,—,—,—,65536
+google/gemini-3-pro-image-preview,Google: Nano Banana Pro (Gemini 3 Pro Image Preview),Reasoning + Cached,No,Sí,Sí,No,$2.0000,$12.0000,$12.0000,$0.2000,$0.3750,65536
+x-ai/grok-4.1-fast,xAI: Grok 4.1 Fast,Reasoning + Cached,No,Sí,Sí,No,$0.2000,$0.5000,—,$0.0500,—,2000000
+deepcogito/cogito-v2.1-671b,Deep Cogito: Cogito v2.1 671B,Reasoning,No,Sí,No,No,$1.2500,$1.2500,—,—,—,128000
+openai/gpt-5.1,OpenAI: GPT-5.1,Reasoning + Cached,No,Sí,Sí,No,$1.2500,$10.0000,—,$0.1300,—,400000
+openai/gpt-5.1-chat,OpenAI: GPT-5.1 Chat,Standard + Cached,No,No,Sí,No,$1.2500,$10.0000,—,$0.1250,—,128000
+openai/gpt-5.1-codex,OpenAI: GPT-5.1-Codex,Reasoning + Cached,No,Sí,Sí,No,$1.2500,$10.0000,—,$0.1250,—,400000
+openai/gpt-5.1-codex-mini,OpenAI: GPT-5.1-Codex-Mini,Reasoning + Cached,No,Sí,Sí,No,$0.2500,$2.0000,—,$0.0300,—,400000
+moonshotai/kimi-k2-thinking,MoonshotAI: Kimi K2 Thinking,Reasoning + Cached,No,Sí,Sí,No,$0.6000,$2.5000,—,$0.1500,—,262144
+amazon/nova-premier-v1,Amazon: Nova Premier 1.0,Standard + Cached,No,No,Sí,No,$2.5000,$12.5000,—,$0.6250,—,1000000
+perplexity/sonar-pro-search,Perplexity: Sonar Pro Search,Reasoning,No,Sí,No,No,$3.0000,$15.0000,—,—,—,200000
+mistralai/voxtral-small-24b-2507,Mistral: Voxtral Small 24B 2507,Standard + Cached,No,No,Sí,No,$0.1000,$0.3000,—,$0.0100,—,32000
+openai/gpt-oss-safeguard-20b,OpenAI: gpt-oss-safeguard-20b,Reasoning + Cached,No,Sí,Sí,No,$0.0750,$0.3000,—,$0.0370,—,131072
+nvidia/nemotron-nano-12b-v2-vl:free,NVIDIA: Nemotron Nano 12B 2 VL (free),Free,Sí,Sí,No,No,—,—,—,—,—,128000
+nvidia/nemotron-nano-12b-v2-vl,NVIDIA: Nemotron Nano 12B 2 VL,Reasoning,No,Sí,No,No,$0.2000,$0.6000,—,—,—,131072
+minimax/minimax-m2,MiniMax: MiniMax M2,Reasoning + Cached,No,Sí,Sí,No,$0.2550,$1.0000,—,$0.0300,—,196608
+qwen/qwen3-vl-32b-instruct,Qwen: Qwen3 VL 32B Instruct,Standard,No,No,No,No,$0.1040,$0.4160,—,—,—,131072
+ibm-granite/granite-4.0-h-micro,IBM: Granite 4.0 Micro,Standard,No,No,No,No,$0.0170,$0.1100,—,—,—,131000
+openai/gpt-5-image-mini,OpenAI: GPT-5 Image Mini,Reasoning + Cached,No,Sí,Sí,No,$2.5000,$2.0000,—,$0.2500,—,400000
+anthropic/claude-haiku-4.5,Anthropic: Claude Haiku 4.5,Reasoning + Cached,No,Sí,Sí,No,$1.0000,$5.0000,—,$0.1000,$1.2500,200000
+qwen/qwen3-vl-8b-thinking,Qwen: Qwen3 VL 8B Thinking,Reasoning,No,Sí,No,No,$0.1170,$1.3650,—,—,—,131072
+qwen/qwen3-vl-8b-instruct,Qwen: Qwen3 VL 8B Instruct,Standard,No,No,No,No,$0.0800,$0.5000,—,—,—,131072
+openai/gpt-5-image,OpenAI: GPT-5 Image,Reasoning + Cached,No,Sí,Sí,No,$10.0000,$10.0000,—,$1.2500,—,400000
+openai/o3-deep-research,OpenAI: o3 Deep Research,Reasoning + Cached,No,Sí,Sí,No,$10.0000,$40.0000,—,$2.5000,—,200000
+openai/o4-mini-deep-research,OpenAI: o4 Mini Deep Research,Reasoning + Cached,No,Sí,Sí,No,$2.0000,$8.0000,—,$0.5000,—,200000
+nvidia/llama-3.3-nemotron-super-49b-v1.5,NVIDIA: Llama 3.3 Nemotron Super 49B V1.5,Reasoning,No,Sí,No,No,$0.1000,$0.4000,—,—,—,131072
+baidu/ernie-4.5-21b-a3b-thinking,Baidu: ERNIE 4.5 21B A3B Thinking,Reasoning,No,Sí,No,No,$0.0700,$0.2800,—,—,—,131072
+google/gemini-2.5-flash-image,Google: Nano Banana (Gemini 2.5 Flash Image),Reasoning + Cached,No,Sí,Sí,No,$0.3000,$2.5000,$2.5000,$0.0300,$0.0833,32768
+qwen/qwen3-vl-30b-a3b-thinking,Qwen: Qwen3 VL 30B A3B Thinking,Reasoning,No,Sí,No,No,$0.1300,$1.5600,—,—,—,131072
+qwen/qwen3-vl-30b-a3b-instruct,Qwen: Qwen3 VL 30B A3B Instruct,Standard,No,No,No,No,$0.1300,$0.5200,—,—,—,131072
+openai/gpt-5-pro,OpenAI: GPT-5 Pro,Reasoning,No,Sí,No,No,$15.0000,$120.0000,—,—,—,400000
+z-ai/glm-4.6,Z.ai: GLM 4.6,Reasoning,No,Sí,No,No,$0.3900,$1.9000,—,—,—,204800
+anthropic/claude-sonnet-4.5,Anthropic: Claude Sonnet 4.5,Reasoning + Cached,No,Sí,Sí,No,$3.0000,$15.0000,—,$0.3000,$3.7500,1000000
+deepseek/deepseek-v3.2-exp,DeepSeek: DeepSeek V3.2 Exp,Reasoning,No,Sí,No,No,$0.2700,$0.4100,—,—,—,163840
+thedrummer/cydonia-24b-v4.1,TheDrummer: Cydonia 24B V4.1,Standard + Cached,No,No,Sí,No,$0.3000,$0.5000,—,$0.1500,—,131072
+relace/relace-apply-3,Relace: Relace Apply 3,Standard,No,No,No,No,$0.8500,$1.2500,—,—,—,256000
+google/gemini-2.5-flash-lite-preview-09-2025,Google: Gemini 2.5 Flash Lite Preview 09-2025,Reasoning + Cached,No,Sí,Sí,No,$0.1000,$0.4000,$0.4000,$0.0100,$0.0833,1048576
+qwen/qwen3-vl-235b-a22b-thinking,Qwen: Qwen3 VL 235B A22B Thinking,Reasoning,No,Sí,No,No,$0.2600,$2.6000,—,—,—,131072
+qwen/qwen3-vl-235b-a22b-instruct,Qwen: Qwen3 VL 235B A22B Instruct,Standard + Cached,No,No,Sí,No,$0.2000,$0.8800,—,$0.1100,—,262144
+qwen/qwen3-max,Qwen: Qwen3 Max,Standard + Cached,No,No,Sí,No,$0.7800,$3.9000,—,$0.1560,$0.9750,262144
+qwen/qwen3-coder-plus,Qwen: Qwen3 Coder Plus,Standard + Cached,No,No,Sí,No,$0.6500,$3.2500,—,$0.1300,$0.8125,1000000
+openai/gpt-5-codex,OpenAI: GPT-5 Codex,Reasoning + Cached,No,Sí,Sí,No,$1.2500,$10.0000,—,$0.1250,—,400000
+deepseek/deepseek-v3.1-terminus,DeepSeek: DeepSeek V3.1 Terminus,Reasoning + Cached,No,Sí,Sí,No,$0.2100,$0.7900,—,$0.1300,—,163840
+x-ai/grok-4-fast,xAI: Grok 4 Fast,Reasoning + Cached,No,Sí,Sí,No,$0.2000,$0.5000,—,$0.0500,—,2000000
+alibaba/tongyi-deepresearch-30b-a3b,Tongyi DeepResearch 30B A3B,Reasoning + Cached,No,Sí,Sí,No,$0.0900,$0.4500,—,$0.0900,—,131072
+qwen/qwen3-coder-flash,Qwen: Qwen3 Coder Flash,Standard + Cached,No,No,Sí,No,$0.1950,$0.9750,—,$0.0390,$0.2437,1000000
+qwen/qwen3-next-80b-a3b-thinking,Qwen: Qwen3 Next 80B A3B Thinking,Reasoning,No,Sí,No,No,$0.0975,$0.7800,—,—,—,131072
+qwen/qwen3-next-80b-a3b-instruct:free,Qwen: Qwen3 Next 80B A3B Instruct (free),Free,Sí,No,No,No,—,—,—,—,—,262144
+qwen/qwen3-next-80b-a3b-instruct,Qwen: Qwen3 Next 80B A3B Instruct,Standard,No,No,No,No,$0.0900,$1.1000,—,—,—,262144
+qwen/qwen-plus-2025-07-28:thinking,Qwen: Qwen Plus 0728 (thinking),Reasoning + Cached,No,Sí,Sí,No,$0.2600,$0.7800,—,—,$0.3250,1000000
+qwen/qwen-plus-2025-07-28,Qwen: Qwen Plus 0728,Standard + Cached,No,No,Sí,No,$0.2600,$0.7800,—,—,$0.3250,1000000
+nvidia/nemotron-nano-9b-v2:free,NVIDIA: Nemotron Nano 9B V2 (free),Free,Sí,Sí,No,No,—,—,—,—,—,128000
+nvidia/nemotron-nano-9b-v2,NVIDIA: Nemotron Nano 9B V2,Reasoning,No,Sí,No,No,$0.0400,$0.1600,—,—,—,131072
+moonshotai/kimi-k2-0905,MoonshotAI: Kimi K2 0905,Standard,No,No,No,No,$0.4000,$2.0000,—,—,—,262144
+qwen/qwen3-30b-a3b-thinking-2507,Qwen: Qwen3 30B A3B Thinking 2507,Reasoning + Cached,No,Sí,Sí,No,$0.0800,$0.4000,—,$0.0800,—,131072
+x-ai/grok-code-fast-1,xAI: Grok Code Fast 1,Reasoning + Cached,No,Sí,Sí,No,$0.2000,$1.5000,—,$0.0200,—,256000
+nousresearch/hermes-4-70b,Nous: Hermes 4 70B,Reasoning,No,Sí,No,No,$0.1300,$0.4000,—,—,—,131072
+nousresearch/hermes-4-405b,Nous: Hermes 4 405B,Reasoning,No,Sí,No,No,$1.0000,$3.0000,—,—,—,131072
+deepseek/deepseek-chat-v3.1,DeepSeek: DeepSeek V3.1,Reasoning,No,Sí,No,No,$0.1500,$0.7500,—,—,—,32768
+openai/gpt-4o-audio-preview,OpenAI: GPT-4o Audio,Standard,No,No,No,No,$2.5000,$10.0000,—,—,—,128000
+mistralai/mistral-medium-3.1,Mistral: Mistral Medium 3.1,Standard + Cached,No,No,Sí,No,$0.4000,$2.0000,—,$0.0400,—,131072
+baidu/ernie-4.5-21b-a3b,Baidu: ERNIE 4.5 21B A3B,Standard,No,No,No,No,$0.0700,$0.2800,—,—,—,120000
+baidu/ernie-4.5-vl-28b-a3b,Baidu: ERNIE 4.5 VL 28B A3B,Reasoning,No,Sí,No,No,$0.1400,$0.5600,—,—,—,30000
+z-ai/glm-4.5v,Z.ai: GLM 4.5V,Reasoning + Cached,No,Sí,Sí,No,$0.6000,$1.8000,—,$0.1100,—,65536
+ai21/jamba-large-1.7,AI21: Jamba Large 1.7,Standard,No,No,No,No,$2.0000,$8.0000,—,—,—,256000
+openai/gpt-5-chat,OpenAI: GPT-5 Chat,Standard + Cached,No,No,Sí,No,$1.2500,$10.0000,—,$0.1250,—,128000
+openai/gpt-5,OpenAI: GPT-5,Reasoning + Cached,No,Sí,Sí,No,$1.2500,$10.0000,—,$0.1250,—,400000
+openai/gpt-5-mini,OpenAI: GPT-5 Mini,Reasoning + Cached,No,Sí,Sí,No,$0.2500,$2.0000,—,$0.0250,—,400000
+openai/gpt-5-nano,OpenAI: GPT-5 Nano,Reasoning + Cached,No,Sí,Sí,No,$0.0500,$0.4000,—,$0.0100,—,400000
+openai/gpt-oss-120b:free,OpenAI: gpt-oss-120b (free),Free,Sí,Sí,No,No,—,—,—,—,—,131072
+openai/gpt-oss-120b,OpenAI: gpt-oss-120b,Reasoning,No,Sí,No,No,$0.0390,$0.1900,—,—,—,131072
+openai/gpt-oss-20b:free,OpenAI: gpt-oss-20b (free),Free,Sí,Sí,No,No,—,—,—,—,—,131072
+openai/gpt-oss-20b,OpenAI: gpt-oss-20b,Reasoning,No,Sí,No,No,$0.0300,$0.1400,—,—,—,131072
+anthropic/claude-opus-4.1,Anthropic: Claude Opus 4.1,Reasoning + Cached,No,Sí,Sí,No,$15.0000,$75.0000,—,$1.5000,$18.7500,200000
+mistralai/codestral-2508,Mistral: Codestral 2508,Standard + Cached,No,No,Sí,No,$0.3000,$0.9000,—,$0.0300,—,256000
+qwen/qwen3-coder-30b-a3b-instruct,Qwen: Qwen3 Coder 30B A3B Instruct,Standard,No,No,No,No,$0.0700,$0.2700,—,—,—,160000
+qwen/qwen3-30b-a3b-instruct-2507,Qwen: Qwen3 30B A3B Instruct 2507,Standard,No,No,No,No,$0.0900,$0.3000,—,—,—,262144
+z-ai/glm-4.5,Z.ai: GLM 4.5,Reasoning + Cached,No,Sí,Sí,No,$0.6000,$2.2000,—,$0.1100,—,131072
+z-ai/glm-4.5-air:free,Z.ai: GLM 4.5 Air (free),Free,Sí,Sí,No,No,—,—,—,—,—,131072
+z-ai/glm-4.5-air,Z.ai: GLM 4.5 Air,Reasoning + Cached,No,Sí,Sí,No,$0.1300,$0.8500,—,$0.0250,—,131072
+qwen/qwen3-235b-a22b-thinking-2507,Qwen: Qwen3 235B A22B Thinking 2507,Reasoning,No,Sí,No,No,$0.1495,$1.4950,—,—,—,131072
+z-ai/glm-4-32b,Z.ai: GLM 4 32B ,Standard,No,No,No,No,$0.1000,$0.1000,—,—,—,128000
+qwen/qwen3-coder:free,Qwen: Qwen3 Coder 480B A35B (free),Free,Sí,No,No,No,—,—,—,—,—,262000
+qwen/qwen3-coder,Qwen: Qwen3 Coder 480B A35B,Standard,No,No,No,No,$0.2200,$1.8000,—,—,—,262144
+bytedance/ui-tars-1.5-7b,ByteDance: UI-TARS 7B ,Standard + Cached,No,No,Sí,No,$0.1000,$0.2000,—,$0.1000,—,128000
+google/gemini-2.5-flash-lite,Google: Gemini 2.5 Flash Lite,Reasoning + Cached,No,Sí,Sí,No,$0.1000,$0.4000,$0.4000,$0.0100,$0.0833,1048576
+qwen/qwen3-235b-a22b-2507,Qwen: Qwen3 235B A22B Instruct 2507,Standard,No,No,No,No,$0.0710,$0.1000,—,—,—,262144
+switchpoint/router,Switchpoint Router,Reasoning,No,Sí,No,No,$0.8500,$3.4000,—,—,—,131072
+moonshotai/kimi-k2,MoonshotAI: Kimi K2 0711,Standard,No,No,No,No,$0.5700,$2.3000,—,—,—,131072
+mistralai/devstral-medium,Mistral: Devstral Medium,Standard + Cached,No,No,Sí,No,$0.4000,$2.0000,—,$0.0400,—,131072
+mistralai/devstral-small,Mistral: Devstral Small 1.1,Standard + Cached,No,No,Sí,No,$0.1000,$0.3000,—,$0.0100,—,131072
+cognitivecomputations/dolphin-mistral-24b-venice-edition:free,Venice: Uncensored (free),Free,Sí,No,No,No,—,—,—,—,—,32768
+x-ai/grok-4,xAI: Grok 4,Reasoning + Cached,No,Sí,Sí,No,$3.0000,$15.0000,—,$0.7500,—,256000
+google/gemma-3n-e2b-it:free,Google: Gemma 3n 2B (free),Free,Sí,No,No,No,—,—,—,—,—,8192
+tencent/hunyuan-a13b-instruct,Tencent: Hunyuan A13B Instruct,Reasoning,No,Sí,No,No,$0.1400,$0.5700,—,—,—,131072
+tngtech/deepseek-r1t2-chimera,TNG: DeepSeek R1T2 Chimera,Reasoning + Cached,No,Sí,Sí,No,$0.3000,$1.1000,—,$0.1500,—,163840
+morph/morph-v3-large,Morph: Morph V3 Large,Standard,No,No,No,No,$0.9000,$1.9000,—,—,—,262144
+morph/morph-v3-fast,Morph: Morph V3 Fast,Standard,No,No,No,No,$0.8000,$1.2000,—,—,—,81920
+baidu/ernie-4.5-vl-424b-a47b,Baidu: ERNIE 4.5 VL 424B A47B ,Reasoning,No,Sí,No,No,$0.4200,$1.2500,—,—,—,123000
+baidu/ernie-4.5-300b-a47b,Baidu: ERNIE 4.5 300B A47B ,Standard,No,No,No,No,$0.2800,$1.1000,—,—,—,123000
+mistralai/mistral-small-3.2-24b-instruct,Mistral: Mistral Small 3.2 24B,Standard,No,No,No,No,$0.0750,$0.2000,—,—,—,128000
+minimax/minimax-m1,MiniMax: MiniMax M1,Reasoning,No,Sí,No,No,$0.4000,$2.2000,—,—,—,1000000
+google/gemini-2.5-flash,Google: Gemini 2.5 Flash,Reasoning + Cached,No,Sí,Sí,No,$0.3000,$2.5000,$2.5000,$0.0300,$0.0833,1048576
+google/gemini-2.5-pro,Google: Gemini 2.5 Pro,Reasoning + Cached,No,Sí,Sí,No,$1.2500,$10.0000,$10.0000,$0.1250,$0.3750,1048576
+openai/o3-pro,OpenAI: o3 Pro,Reasoning,No,Sí,No,No,$20.0000,$80.0000,—,—,—,200000
+x-ai/grok-3-mini,xAI: Grok 3 Mini,Reasoning + Cached,No,Sí,Sí,No,$0.3000,$0.5000,—,$0.0750,—,131072
+x-ai/grok-3,xAI: Grok 3,Standard + Cached,No,No,Sí,No,$3.0000,$15.0000,—,$0.7500,—,131072
+google/gemini-2.5-pro-preview,Google: Gemini 2.5 Pro Preview 06-05,Reasoning + Cached,No,Sí,Sí,No,$1.2500,$10.0000,$10.0000,$0.1250,$0.3750,1048576
+deepseek/deepseek-r1-0528,DeepSeek: R1 0528,Reasoning + Cached,No,Sí,Sí,No,$0.5000,$2.1500,—,$0.3500,—,163840
+anthropic/claude-opus-4,Anthropic: Claude Opus 4,Reasoning + Cached,No,Sí,Sí,No,$15.0000,$75.0000,—,$1.5000,$18.7500,200000
+anthropic/claude-sonnet-4,Anthropic: Claude Sonnet 4,Reasoning + Cached,No,Sí,Sí,No,$3.0000,$15.0000,—,$0.3000,$3.7500,1000000
+google/gemma-3n-e4b-it:free,Google: Gemma 3n 4B (free),Free,Sí,No,No,No,—,—,—,—,—,8192
+google/gemma-3n-e4b-it,Google: Gemma 3n 4B,Standard,No,No,No,No,$0.0600,$0.1200,—,—,—,32768
+mistralai/mistral-medium-3,Mistral: Mistral Medium 3,Standard + Cached,No,No,Sí,No,$0.4000,$2.0000,—,$0.0400,—,131072
+google/gemini-2.5-pro-preview-05-06,Google: Gemini 2.5 Pro Preview 05-06,Reasoning + Cached,No,Sí,Sí,No,$1.2500,$10.0000,$10.0000,$0.1250,$0.3750,1048576
+arcee-ai/spotlight,Arcee AI: Spotlight,Standard,No,No,No,No,$0.1800,$0.1800,—,—,—,131072
+arcee-ai/maestro-reasoning,Arcee AI: Maestro Reasoning,Reasoning,No,Sí,No,No,$0.9000,$3.3000,—,—,—,131072
+arcee-ai/virtuoso-large,Arcee AI: Virtuoso Large,Standard,No,No,No,No,$0.7500,$1.2000,—,—,—,131072
+arcee-ai/coder-large,Arcee AI: Coder Large,Standard,No,No,No,No,$0.5000,$0.8000,—,—,—,32768
+meta-llama/llama-guard-4-12b,Meta: Llama Guard 4 12B,Standard,No,No,No,No,$0.1800,$0.1800,—,—,—,163840
+qwen/qwen3-30b-a3b,Qwen: Qwen3 30B A3B,Reasoning,No,Sí,No,No,$0.0800,$0.2800,—,—,—,40960
+qwen/qwen3-8b,Qwen: Qwen3 8B,Reasoning + Cached,No,Sí,Sí,No,$0.0500,$0.4000,—,$0.0500,—,40960
+qwen/qwen3-14b,Qwen: Qwen3 14B,Reasoning,No,Sí,No,No,$0.0600,$0.2400,—,—,—,40960
+qwen/qwen3-32b,Qwen: Qwen3 32B,Reasoning + Cached,No,Sí,Sí,No,$0.0800,$0.2400,—,$0.0400,—,40960
+qwen/qwen3-235b-a22b,Qwen: Qwen3 235B A22B,Reasoning,No,Sí,No,No,$0.4550,$1.8200,—,—,—,131072
+openai/o4-mini-high,OpenAI: o4 Mini High,Reasoning + Cached,No,Sí,Sí,No,$1.1000,$4.4000,—,$0.2750,—,200000
+openai/o3,OpenAI: o3,Reasoning + Cached,No,Sí,Sí,No,$2.0000,$8.0000,—,$0.5000,—,200000
+openai/o4-mini,OpenAI: o4 Mini,Reasoning + Cached,No,Sí,Sí,No,$1.1000,$4.4000,—,$0.2750,—,200000
+openai/gpt-4.1,OpenAI: GPT-4.1,Standard + Cached,No,No,Sí,No,$2.0000,$8.0000,—,$0.5000,—,1047576
+openai/gpt-4.1-mini,OpenAI: GPT-4.1 Mini,Standard + Cached,No,No,Sí,No,$0.4000,$1.6000,—,$0.1000,—,1047576
+openai/gpt-4.1-nano,OpenAI: GPT-4.1 Nano,Standard + Cached,No,No,Sí,No,$0.1000,$0.4000,—,$0.0250,—,1047576
+alfredpros/codellama-7b-instruct-solidity,AlfredPros: CodeLLaMa 7B Instruct Solidity,Standard,No,No,No,No,$0.8000,$1.2000,—,—,—,4096
+x-ai/grok-3-mini-beta,xAI: Grok 3 Mini Beta,Reasoning + Cached,No,Sí,Sí,No,$0.3000,$0.5000,—,$0.0750,—,131072
+x-ai/grok-3-beta,xAI: Grok 3 Beta,Standard + Cached,No,No,Sí,No,$3.0000,$15.0000,—,$0.7500,—,131072
+meta-llama/llama-4-maverick,Meta: Llama 4 Maverick,Standard,No,No,No,No,$0.1500,$0.6000,—,—,—,1048576
+meta-llama/llama-4-scout,Meta: Llama 4 Scout,Standard,No,No,No,No,$0.0800,$0.3000,—,—,—,327680
+deepseek/deepseek-chat-v3-0324,DeepSeek: DeepSeek V3 0324,Standard + Cached,No,No,Sí,No,$0.2000,$0.7700,—,$0.1350,—,163840
+openai/o1-pro,OpenAI: o1-pro,Reasoning,No,Sí,No,No,$150.0000,$600.0000,—,—,—,200000
+mistralai/mistral-small-3.1-24b-instruct,Mistral: Mistral Small 3.1 24B,Standard,No,No,No,No,$0.3500,$0.5600,—,—,—,128000
+google/gemma-3-4b-it:free,Google: Gemma 3 4B (free),Free,Sí,No,No,No,—,—,—,—,—,32768
+google/gemma-3-4b-it,Google: Gemma 3 4B,Standard,No,No,No,No,$0.0400,$0.0800,—,—,—,131072
+google/gemma-3-12b-it:free,Google: Gemma 3 12B (free),Free,Sí,No,No,No,—,—,—,—,—,32768
+google/gemma-3-12b-it,Google: Gemma 3 12B,Standard,No,No,No,No,$0.0400,$0.1300,—,—,—,131072
+cohere/command-a,Cohere: Command A,Standard,No,No,No,No,$2.5000,$10.0000,—,—,—,256000
+openai/gpt-4o-mini-search-preview,OpenAI: GPT-4o-mini Search Preview,Standard,No,No,No,No,$0.1500,$0.6000,—,—,—,128000
+openai/gpt-4o-search-preview,OpenAI: GPT-4o Search Preview,Standard,No,No,No,No,$2.5000,$10.0000,—,—,—,128000
+rekaai/reka-flash-3,Reka Flash 3,Reasoning,No,Sí,No,No,$0.1000,$0.2000,—,—,—,65536
+google/gemma-3-27b-it:free,Google: Gemma 3 27B (free),Free,Sí,No,No,No,—,—,—,—,—,131072
+google/gemma-3-27b-it,Google: Gemma 3 27B,Standard,No,No,No,No,$0.0800,$0.1600,—,—,—,131072
+thedrummer/skyfall-36b-v2,TheDrummer: Skyfall 36B V2,Standard + Cached,No,No,Sí,No,$0.5500,$0.8000,—,$0.2500,—,32768
+perplexity/sonar-reasoning-pro,Perplexity: Sonar Reasoning Pro,Reasoning,No,Sí,No,No,$2.0000,$8.0000,—,—,—,128000
+perplexity/sonar-pro,Perplexity: Sonar Pro,Standard,No,No,No,No,$3.0000,$15.0000,—,—,—,200000
+perplexity/sonar-deep-research,Perplexity: Sonar Deep Research,Reasoning,No,Sí,No,No,$2.0000,$8.0000,$3.0000,—,—,128000
+google/gemini-2.0-flash-lite-001,Google: Gemini 2.0 Flash Lite,Reasoning,No,Sí,No,No,$0.0750,$0.3000,$0.3000,—,—,1048576
+anthropic/claude-3.7-sonnet,Anthropic: Claude 3.7 Sonnet,Reasoning + Cached,No,Sí,Sí,No,$3.0000,$15.0000,—,$0.3000,$3.7500,200000
+anthropic/claude-3.7-sonnet:thinking,Anthropic: Claude 3.7 Sonnet (thinking),Reasoning + Cached,No,Sí,Sí,No,$3.0000,$15.0000,—,$0.3000,$3.7500,200000
+mistralai/mistral-saba,Mistral: Saba,Standard + Cached,No,No,Sí,No,$0.2000,$0.6000,—,$0.0200,—,32768
+meta-llama/llama-guard-3-8b,Llama Guard 3 8B,Standard,No,No,No,No,$0.4800,$0.0300,—,—,—,131072
+openai/o3-mini-high,OpenAI: o3 Mini High,Reasoning + Cached,No,Sí,Sí,No,$1.1000,$4.4000,—,$0.5500,—,200000
+google/gemini-2.0-flash-001,Google: Gemini 2.0 Flash,Reasoning + Cached,No,Sí,Sí,No,$0.1000,$0.4000,$0.4000,$0.0250,$0.0833,1048576
+qwen/qwen-vl-plus,Qwen: Qwen VL Plus,Standard + Cached,No,No,Sí,No,$0.1365,$0.4095,—,$0.0273,—,131072
+aion-labs/aion-1.0,AionLabs: Aion-1.0,Reasoning,No,Sí,No,No,$4.0000,$8.0000,—,—,—,131072
+aion-labs/aion-1.0-mini,AionLabs: Aion-1.0-Mini,Reasoning,No,Sí,No,No,$0.7000,$1.4000,—,—,—,131072
+aion-labs/aion-rp-llama-3.1-8b,AionLabs: Aion-RP 1.0 (8B),Standard,No,No,No,No,$0.8000,$1.6000,—,—,—,32768
+qwen/qwen-vl-max,Qwen: Qwen VL Max,Standard,No,No,No,No,$0.5200,$2.0800,—,—,—,131072
+qwen/qwen-turbo,Qwen: Qwen-Turbo,Standard + Cached,No,No,Sí,No,$0.0325,$0.1300,—,$0.0065,—,131072
+qwen/qwen2.5-vl-72b-instruct,Qwen: Qwen2.5 VL 72B Instruct,Standard,No,No,No,No,$0.2500,$0.7500,—,—,—,32000
+qwen/qwen-plus,Qwen: Qwen-Plus,Standard + Cached,No,No,Sí,No,$0.2600,$0.7800,—,$0.0520,$0.3250,1000000
+qwen/qwen-max,Qwen: Qwen-Max ,Standard + Cached,No,No,Sí,No,$1.0400,$4.1600,—,$0.2080,—,32768
+openai/o3-mini,OpenAI: o3 Mini,Reasoning + Cached,No,Sí,Sí,No,$1.1000,$4.4000,—,$0.5500,—,200000
+mistralai/mistral-small-24b-instruct-2501,Mistral: Mistral Small 3,Standard,No,No,No,No,$0.0500,$0.0800,—,—,—,32768
+deepseek/deepseek-r1-distill-qwen-32b,DeepSeek: R1 Distill Qwen 32B,Reasoning,No,Sí,No,No,$0.2900,$0.2900,—,—,—,32768
+perplexity/sonar,Perplexity: Sonar,Standard,No,No,No,No,$1.0000,$1.0000,—,—,—,127072
+deepseek/deepseek-r1-distill-llama-70b,DeepSeek: R1 Distill Llama 70B,Reasoning,No,Sí,No,No,$0.7000,$0.8000,—,—,—,131072
+deepseek/deepseek-r1,DeepSeek: R1,Reasoning,No,Sí,No,No,$0.7000,$2.5000,—,—,—,64000
+minimax/minimax-01,MiniMax: MiniMax-01,Standard,No,No,No,No,$0.2000,$1.1000,—,—,—,1000192
+microsoft/phi-4,Microsoft: Phi 4,Standard,No,No,No,No,$0.0650,$0.1400,—,—,—,16384
+sao10k/l3.1-70b-hanami-x1,Sao10K: Llama 3.1 70B Hanami x1,Standard,No,No,No,No,$3.0000,$3.0000,—,—,—,16000
+deepseek/deepseek-chat,DeepSeek: DeepSeek V3,Standard,No,No,No,No,$0.3200,$0.8900,—,—,—,163840
+sao10k/l3.3-euryale-70b,Sao10K: Llama 3.3 Euryale 70B,Standard,No,No,No,No,$0.6500,$0.7500,—,—,—,131072
+openai/o1,OpenAI: o1,Reasoning + Cached,No,Sí,Sí,No,$15.0000,$60.0000,—,$7.5000,—,200000
+cohere/command-r7b-12-2024,Cohere: Command R7B (12-2024),Standard,No,No,No,No,$0.0375,$0.1500,—,—,—,128000
+meta-llama/llama-3.3-70b-instruct:free,Meta: Llama 3.3 70B Instruct (free),Free,Sí,No,No,No,—,—,—,—,—,65536
+meta-llama/llama-3.3-70b-instruct,Meta: Llama 3.3 70B Instruct,Standard,No,No,No,No,$0.1000,$0.3200,—,—,—,131072
+amazon/nova-lite-v1,Amazon: Nova Lite 1.0,Standard,No,No,No,No,$0.0600,$0.2400,—,—,—,300000
+amazon/nova-micro-v1,Amazon: Nova Micro 1.0,Standard,No,No,No,No,$0.0350,$0.1400,—,—,—,128000
+amazon/nova-pro-v1,Amazon: Nova Pro 1.0,Standard,No,No,No,No,$0.8000,$3.2000,—,—,—,300000
+openai/gpt-4o-2024-11-20,OpenAI: GPT-4o (2024-11-20),Standard + Cached,No,No,Sí,No,$2.5000,$10.0000,—,$1.2500,—,128000
+mistralai/mistral-large-2411,Mistral Large 2411,Standard + Cached,No,No,Sí,No,$2.0000,$6.0000,—,$0.2000,—,131072
+mistralai/mistral-large-2407,Mistral Large 2407,Standard + Cached,No,No,Sí,No,$2.0000,$6.0000,—,$0.2000,—,131072
+mistralai/pixtral-large-2411,Mistral: Pixtral Large 2411,Standard + Cached,No,No,Sí,No,$2.0000,$6.0000,—,$0.2000,—,131072
+qwen/qwen-2.5-coder-32b-instruct,Qwen2.5 Coder 32B Instruct,Standard,No,No,No,No,$0.6600,$1.0000,—,—,—,32768
+thedrummer/unslopnemo-12b,TheDrummer: UnslopNemo 12B,Standard,No,No,No,No,$0.4000,$0.4000,—,—,—,32768
+anthropic/claude-3.5-haiku,Anthropic: Claude 3.5 Haiku,Standard + Cached,No,No,Sí,No,$0.8000,$4.0000,—,$0.0800,$1.0000,200000
+anthracite-org/magnum-v4-72b,Magnum v4 72B,Standard,No,No,No,No,$3.0000,$5.0000,—,—,—,16384
+qwen/qwen-2.5-7b-instruct,Qwen: Qwen2.5 7B Instruct,Standard,No,No,No,No,$0.0400,$0.1000,—,—,—,32768
+nvidia/llama-3.1-nemotron-70b-instruct,NVIDIA: Llama 3.1 Nemotron 70B Instruct,Standard,No,No,No,No,$1.2000,$1.2000,—,—,—,131072
+inflection/inflection-3-productivity,Inflection: Inflection 3 Productivity,Standard,No,No,No,No,$2.5000,$10.0000,—,—,—,8000
+inflection/inflection-3-pi,Inflection: Inflection 3 Pi,Standard,No,No,No,No,$2.5000,$10.0000,—,—,—,8000
+thedrummer/rocinante-12b,TheDrummer: Rocinante 12B,Standard,No,No,No,No,$0.1700,$0.4300,—,—,—,32768
+meta-llama/llama-3.2-3b-instruct:free,Meta: Llama 3.2 3B Instruct (free),Free,Sí,No,No,No,—,—,—,—,—,131072
+meta-llama/llama-3.2-3b-instruct,Meta: Llama 3.2 3B Instruct,Standard,No,No,No,No,$0.0510,$0.3400,—,—,—,80000
+meta-llama/llama-3.2-1b-instruct,Meta: Llama 3.2 1B Instruct,Standard,No,No,No,No,$0.0270,$0.2000,—,—,—,60000
+meta-llama/llama-3.2-11b-vision-instruct,Meta: Llama 3.2 11B Vision Instruct,Standard,No,No,No,No,$0.2450,$0.2450,—,—,—,131072
+qwen/qwen-2.5-72b-instruct,Qwen2.5 72B Instruct,Standard,No,No,No,No,$0.3600,$0.4000,—,—,—,32768
+cohere/command-r-plus-08-2024,Cohere: Command R+ (08-2024),Standard,No,No,No,No,$2.5000,$10.0000,—,—,—,128000
+cohere/command-r-08-2024,Cohere: Command R (08-2024),Standard,No,No,No,No,$0.1500,$0.6000,—,—,—,128000
+sao10k/l3.1-euryale-70b,Sao10K: Llama 3.1 Euryale 70B v2.2,Standard,No,No,No,No,$0.8500,$0.8500,—,—,—,131072
+nousresearch/hermes-3-llama-3.1-70b,Nous: Hermes 3 70B Instruct,Standard,No,No,No,No,$0.3000,$0.3000,—,—,—,131072
+nousresearch/hermes-3-llama-3.1-405b:free,Nous: Hermes 3 405B Instruct (free),Free,Sí,No,No,No,—,—,—,—,—,131072
+nousresearch/hermes-3-llama-3.1-405b,Nous: Hermes 3 405B Instruct,Standard,No,No,No,No,$1.0000,$1.0000,—,—,—,131072
+sao10k/l3-lunaris-8b,Sao10K: Llama 3 8B Lunaris,Standard,No,No,No,No,$0.0400,$0.0500,—,—,—,8192
+openai/gpt-4o-2024-08-06,OpenAI: GPT-4o (2024-08-06),Standard + Cached,No,No,Sí,No,$2.5000,$10.0000,—,$1.2500,—,128000
+meta-llama/llama-3.1-8b-instruct,Meta: Llama 3.1 8B Instruct,Standard,No,No,No,No,$0.0200,$0.0500,—,—,—,16384
+meta-llama/llama-3.1-70b-instruct,Meta: Llama 3.1 70B Instruct,Standard,No,No,No,No,$0.4000,$0.4000,—,—,—,131072
+mistralai/mistral-nemo,Mistral: Mistral Nemo,Standard,No,No,No,No,$0.0200,$0.0300,—,—,—,131072
+openai/gpt-4o-mini-2024-07-18,OpenAI: GPT-4o-mini (2024-07-18),Standard + Cached,No,No,Sí,No,$0.1500,$0.6000,—,$0.0750,—,128000
+openai/gpt-4o-mini,OpenAI: GPT-4o-mini,Standard + Cached,No,No,Sí,No,$0.1500,$0.6000,—,$0.0750,—,128000
+google/gemma-2-27b-it,Google: Gemma 2 27B,Standard,No,No,No,No,$0.6500,$0.6500,—,—,—,8192
+sao10k/l3-euryale-70b,Sao10k: Llama 3 Euryale 70B v2.1,Standard,No,No,No,No,$1.4800,$1.4800,—,—,—,8192
+nousresearch/hermes-2-pro-llama-3-8b,NousResearch: Hermes 2 Pro - Llama-3 8B,Standard,No,No,No,No,$0.1400,$0.1400,—,—,—,8192
+openai/gpt-4o-2024-05-13,OpenAI: GPT-4o (2024-05-13),Standard,No,No,No,No,$5.0000,$15.0000,—,—,—,128000
+openai/gpt-4o,OpenAI: GPT-4o,Standard,No,No,No,No,$2.5000,$10.0000,—,—,—,128000
+meta-llama/llama-3-8b-instruct,Meta: Llama 3 8B Instruct,Standard,No,No,No,No,$0.0300,$0.0400,—,—,—,8192
+meta-llama/llama-3-70b-instruct,Meta: Llama 3 70B Instruct,Standard,No,No,No,No,$0.5100,$0.7400,—,—,—,8192
+mistralai/mixtral-8x22b-instruct,Mistral: Mixtral 8x22B Instruct,Standard + Cached,No,No,Sí,No,$2.0000,$6.0000,—,$0.2000,—,65536
+microsoft/wizardlm-2-8x22b,WizardLM-2 8x22B,Standard,No,No,No,No,$0.6200,$0.6200,—,—,—,65535
+openai/gpt-4-turbo,OpenAI: GPT-4 Turbo,Standard,No,No,No,No,$10.0000,$30.0000,—,—,—,128000
+anthropic/claude-3-haiku,Anthropic: Claude 3 Haiku,Standard + Cached,No,No,Sí,No,$0.2500,$1.2500,—,$0.0300,$0.3000,200000
+mistralai/mistral-large,Mistral Large,Standard + Cached,No,No,Sí,No,$2.0000,$6.0000,—,$0.2000,—,128000
+openai/gpt-4-turbo-preview,OpenAI: GPT-4 Turbo Preview,Standard,No,No,No,No,$10.0000,$30.0000,—,—,—,128000
+openai/gpt-3.5-turbo-0613,OpenAI: GPT-3.5 Turbo (older v0613),Standard,No,No,No,No,$1.0000,$2.0000,—,—,—,4095
+mistralai/mixtral-8x7b-instruct,Mistral: Mixtral 8x7B Instruct,Standard,No,No,No,No,$0.5400,$0.5400,—,—,—,32768
+alpindale/goliath-120b,Goliath 120B,Standard,No,No,No,No,$3.7500,$7.5000,—,—,—,6144
+openrouter/auto,Auto Router,Reasoning,No,Sí,No,No,—,—,—,—,—,2000000
+openai/gpt-4-1106-preview,OpenAI: GPT-4 Turbo (older v1106),Standard,No,No,No,No,$10.0000,$30.0000,—,—,—,128000
+openai/gpt-3.5-turbo-instruct,OpenAI: GPT-3.5 Turbo Instruct,Standard,No,No,No,No,$1.5000,$2.0000,—,—,—,4095
+mistralai/mistral-7b-instruct-v0.1,Mistral: Mistral 7B Instruct v0.1,Standard,No,No,No,No,$0.1100,$0.1900,—,—,—,2824
+openai/gpt-3.5-turbo-16k,OpenAI: GPT-3.5 Turbo 16k,Standard,No,No,No,No,$3.0000,$4.0000,—,—,—,16385
+mancer/weaver,Mancer: Weaver (alpha),Standard,No,No,No,No,$0.7500,$1.0000,—,—,—,8000
+undi95/remm-slerp-l2-13b,ReMM SLERP 13B,Standard,No,No,No,No,$0.4500,$0.6500,—,—,—,6144
+gryphe/mythomax-l2-13b,MythoMax 13B,Standard,No,No,No,No,$0.0600,$0.0600,—,—,—,4096
+openai/gpt-4-0314,OpenAI: GPT-4 (older v0314),Standard,No,No,No,No,$30.0000,$60.0000,—,—,—,8191
+openai/gpt-4,OpenAI: GPT-4,Standard,No,No,No,No,$30.0000,$60.0000,—,—,—,8191
+openai/gpt-3.5-turbo,OpenAI: GPT-3.5 Turbo,Standard,No,No,No,No,$0.5000,$1.5000,—,—,—,16385

@@ -1,0 +1,9 @@
+# secrets
+.Secrets
+
+
+.dlt/secrets.toml
+*.pyc
+.venv/
+
+2.0.0
