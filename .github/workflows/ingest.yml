@@ -1,0 +1,45 @@
+name: Ingesta archivos CSV a Snowflake
+
+on:
+  workflow_dispatch: {}   # lo lanzas a mano desde Actions
+  push:
+    branches:
+      - main
+    paths:
+      - "1_data/**"
+      - "3_ingest/**"
+      - "requirements.txt"
+      - ".github/workflows/ingest.yml"
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+
+    env:
+      DLT_SNOWFLAKE__CREDENTIALS__USERNAME:  ${{ secrets.SNOWFLAKE_USER }}
+      DLT_SNOWFLAKE__CREDENTIALS__PASSWORD:  ${{ secrets.SNOWFLAKE_PASSWORD }}
+      DLT_SNOWFLAKE__CREDENTIALS__DATABASE:  ${{ secrets.SNOWFLAKE_DATABASE }}
+      DLT_SNOWFLAKE__CREDENTIALS__HOST:      ${{ secrets.SNOWFLAKE_ACCOUNT_HOST }}
+      DLT_SNOWFLAKE__CREDENTIALS__WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+      DLT_SNOWFLAKE__CREDENTIALS__ROLE:      ${{ secrets.SNOWFLAKE_ROLE }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run dlt ingestion
+        run: |
+          source .venv/bin/activate
+          python 3_ingest/ingest_csv_to_snowflake.py
