@@ -1,0 +1,49 @@
+
+version: 2
+
+sources:
+  - name: raw_llm
+    description: "Tablas RAW cargadas con dlt desde los CSV de LLMs y proveedores."
+    database: MODELOS
+    schema: RAW
+
+    tables:
+      - name: benchmark_scores
+        description: "Scores de benchmarks por modelo."
+      - name: benchmarks
+        description: "Metadatos de cada benchmark."
+      - name: llm_complete_dataset
+        description: "Dataset combinado de modelos LLM."
+      - name: models
+        description: "Catálogo de modelos base."
+      - name: pricing
+        description: "Precios de los modelos por unidad de uso."
+      - name: safety_alignment
+        description: "Métricas de seguridad y alineamiento."
+      - name: ai_models_performance
+        description: "Rendimiento de modelos (latencia, throughput, etc.)."
+      - name: llm_model_comparison_2026
+        description: "Comparativa de modelos LLM para 2026."
+
+      - name: aidatahub_llm_models
+        description: "Modelos desde AIDataHub."
+      - name: openrouter_models
+        description: "Modelos desde OpenRouter."
+      - name: nuevo_openrouter_modelos
+        description: "Modelos OpenRouter enriquecidos."
+      - name: pricepertoken
+        description: "Precio por token de modelos iniciales."
+
+      - name: proveedores
+        description: "Proveedores de infraestructura cloud/HPC."
+      - name: proveedores_servidor
+        description: "Planes concretos de servidores GPU por proveedor."
+      - name: servidores
+        description: "Especificaciones de GPU/servidor."
+
+      - name: seed_moneda
+        description: "Tabla semilla de monedas."
+      - name: seed_planes
+        description: "Tabla semilla de planes de precio."
+      - name: seed_region
+        description: "Tabla semilla de regiones."

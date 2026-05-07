@@ -7,18 +7,17 @@
     Try changing "table" to "view" below
 */
 
-{{ config(materialized='table') }}
-
-with source_data as (
-
-    select 1 as id
-    union all
-    select null as id
-
+with src as (
+    select *
+    from {{ source('raw_llm', 'benchmark_scores') }}
 )
 
-select *
-from source_data
+select
+    cast(model_id as varchar)       as model_id,
+    cast(benchmark_name as varchar) as benchmark_name,
+    cast(score as float)            as score,
+    cast(fecha as timestamp)        as fecha
+from src
 
 /*
     Uncomment the line below to remove records with null `id` values
