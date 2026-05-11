@@ -4,12 +4,12 @@ on:
   workflow_dispatch: {}   # lo lanzas a mano desde Actions
   push:
     branches:
-      - main
+      - PRE
     paths:
       - "1_data/**"
       - "3_ingest/**"
       - "requirements.txt"
-      - ".github/workflows/ingest.yml"
+      - ".github/workflows/ingest_pre.yml"
 
 jobs:
   ingest:
@@ -17,12 +17,12 @@ jobs:
 
     env:
       env:
-      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__USERNAME:  ${{ secrets.SNOWFLAKE_USER }}
-      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__PASSWORD:  ${{ secrets.SNOWFLAKE_PASSWORD }}
-      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__DATABASE:  ${{ secrets.SNOWFLAKE_DATABASE }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__USERNAME:  ${{ secrets.SNOWFLAKE_USER_PRE }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__PASSWORD:  ${{ secrets.SNOWFLAKE_PASSWORD_PRE }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__DATABASE:  ${{ secrets.SNOWFLAKE_DATABASE_PRE }}
       LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__HOST:      ${{ secrets.SNOWFLAKE_ACCOUNT_HOST }}
       LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
-      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__ROLE:      ${{ secrets.SNOWFLAKE_ROLE }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__ROLE:      ${{ secrets.SNOWFLAKE_ROLE_PRE }}
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
