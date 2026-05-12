@@ -26,7 +26,7 @@ def main():
         "ai_models_performance":load_csv("nuevo_ai_models_performance.csv"),        
         "llm_model_comparison_2026":load_csv("nuevo_llm-model-comparison-2026.csv"),
         
-        "huggingface_models":load_csv("new_nuevo_hf_reliable_data_all_new.csv"),
+        "huggingface":load_csv("new_nuevo_hf_reliable_data_all_new.csv"),
         "openrouter_models":load_csv("initial_openrouter_models.csv"),
         "nuevo_openrouter_modelos":load_csv("initial_nuevo_openrouter_modelos.csv"),
 
