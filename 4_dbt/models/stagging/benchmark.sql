@@ -3,7 +3,7 @@
 
 with src as (
     select *
-    from {{ source('raw_llm', 'benchmark') }}
+    from {{ source('bronze_raw','benchmarks') }}
 )
 
 select
