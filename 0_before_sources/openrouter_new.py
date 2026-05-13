@@ -38,6 +38,8 @@ for m in data:
     completion  = float(pricing.get("completion", 0) or 0)
     reasoning   = float(pricing.get("internal_reasoning", 0) or 0)
     cache_read  = float(pricing.get("input_cache_read", 0) or 0)
+    
+        
 
     # Detección de tipo de plan
     is_free      = prompt == 0 and completion == 0
