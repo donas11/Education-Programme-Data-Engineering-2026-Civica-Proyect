@@ -39,12 +39,13 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   +transient: false
   Civica_project:
-    base:
-      +schema: "BRONZE"
-      +materialized: "view"
-    staging:
+    
+    stagging:
       +schema: "SILVER"
       +materialized: "view"
-    masrts:
-      +schema: "GOLD"
-      +materialized: "table"
+    # marts:
+    #   +schema: "GOLD"
+    #   +materialized: "table"
+# base:
+#       +schema: "BRONZE"
+#       +materialized: "view"
