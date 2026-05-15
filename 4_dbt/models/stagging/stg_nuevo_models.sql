@@ -9,4 +9,4 @@ normalized_model as (
   from source
 )
 
-select * from normalized_model;
+select * from normalized_model
