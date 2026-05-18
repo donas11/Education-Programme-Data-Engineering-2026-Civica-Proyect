@@ -12,8 +12,10 @@ normalized as (
     
      {{ remove_parentheses_content(
       extract_canonical_model_name('name', 2)
-       ) }} as model_name_standard   
-    
+       ) }} as model_name_standard,
+       {{ model_orden_nombre('name')}} as model_name_order
+        
+
   from source
 
 )

@@ -12,7 +12,9 @@ normalized as (
        
     {{ remove_parentheses_content(
       clean_model_name('Model')
-       ) }} as model_name_standard  
+       ) }} as model_name_standard,
+
+    {{ model_orden_nombre('Model')}} as model_name_order
 
 
 
