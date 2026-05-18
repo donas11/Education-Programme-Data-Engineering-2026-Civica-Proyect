@@ -49,43 +49,4 @@ models:
         description: "Descripción para saturated"
 
 
-  - name: stg_nuevo_models
-    description: "Generado a partir de Nuevo_models.csv"
-    columns:
-      - name: "model_id"
-        description: "Descripción para model_id"
-        tests:
-          - not_null
-          - unique
-      - name: "model_name"
-        description: "Descripción para model_name"
-        tests:
-          - not_null
-          - unique
-      - name: "provider"
-        description: "Descripción para provider"
-        tests:
-          - not_null
-      - name: "model_family"
-        description: "Descripción para model_family"
-        tests:
-          - not_null
-      - name: "release_date"
-        description: "Descripción para release_date"
-      - name: "parameters_billion"
-        description: "Descripción para parameters_billion"
-      - name: "active_parameters_billion"
-        description: "Descripción para active_parameters_billion"
-      - name: "architecture"
-        description: "Descripción para architecture"
-      - name: "context_window_k"
-        description: "Descripción para context_window_k"
-      - name: "license"
-        description: "Descripción para license"
-      - name: "open_weight"
-        description: "Descripción para open_weight"
-      - name: "modality"
-        description: "Descripción para modality"
-      - name: "training_data_cutoff"
-        description: "Descripción para training_data_cutoff"        
-      
+  

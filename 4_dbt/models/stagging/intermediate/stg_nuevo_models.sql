@@ -1,11 +1,14 @@
 with source as (
   select * from {{ source('bronze_raw', 'models') }}
+  
 ),
 
 normalized_model as (
   select
-    *,
-    {{ normalize_model_name('model_id', 'model_name') }}
+    model_id as model_id_raw_name,
+    {{ clean_model_name('model_id') }} as model_name_standard
+ 
+  
   from source
 )
 

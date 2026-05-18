@@ -17,3 +17,9 @@
     regexp_substr({{ base_expr }}, '\\(([^)]*)\\)') as extra_parenthesis
 
 {% endmacro %}
+
+   -- {{ extract_canonical_model_name(model_id, 1) }} as canonical_provider_of_model,
+    -- {{ extract_canonical_model_name(model_id, 2) }} as canonical_model_name_of_model,
+    -- {{ extract_canonical_model_name(model_name, 1) }} as canonical_provider_of_name,
+    -- {{ extract_canonical_model_name(model_name, 2) }} as canonical_model_nameof_name,
+    -- regexp_substr({{ model_id }}, '\\(([^)]*)\\)') as extra_parenthesis

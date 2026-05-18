@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: stg_nuevo_models
+    description: "Generado a partir de Nuevo_models.csv"
+    columns:
+      - name: normalized_model_name
+        description: "Created normalized model name"
+      - name: "model_id"
+        description: "Descripción para model_id"
+        tests:
+          - not_null
+          - unique
+      - name: "model_name"
+        description: "Descripción para model_name"
+        tests:
+          - not_null
+          - unique
+      - name: "provider"
+        description: "Descripción para provider"
+        tests:
+          - not_null
+      - name: "release_date"
+        description: "Descripción para release_date"
+      - name: "extra_parenthesis"
+        description: "información extra que esta entre parentesis"
+
+  - name: stg_stg_nuevo_openroute
+    description: "Generado a partir de initial_openrouter_models.csv"
+    columns:
+    - name: model_raw_name
+      description: "Identificador del modelo tal como viene en OpenRouter (columna id)"
+      tests:
+        - not_null
+    - name: standart_model_name
+      description: "Nombre estandar del modelo (sin proveedor, guiones ni separadores)"
