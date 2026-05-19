@@ -6,16 +6,16 @@ with source as (
 ),
 
 normalized as (
-
-  select
-    name as model_id_raw_name,
-    
-     {{ remove_parentheses_content(
-      extract_canonical_model_name('name', 2)
-       ) }} as model_name_standard,
-       {{ model_orden_nombre('name')}} as model_name_order
+  select 
+    {{ dbt_utils.generate_surrogate_key(['slug','name'])}} as id_model,
+    {{extract_canonical_model_name('name',2)}} as nombre_comercial,
+    {{extract_canonical_model_name('name',1)}}       as provider,
+    slug as familia_nombre,
+    null::int        as context_window,
+    multimodal as multimodal,
+    open_source as opensource,
+    created_At as fecha_lanzamiento 
         
-
   from source
 
 )

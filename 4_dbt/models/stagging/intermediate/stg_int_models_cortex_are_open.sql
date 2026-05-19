@@ -12,4 +12,4 @@ select
     )
   )) as is_opensource
 
-from {{ ref('stg_model_union') }}  
+from {{ ref('stg_model_union_ids') }}  

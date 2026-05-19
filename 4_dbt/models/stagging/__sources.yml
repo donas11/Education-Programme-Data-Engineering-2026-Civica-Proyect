@@ -31,6 +31,8 @@ sources:
         description: "Modelos desde OpenRouter."
       - name: nuevo_openrouter_modelos
         description: "Modelos OpenRouter enriquecidos."
+      - name: new_nuevo_openrouter_modelos
+        description: "Modelos OpenRouter enriquecidos."
      
 
       - name: proveedores

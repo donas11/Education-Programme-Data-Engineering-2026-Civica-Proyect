@@ -1,5 +1,4 @@
 {{ config(
-  schema = 'SILVER',
   materialized = 'view'
 ) }}
 
@@ -17,4 +16,4 @@ MONEDA AS(
   FROM src
 )
 
-SELECT * FROM moneda;
+SELECT * FROM moneda
