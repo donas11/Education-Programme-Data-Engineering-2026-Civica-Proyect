@@ -1,9 +1,9 @@
 {{ config(materialized='view') }}  
 
-fusion_familia AS (
+with fusion_familia AS (
   SELECT DISTINCT
     familia_nombre
-  FROM  from {{ ref('stg_modelo_union') }}
+  FROM {{ ref('stg_modelo_union') }}
 ),
 
 -- Generar id_familia hash

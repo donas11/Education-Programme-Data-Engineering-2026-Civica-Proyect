@@ -25,7 +25,7 @@ models:
       - name: "extra_parenthesis"
         description: "información extra que esta entre parentesis"
 
-  - name: stg_stg_nuevo_openroute
+  - name: stg_nuevo_openroute
     description: "Generado a partir de initial_openrouter_models.csv"
     columns:
     - name: model_raw_name
