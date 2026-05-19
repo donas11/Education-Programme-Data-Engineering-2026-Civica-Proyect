@@ -12,7 +12,7 @@ modelo AS (
     opensource,
     fecha_lanzamiento    
   FROM  {{ ref('stg_model_union') }}  md
-  left join {{ ref('proveedor') }} p
+  left join {{ ref('stg_proveedor') }} p
     on p.provider = md.provider
   left join {{ ref('familia') }} f
     on f.familia_nombre = md.familia_nombre

@@ -20,12 +20,11 @@ oprtn as (
 	ES_REASONING,
 	ES_CACHED,
 	ES_BATCH,    
-    {{clean_price('INPUT_1_M')}}
-    {{clean_price('INPUT_1_M')}} 
-	{{clean_price('OUTPUT_1_M')}} 
-	{{clean_price('CACHE_READ_1_M')}} 
-	{{clean_price('CACHE_WRITE_1_M')}} 
-	{{clean_price('REASONING_1_M')}}
+    {{clean_price('INPUT_1_M')}} AS INPUT_1_M, 
+	{{clean_price('OUTPUT_1_M')}} as OUTPUT_1_M,, 
+	{{clean_price('CACHE_READ_1_M')}} as CACHE_READ_1_M, 
+	{{clean_price('CACHE_WRITE_1_M')}} as CACHE_WRITE_1_M, 
+	{{clean_price('REASONING_1_M')}} as REASONING_1_M,
 
    
   from {{ source('bronze_raw', 'new_nuevo_openrouter_modelos') }} 
