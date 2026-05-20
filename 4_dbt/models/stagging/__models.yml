@@ -7,12 +7,12 @@ models:
     columns:
       - name: id_area_competencia
         description: "Clave subrogada única generada mediante el hash del nombre del área de competencia."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: area_competencia
         description: "Nombre de la categoría del benchmark (ej. MMLU, GSM8K, etc.)."
-        tests:
+        data_tests:
           - not_null
 
   # 2. benchmark.sql
@@ -21,7 +21,7 @@ models:
     columns:
       - name: id_benchmark
         description: "Clave primaria subrogada única del benchmark."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: nombre_corto
@@ -30,7 +30,7 @@ models:
         description: "Concatenación del nombre completo original y la descripción detallada del benchmark."
       - name: id_area_competencia
         description: "Clave foránea que conecta con la dimensión de áreas de competencia."
-        tests:
+        data_tests:
           - relationships:
             arguments:
               to: ref('area_competencia')
@@ -42,7 +42,7 @@ models:
     columns:
       - name: id_familia
         description: "Clave subrogada única calculada por hash a partir del nombre de la familia."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: nombre
@@ -54,21 +54,21 @@ models:
     columns:
       - name: id_modelo
         description: "Clave primaria del modelo de IA (mapeada originalmente desde id_model)."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: nombre_comercial
         description: "Nombre comercial estandarizado definitivo del modelo."
       - name: id_proveedor
         description: "Clave foránea que mapea al proveedor del modelo."
-        tests:
+        data_tests:
           - - relationships:
               arguments:
               to: ref('proveedor')
               field: id_proveedor
       - name: id_familia
         description: "Clave foránea que referencia a la familia tecnológica."
-        tests:
+        data_tests:
           - - relationships:
               arguments:
               to: ref('familia')
@@ -88,7 +88,7 @@ models:
     columns:
       - name: id_moneda
         description: "Clave primaria subrogada calculada a partir del nombre de la moneda."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: moneda
@@ -104,7 +104,7 @@ models:
     columns:
       - name: id_plan_precio
         description: "Clave subrogada combinada única generada mediante el hash de id_modelo, id_region, tipo_plan y unidad_facturacion."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: tipo_plan
@@ -115,7 +115,7 @@ models:
         description: "Clave foránea que asocia el plan a un modelo específico de IA."
       - name: id_region
         description: "Clave foránea que asocia la disponibilidad regional geográfica del plan."
-        tests:
+        data_tests:
           - - relationships:
               arguments:
               to: ref('region')
@@ -127,7 +127,7 @@ models:
     columns:
       - name: id_proveedor
         description: "Clave primaria subrogada y única para la organización proveedora."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: proveedor
@@ -141,7 +141,7 @@ models:
     columns:
       - name: id_region
         description: "Clave primaria única generada mediante hash a partir del nombre de la región."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: region
@@ -153,19 +153,19 @@ models:
     columns:
       - name: id_test
         description: "Clave primaria subrogada única para el registro de la evaluación (hash de benchmark_id, model_id y fecha)."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: id_benchmark
         description: "Clave foránea que referencia al benchmark ejecutado en la prueba."
-        tests:
+        data_tests:
           - - relationships:
               arguments:
               to: ref('benchmark')
               field: id_benchmark
       - name: id_model
         description: "Clave foránea que asocia el resultado de la prueba al modelo analizado."
-        tests:
+        data_tests:
           - - relationships:
               arguments:
               to: ref('stg_model_union_ids')
