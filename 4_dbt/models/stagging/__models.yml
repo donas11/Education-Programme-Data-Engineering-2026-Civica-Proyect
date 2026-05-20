@@ -31,7 +31,8 @@ models:
       - name: id_area_competencia
         description: "Clave foránea que conecta con la dimensión de áreas de competencia."
         tests:
-          - relationships:
+          - - relationships:
+              arguments:
               to: ref('area_competencia')
               field: id_area_competencia
 
@@ -61,13 +62,15 @@ models:
       - name: id_proveedor
         description: "Clave foránea que mapea al proveedor del modelo."
         tests:
-          - relationships:
+          - - relationships:
+              arguments:
               to: ref('proveedor')
               field: id_proveedor
       - name: id_familia
         description: "Clave foránea que referencia a la familia tecnológica."
         tests:
-          - relationships:
+          - - relationships:
+              arguments:
               to: ref('familia')
               field: id_familia
       - name: context_window
@@ -113,7 +116,8 @@ models:
       - name: id_region
         description: "Clave foránea que asocia la disponibilidad regional geográfica del plan."
         tests:
-          - relationships:
+          - - relationships:
+              arguments:
               to: ref('region')
               field: id_region
 
@@ -155,13 +159,15 @@ models:
       - name: id_benchmark
         description: "Clave foránea que referencia al benchmark ejecutado en la prueba."
         tests:
-          - relationships:
+          - - relationships:
+              arguments:
               to: ref('benchmark')
               field: id_benchmark
       - name: id_model
         description: "Clave foránea que asocia el resultado de la prueba al modelo analizado."
         tests:
-          - relationships:
+          - - relationships:
+              arguments:
               to: ref('stg_model_union_ids')
               field: id_model
       - name: benchmark_id
