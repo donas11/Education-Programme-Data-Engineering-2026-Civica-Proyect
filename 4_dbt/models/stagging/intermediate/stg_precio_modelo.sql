@@ -51,7 +51,7 @@ joined AS (
   SELECT
     {{ dbt_utils.generate_surrogate_key(['id_modelo','fecha']) }} AS id_precio_modelo,
     m.id_modelo,
-    pp.id_plan_precio    AS id_plan_precio
+    pp.id_plan_precio    AS id_plan_precio,
     
     case tipo_plan
         when 'Free'      then 0

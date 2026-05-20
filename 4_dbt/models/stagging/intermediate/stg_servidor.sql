@@ -68,4 +68,4 @@ normalized as (
     on lower(trim(prov.proveedor)) = lower(trim(s.Proveedor))
 )
 
-select * from normalized
+select distinct * from normalized

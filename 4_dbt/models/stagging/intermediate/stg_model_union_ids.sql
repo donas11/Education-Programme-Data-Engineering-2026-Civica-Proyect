@@ -76,7 +76,7 @@ conexion_ids as (
 ),
 
 model_id_created as( 
-select 
+select distinct
 {{ dbt_utils.generate_surrogate_key(['model_name_order']) }} AS id_model,
   model_name_order 
 from conexion_ids

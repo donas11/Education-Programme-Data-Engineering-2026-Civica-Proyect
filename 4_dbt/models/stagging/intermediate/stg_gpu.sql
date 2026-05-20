@@ -5,7 +5,7 @@ with source as (
 ),
 
 normalized as (
-  select
+  select distinct
     {{ dbt_utils.generate_surrogate_key(['Modelo_GPU']) }} as id_gpu,
     Modelo_GPU                                             as nombre_comercial,
     Arquitectura                                           as arquitectura,

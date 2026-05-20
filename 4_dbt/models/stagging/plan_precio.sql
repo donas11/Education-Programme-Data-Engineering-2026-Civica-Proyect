@@ -1,4 +1,4 @@
-  SELECT
+  SELECT distinct
     {{ dbt_utils.generate_surrogate_key([
       'id_modelo',
       'id_region',

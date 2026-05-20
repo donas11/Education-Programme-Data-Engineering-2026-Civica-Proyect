@@ -13,12 +13,12 @@ with src as (
 )
 
 SELECT
-  {{ dbt_utils.generate_surrogate_key(['benchmark_id','model_id','fecha']) }} AS id_test,
+  {{ dbt_utils.generate_surrogate_key(['benchmark_id','model_id','puntuacion','fecha']) }} AS id_test,
   {{ dbt_utils.generate_surrogate_key(['benchmark_id']) }} AS id_benchmark,
    mid.id_model,   	
   benchmark_id,	
-  score	as puntuacion,
-  evaluation_date	 as fecha
+  puntuacion,
+  fecha
 FROM src s
 LEFT JOIN {{ref('stg_model_union_ids')}} mid
     ON mid.model_name_order=s.model_name_order
