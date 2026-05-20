@@ -31,8 +31,8 @@ models:
       - name: id_area_competencia
         description: "Clave foránea que conecta con la dimensión de áreas de competencia."
         tests:
-          - - relationships:
-              arguments:
+          - relationships:
+            arguments:
               to: ref('area_competencia')
               field: id_area_competencia
 
