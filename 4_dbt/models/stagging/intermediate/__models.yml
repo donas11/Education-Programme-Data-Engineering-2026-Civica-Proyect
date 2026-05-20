@@ -18,7 +18,7 @@ models:
     columns:
       - name: id_gpu
         description: "Clave subrogada única generada para cada modelo de GPU."
-        data_tests:
+        tests:
           - unique
           - not_null
       - name: nombre_comercial
@@ -40,7 +40,7 @@ models:
     columns:
       - name: id_model
         description: "Clave subrogada única calculada a partir del slug y el nombre del modelo."
-        data_tests:
+        tests:
           - unique
           - not_null
       - name: nombre_comercial
@@ -64,7 +64,7 @@ models:
     columns:
       - name: proveedor
         description: "Nombre único del proveedor de servicios o servidores."
-        data_tests:
+        tests:
           - unique
           - not_null
       - name: tipo_proveedor
@@ -109,7 +109,7 @@ models:
     columns:
       - name: id_model
         description: "Identificador único de anclaje para el modelo de IA."
-        data_tests:
+        tests:
           - unique
           - not_null
       - name: nombre_comercial
@@ -163,7 +163,7 @@ models:
     columns:
       - name: id_model
         description: "Clave subrogada única generada mediante el hash del nombre de ordenamiento."
-        data_tests:
+        tests:
           - unique
           - not_null
       - name: model_id_raw_name
@@ -214,11 +214,11 @@ models:
     columns:
       - name: id_modelo
         description: "Clave única del modelo de IA (vinculada a stg_model_union_ids)."
-        data_tests:
+        tests:
           - not_null
       - name: tipo_plan
         description: "Tipo de plan comercial asignado al modelo según sus capacidades de procesamiento."
-        data_tests:
+        tests:
           - not_null
           - accepted_values:
               arguments:
@@ -234,12 +234,12 @@ models:
     columns:
       - name: id_precio_modelo
         description: "Clave subrogada única del registro de precio, calculada mediante el hash de la combinación del ID del modelo y su fecha de vigencia."
-        data_tests:
+        tests:
           - unique
           - not_null
       - name: id_modelo
         description: "Clave foránea que identifica al modelo de IA asociado al precio."
-        data_tests:
+        tests:
           - not_null
       - name: id_plan_precio
         description: "Identificador único de la combinación y estructura del plan tarifario."
@@ -258,7 +258,7 @@ models:
     columns:
       - name: id_proveedor
         description: "Clave única del proveedor de API generada por hashing."
-        data_tests:
+        tests:
           - unique
           - not_null
       - name: proveedor
@@ -274,7 +274,7 @@ models:
     columns:
       - name: id_servidor
         description: "Clave subrogada única que identifica de forma unívoca a la combinación Servidor-Proveedor."
-        data_tests:
+        tests:
           - unique
           - not_null
       - name: nombre
@@ -297,7 +297,7 @@ models:
         description: "Costo financiero asociado a la tasa de transferencia o salida de datos por Gigabyte."
       - name: moneda
         description: "Divisa identificada para las tarifas del servidor físico ('USD' o 'EUR')."
-        data_tests:
+        tests:
           - accepted_values:
             arguments:
               values: ['USD', 'EUR']
