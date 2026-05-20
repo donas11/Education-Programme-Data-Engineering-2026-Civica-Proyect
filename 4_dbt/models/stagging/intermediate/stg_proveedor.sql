@@ -12,7 +12,7 @@ proveedor AS (
   SELECT
     {{ dbt_utils.generate_surrogate_key(['provider']) }} AS id_proveedor,
     provider AS proveedor,
-    "API"    AS tipo_proveedor
+    'API'    AS tipo_proveedor
   FROM fusion_prooveedor
 )
 

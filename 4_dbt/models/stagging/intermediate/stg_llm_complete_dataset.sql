@@ -1,3 +1,4 @@
+{{ config(materialized='view') }}
 with source as (
   select * from {{ source('bronze_raw', 'llm_complete_dataset') }}
   

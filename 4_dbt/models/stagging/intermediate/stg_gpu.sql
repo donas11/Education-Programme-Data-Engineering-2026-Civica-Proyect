@@ -1,14 +1,19 @@
-SELECT
-    {{ dbt_utils.generate_surrogate_key(['nombre']) }} AS id_gpu,
-    Nombre_comercial
-    arquitectura
-    VRAM_GB
-    ancho_banda_gbs
-    tdp_w
-    fp16_tflops
-    
-    provider AS proveedor,
-    "API"    AS tipo_proveedor
-  
+{{ config(materialized='view') }}
 
-  from {{source('bronze_raw', 'benchmark_scores') }}
+with source as (
+  select * from {{ source('bronze_raw', 'servidores') }}
+),
+
+normalized as (
+  select
+    {{ dbt_utils.generate_surrogate_key(['Modelo_GPU']) }} as id_gpu,
+    Modelo_GPU                                             as nombre_comercial,
+    Arquitectura                                           as arquitectura,
+    VRAM_GB                                                as vram_gb,
+    Ancho_Banda_G_Bs                                        as ancho_banda_gbs,
+    TDP_W                                                  as tdp_w,
+    FP16_TFLOPS                                            as fp16_tflops
+  from source
+)
+
+select * from normalized

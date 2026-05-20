@@ -1,7 +1,4 @@
- {{ config(
-  schema = 'SILVER',
-  materialized = 'table'
-) }}
+{{ config(materialized='view') }}
 
 
 with ids as (
@@ -21,10 +18,10 @@ oprtn as (
 	ES_CACHED,
 	ES_BATCH,    
     {{clean_price('INPUT_1_M')}} AS INPUT_1_M, 
-	{{clean_price('OUTPUT_1_M')}} as OUTPUT_1_M,, 
+	{{clean_price('OUTPUT_1_M')}} as OUTPUT_1_M, 
 	{{clean_price('CACHE_READ_1_M')}} as CACHE_READ_1_M, 
 	{{clean_price('CACHE_WRITE_1_M')}} as CACHE_WRITE_1_M, 
-	{{clean_price('REASONING_1_M')}} as REASONING_1_M,
+	{{clean_price('REASONING_1_M')}} as REASONING_1_M
 
    
   from {{ source('bronze_raw', 'new_nuevo_openrouter_modelos') }} 
@@ -52,7 +49,7 @@ select
 
 joined AS (
   SELECT
-    {{ dbt_utils.generate_surrogate_key(['d.provider','d.model_name']) }} AS id_precio_modelo,
+    {{ dbt_utils.generate_surrogate_key(['id_modelo','fecha']) }} AS id_precio_modelo,
     m.id_modelo,
     pp.id_plan_precio    AS id_plan_precio
     
@@ -78,8 +75,6 @@ joined AS (
     
 
   FROM Modelo_precios m
-  LEFT JOIN 
-    ON m.nombre_comercial = d.model_name
   LEFT JOIN {{ ref('moneda') }} mon
     ON mon.nombre = '$'   -- moneda por defecto
   LEFT JOIN {{ ref('plan_precio') }} pp

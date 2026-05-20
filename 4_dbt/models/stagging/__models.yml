@@ -1,52 +1,172 @@
 version: 2
 
 models:
-  - name: benchmark_score
-    description: "Modelo generado a partir de Nuevo_benchmark_scores.csv"
+  # 1. area_competencia.sql
+  - name: area_competencia
+    description: "Tabla de dimensión que consolida de forma única las categorías o áreas de competencia extraídas de las métricas de benchmarks."
     columns:
-      - name: "model_id"
-        description: "Descripción para model_id"
+      - name: id_area_competencia
+        description: "Clave subrogada única generada mediante el hash del nombre del área de competencia."
+        tests:
+          - unique
+          - not_null
+      - name: area_competencia
+        description: "Nombre de la categoría del benchmark (ej. MMLU, GSM8K, etc.)."
         tests:
           - not_null
-          - unique
-      - name: "benchmark_id"
-        description: "Descripción para benchmark_id"
-        tests:
-          - not_null
-          - unique
-      - name: "score"
-        description: "Descripción para score"
-      - name: "evaluation_date"
-        description: "Descripción para evaluation_date"
-      - name: "notes"
-        description: "Descripción para notes"
 
+  # 2. benchmark.sql
   - name: benchmark
-    description: "Modelo generado a partir de Nuevo_benchmarks.csv"
+    description: "Dimensión maestra de benchmarks analíticos. Mapea la metadata descriptiva de las pruebas y las asocia a su respectiva área de competencia."
     columns:
-      - name: "benchmark_id"
-        description: "Descripción para benchmark_id"
+      - name: id_benchmark
+        description: "Clave primaria subrogada única del benchmark."
         tests:
-          - not_null
           - unique
-      - name: "benchmark_name"
-        description: "Descripción para benchmark_name"
-        tests:
           - not_null
-      - name: "full_name"
-        description: "Descripción para full_name"
+      - name: nombre_corto
+        description: "Nombre corto identificador del benchmark."
+      - name: descripcion
+        description: "Concatenación del nombre completo original y la descripción detallada del benchmark."
+      - name: id_area_competencia
+        description: "Clave foránea que conecta con la dimensión de áreas de competencia."
         tests:
+          - relationships:
+              to: ref('area_competencia')
+              field: id_area_competencia
+
+  # 3. familia.sql
+  - name: familia
+    description: "Dimensión de agrupación tecnológica de modelos. Consolida las agrupaciones base (ej. GPT-4, Claude 3, Llama 3) reduciendo duplicidad."
+    columns:
+      - name: id_familia
+        description: "Clave subrogada única calculada por hash a partir del nombre de la familia."
+        tests:
+          - unique
           - not_null
-      - name: "category"
-        description: "Descripción para category"
-      - name: "metric"
-        description: "Descripción para metric"
-      - name: "num_tasks"
-        description: "Descripción para num_tasks"
-      - name: "description"
-        description: "Descripción para description"
-      - name: "saturated"
-        description: "Descripción para saturated"
+      - name: nombre
+        description: "Nombre descriptivo de la familia de modelos."
 
+  # 4. modelo.sql
+  - name: modelo
+    description: "Dimensión core de Modelos de IA. Consolida las especificaciones unificadas de contexto, multimodalidad y licenciamiento cruzando claves con proveedores y familias tecnológicas."
+    columns:
+      - name: id_modelo
+        description: "Clave primaria del modelo de IA (mapeada originalmente desde id_model)."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_comercial
+        description: "Nombre comercial estandarizado definitivo del modelo."
+      - name: id_proveedor
+        description: "Clave foránea que mapea al proveedor del modelo."
+        tests:
+          - relationships:
+              to: ref('proveedor')
+              field: id_proveedor
+      - name: id_familia
+        description: "Clave foránea que referencia a la familia tecnológica."
+        tests:
+          - relationships:
+              to: ref('familia')
+              field: id_familia
+      - name: context_window
+        description: "Tamaño máximo en tokens de la ventana de contexto del modelo."
+      - name: multimodal
+        description: "Flag booleano que determina capacidades nativas multimedia."
+      - name: opensource
+        description: "Flag booleano de código abierto u open weights."
+      - name: fecha_lanzamiento
+        description: "Fecha oficial de publicación del modelo."
 
-  
+  # 5. moneda.sql
+  - name: moneda
+    description: "Dimensión catálogo de monedas de facturación generada a partir de los datos maestros del seed de monedas."
+    columns:
+      - name: id_moneda
+        description: "Clave primaria subrogada calculada a partir del nombre de la moneda."
+        tests:
+          - unique
+          - not_null
+      - name: moneda
+        description: "Nombre completo de la divisa (ej. Dólar Estadounidense, Euro)."
+      - name: simbolo
+        description: "Símbolo representativo de la moneda (ej. $, €)."
+      - name: abreviatura
+        description: "Código o sigla de identificación financiera de la moneda (ej. USD, EUR)."
+
+  # 6. plan_precio.sql
+  - name: plan_precio
+    description: "Tabla puente/dimensión que unifica y mapea las relaciones entre modelos, regiones geográficas, tipos de plan y sus métricas de cobro."
+    columns:
+      - name: id_plan_precio
+        description: "Clave subrogada combinada única generada mediante el hash de id_modelo, id_region, tipo_plan y unidad_facturacion."
+        tests:
+          - unique
+          - not_null
+      - name: tipo_plan
+        description: "Identificador del plan operativo asociado ('Free', 'Standard', etc.)."
+      - name: unidad_facturacion
+        description: "Métrica de cobro asignada (fijada como 'token por millon')."
+      - name: id_modelo
+        description: "Clave foránea que asocia el plan a un modelo específico de IA."
+      - name: id_region
+        description: "Clave foránea que asocia la disponibilidad regional geográfica del plan."
+        tests:
+          - relationships:
+              to: ref('region')
+              field: id_region
+
+  # 7. proveedor.sql
+  - name: proveedor
+    description: "Dimensión consolidada de proveedores de IA. Resuelve mediante un FULL OUTER JOIN los cruces de entidades que actúan tanto a nivel API como proveedores de Infraestructura física (Servidores), tipificándolos apropiadamente en ('API', 'INSTANCIA', 'BOTH')."
+    columns:
+      - name: id_proveedor
+        description: "Clave primaria subrogada y única para la organización proveedora."
+        tests:
+          - unique
+          - not_null
+      - name: proveedor
+        description: "Nombre consolidado y limpio de la organización proveedora."
+      - name: tipo_proveedor
+        description: "Clasificación de capacidades comerciales resuelta por lógica de negocio ('API', 'INSTANCIA' o 'BOTH')."
+
+  # 8. region.sql
+  - name: region
+    description: "Dimensión catálogo geográfica de distribución operativa leída desde el seed de regiones."
+    columns:
+      - name: id_region
+        description: "Clave primaria única generada mediante hash a partir del nombre de la región."
+        tests:
+          - unique
+          - not_null
+      - name: region
+        description: "Nombre descriptivo de la zona o cobertura (ej. Global, US-East, Europe)."
+
+  # 9. test_benchmark.sql
+  - name: test_benchmark
+    description: "Tabla de hechos (Fact Table) que registra los históricos de evaluaciones, métricas de desempeño (scores) y fechas de ejecución de los modelos de IA frente a los distintos tipos de benchmarks."
+    columns:
+      - name: id_test
+        description: "Clave primaria subrogada única para el registro de la evaluación (hash de benchmark_id, model_id y fecha)."
+        tests:
+          - unique
+          - not_null
+      - name: id_benchmark
+        description: "Clave foránea que referencia al benchmark ejecutado en la prueba."
+        tests:
+          - relationships:
+              to: ref('benchmark')
+              field: id_benchmark
+      - name: id_model
+        description: "Clave foránea que asocia el resultado de la prueba al modelo analizado."
+        tests:
+          - relationships:
+              to: ref('stg_model_union_ids')
+              field: id_model
+      - name: benchmark_id
+        description: "ID técnico crudo del benchmark evaluado."
+      - name: puntuacion
+        description: "Calificación, porcentaje o score numérico obtenido por el modelo en el test."
+      - name: fecha
+        description: "Fecha exacta en la que se realizó u oficializó la evaluación del benchmark."

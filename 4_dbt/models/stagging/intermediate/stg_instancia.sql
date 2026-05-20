@@ -12,8 +12,8 @@ with fusion_prooveedor AS (
 
 proveedor AS (
   SELECT DISTINCT
-    provider AS proveedor,
-    "INSTANCIA"    AS tipo_proveedor
+    proveedor,
+    'INSTANCIA'    AS tipo_proveedor
   FROM fusion_prooveedor
 )
 

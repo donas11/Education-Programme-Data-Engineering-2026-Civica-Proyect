@@ -1,14 +1,23 @@
-
--- Use the `ref` function to select from other models
-
 with src as (
-    select *
-    from {{ source('bronze_raw','benchmarks') }}
+  select 
+    {{ dbt_utils.generate_surrogate_key(['benchmark_id']) }} AS id_benchmark,       
+    cast(benchmark_name as varchar) as nombre_corto,
+    category,
+    CONCAT(full_name,' ',description) as descripcion,
+    saturated as saturado
+  from {{ source('bronze_raw','benchmarks') }}
 )
 
-select
-    cast(model_id as varchar)       as model_id,
-    cast(benchmark_name as varchar) as benchmark_name,
-    cast(score as float)            as score,
-    cast(fecha as timestamp)        as fecha
-from src
+
+
+  SELECT
+    s.id_benchmark,
+    s.nombre_corto,
+    s.descripcion,
+    ac.id_area_competencia
+  FROM src s
+  LEFT JOIN {{ ref('area_competencia') }} ac
+    ON ac.area_competencia = s.category
+  
+
+

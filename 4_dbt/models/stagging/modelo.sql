@@ -1,9 +1,9 @@
 {{ config(materialized='view') }}  
 
 
-modelo AS (
+
   SELECT 
-    id_model,
+    id_model as id_modelo,
     nombre_comercial,
     p.id_proveedor,
     f.id_familia,
@@ -11,11 +11,8 @@ modelo AS (
     multimodal,
     opensource,
     fecha_lanzamiento    
-  FROM  {{ ref('stg_model_union') }}  md
+  FROM  {{ ref('stg_modelo') }}  md
   left join {{ ref('stg_proveedor') }} p
-    on p.provider = md.provider
+    on p.proveedor = md.provider
   left join {{ ref('familia') }} f
-    on f.familia_nombre = md.familia_nombre
-)
-
-select * from modelo
+    on f.nombre = md.familia_nombre

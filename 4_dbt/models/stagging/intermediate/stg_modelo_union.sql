@@ -1,7 +1,6 @@
 {{ config(materialized='view') }}  
 
 
-union_familia AS (
   SELECT 
     id_model,
     nombre_comercial,
@@ -23,5 +22,5 @@ union_familia AS (
     opensource,
     fecha_lanzamiento 
   FROM  {{ ref('stg_huggingface_models') }} 
-)
+
 

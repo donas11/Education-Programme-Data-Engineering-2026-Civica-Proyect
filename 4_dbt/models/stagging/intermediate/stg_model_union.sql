@@ -1,3 +1,4 @@
+{{ config(materialized='view') }}
 with unioned as (
 
   select distinct

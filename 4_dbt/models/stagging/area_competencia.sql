@@ -16,4 +16,4 @@ final AS (
   FROM base
 )
 
-SELECT * FROM final;
+SELECT * FROM final
