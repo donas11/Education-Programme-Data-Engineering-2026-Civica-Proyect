@@ -299,7 +299,7 @@ models:
         description: "Divisa identificada para las tarifas del servidor físico ('USD' o 'EUR')."
         tests:
           - accepted_values:
-          arguments:
+            arguments:
               values: ['USD', 'EUR']
       - name: id_gpu
         description: "Clave foránea que conecta directamente con el catálogo maestro de hardware (stg_gpu)."
