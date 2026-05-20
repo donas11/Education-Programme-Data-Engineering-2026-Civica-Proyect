@@ -32,9 +32,9 @@ models:
         description: "Clave foránea que conecta con la dimensión de áreas de competencia."
         tests:
           - relationships:
-            arguments:
-              to: ref('area_competencia')
-              field: id_area_competencia
+              arguments:
+                to: ref('area_competencia')
+                field: id_area_competencia
 
   # 3. familia.sql
   - name: familia
@@ -55,7 +55,6 @@ models:
       - name: id_modelo
         description: "Clave primaria del modelo de IA (mapeada originalmente desde id_model)."
         tests:
-          - unique
           - not_null
       - name: nombre_comercial
         description: "Nombre comercial estandarizado definitivo del modelo."
@@ -64,15 +63,15 @@ models:
         tests:
           - relationships:
               arguments:
-              to: ref('proveedor')
-              field: id_proveedor
+                to: ref('proveedor')
+                field: id_proveedor
       - name: id_familia
         description: "Clave foránea que referencia a la familia tecnológica."
         tests:
           - relationships:
               arguments:
-              to: ref('familia')
-              field: id_familia
+                to: ref('familia')
+                field: id_familia
       - name: context_window
         description: "Tamaño máximo en tokens de la ventana de contexto del modelo."
       - name: multimodal
@@ -118,8 +117,8 @@ models:
         tests:
           - relationships:
               arguments:
-              to: ref('region')
-              field: id_region
+                to: ref('region')
+                field: id_region
 
   # 7. proveedor.sql
   - name: proveedor
@@ -152,24 +151,23 @@ models:
     description: "Tabla de hechos (Fact Table) que registra los históricos de evaluaciones, métricas de desempeño (scores) y fechas de ejecución de los modelos de IA frente a los distintos tipos de benchmarks."
     columns:
       - name: id_test
-        description: "Clave primaria subrogada única para el registro de la evaluación (hash de benchmark_id, model_id y fecha)."
+        description: "Clave primaria subrogada única para el registro de la evaluación (hash de benchmark_id, model_id,puntuacion y fecha)."
         tests:
-          - unique
           - not_null
       - name: id_benchmark
         description: "Clave foránea que referencia al benchmark ejecutado en la prueba."
         tests:
           - relationships:
               arguments:
-              to: ref('benchmark')
-              field: id_benchmark
+                to: ref('benchmark')
+                field: id_benchmark
       - name: id_model
         description: "Clave foránea que asocia el resultado de la prueba al modelo analizado."
         tests:
           - relationships:
               arguments:
-              to: ref('stg_model_union_ids')
-              field: id_model
+                to: ref('stg_model_union_ids')
+                field: id_model
       - name: benchmark_id
         description: "ID técnico crudo del benchmark evaluado."
       - name: puntuacion

@@ -1,5 +1,5 @@
 with src as (
-  select 
+  select distinct
     {{ dbt_utils.generate_surrogate_key(['benchmark_id']) }} AS id_benchmark,       
     cast(benchmark_name as varchar) as nombre_corto,
     category,

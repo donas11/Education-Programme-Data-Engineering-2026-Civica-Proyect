@@ -2,7 +2,7 @@
 
 
 
-  SELECT 
+  SELECT
     id_model as id_modelo,
     nombre_comercial,
     p.id_proveedor,
