@@ -8,7 +8,7 @@ with src as (
 ),
 
 MONEDA AS(
-  SELECT
+  SELECT DISTINCT
     {{ dbt_utils.generate_surrogate_key(['Moneda']) }} AS id_moneda,
     Moneda as moneda,
     Simbolo	as simbolo,

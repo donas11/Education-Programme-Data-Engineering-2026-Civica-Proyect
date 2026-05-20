@@ -222,7 +222,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-              values: ['Free', 'Standard', 'Reasoning', 'Cached', 'Batch']
+                values: ['Free', 'Standard', 'Reasoning', 'Cached', 'Batch']
       - name: unidad_facturacion
         description: "Métrica base utilizada para medir el consumo (por ejemplo: 'token por millon')."
 
