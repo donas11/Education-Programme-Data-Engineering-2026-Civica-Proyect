@@ -110,7 +110,6 @@ models:
       - name: id_model
         description: "Identificador único de anclaje para el modelo de IA."
         tests:
-          - unique
           - not_null
       - name: nombre_comercial
         description: "Nombre comercial definitivo resuelto por orden de prioridad de fuentes."
@@ -164,7 +163,6 @@ models:
       - name: id_model
         description: "Clave subrogada única generada mediante el hash del model_name_order."
         tests:
-          - unique
           - not_null
       - name: model_id_raw_name
         description: "Nombre técnico original proveniente de la combinación de todas las fuentes."

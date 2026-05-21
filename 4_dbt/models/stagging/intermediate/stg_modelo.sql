@@ -162,7 +162,7 @@ cd as (
 )
 
 -- ── JOIN: id_model como ancla, COALESCE por columna ─────────────────
-select
+select distinct
   ids.id_model,
   coalesce(nm.nombre_comercial, lc.nombre_comercial, cd.nombre_comercial, or_.nombre_comercial,op_.nombre_comercial) as nombre_comercial,
   coalesce(nm.provider,       ap.provider,   lc.provider,   cd.provider, op_.provider)                      as provider,
@@ -179,3 +179,5 @@ left join op_ on op_.model_name_order = ids.model_name_order
 left join lc  on lc.model_name_order  = ids.model_name_order
 left join ap  on ap.model_name_order  = ids.model_name_order
 left join cd  on cd.model_name_order  = ids.model_name_order
+
+
