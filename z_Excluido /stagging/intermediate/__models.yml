@@ -1,0 +1,351 @@
+version: 2
+
+models:
+  # 1. stg_ai_models_performance.sql
+  - name: stg_ai_models_performance
+    description: "Modelo de staging para normalizar los nombres de los modelos de IA provenientes de la tabla de rendimiento."
+    columns:
+      - name: model_id_raw_name
+        description: "Nombre original/raw del modelo de IA tal como viene en la fuente."
+      - name: model_name_standard
+        description: "Nombre del modelo estandarizado, limpio de paréntesis y caracteres especiales."
+      - name: model_name_order
+        description: "Identificador o cadena normalizada utilizada para ordenar o emparejar modelos de manera uniforme."
+
+  # 2. stg_gpu.sql
+  - name: stg_gpu
+    description: "Modelo de staging que normaliza las especificaciones técnicas de las GPUs de los servidores."
+    columns:
+      - name: id_gpu
+        description: "Clave subrogada única generada para cada modelo de GPU."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_comercial
+        description: "Nombre comercial de la GPU (ej. NVIDIA H100, A100)."
+      - name: arquitectura
+        description: "Arquitectura de microarquitectura de la GPU (ej. Hopper, Ampere)."
+      - name: vram_gb
+        description: "Capacidad de memoria VRAM expresada en Gigabytes (GB)."
+      - name: ancho_banda_gbs
+        description: "Ancho de banda de la memoria expresado en Gigabytes por segundo (GB/s)."
+      - name: tdp_w
+        description: "Thermal Design Power (TDP) medido en Vatios (W)."
+      - name: fp16_tflops
+        description: "Rendimiento de cómputo en precisión media (FP16) expresado en TFLOPS."
+
+  # 3. stg_huggingface_models.sql
+  - name: stg_huggingface_models
+    description: "Modelo de staging que extrae y normaliza los metadatos de los modelos alojados en Hugging Face."
+    columns:
+      - name: id_model
+        description: "Clave subrogada única calculada a partir del slug y el nombre del modelo."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_comercial
+        description: "Nombre canónico y comercial extraído de la estructura de la plataforma."
+      - name: provider
+        description: "Organización o creador que publica el modelo en Hugging Face."
+      - name: familia_nombre
+        description: "Slug identificador de la familia o repositorio del modelo."
+      - name: context_window
+        description: "Ventana de contexto del modelo (inicializado como NULL en esta etapa de la fuente)."
+      - name: multimodal
+        description: "Indicador booleano de si el modelo soporta múltiples modalidades (texto, imagen, audio, etc.)."
+      - name: opensource
+        description: "Indicador booleano que determina si el modelo es de código abierto (Open Source)."
+      - name: fecha_lanzamiento
+        description: "Fecha en la que fue creado o publicado el modelo en la plataforma."
+
+  # 4. stg_instancia.sql
+  - name: stg_instancia
+    description: "Modelo de staging consolidado para listar proveedores únicos mapeados como tipo INSTANCIA."
+    columns:
+      - name: proveedor
+        description: "Nombre único del proveedor de servicios o servidores."
+        tests:
+          - unique
+          - not_null
+      - name: tipo_proveedor
+        description: "Categoría fija asignada al registro ('INSTANCIA')."
+
+  # 5. stg_int_models_cortex_are_open.sql
+  - name: stg_int_models_cortex_are_open
+    description: "Modelo intermedio que utiliza Snowflake Cortex (LLM) para inferir si un modelo es Open Source."
+    columns:
+      - name: model_id_raw_name
+        description: "Nombre original de origen del modelo mapeado desde la unión de IDs."
+      - name: model_name_standard
+        description: "Nombre estandarizado enviado al LLM para validación."
+      - name: is_opensource
+        description: "Respuesta booleana o de texto ('true' / 'false') inferida por Snowflake Cortex."
+
+  # 6. stg_llm_complete_dataset.sql
+  - name: stg_llm_complete_dataset
+    description: "Modelo de staging encargado de la limpieza de nombres del dataset completo de LLMs."
+    columns:
+      - name: model_id_raw_name
+        description: "Nombre crudo del modelo en el dataset origen."
+      - name: model_name_standard
+        description: "Nombre limpio y estandarizado del modelo."
+      - name: model_name_order
+        description: "Cadena o llave de ordenamiento estandarizada generada para el modelo."
+
+  # 7. stg_llm_model_comparison.sql
+  - name: stg_llm_model_comparison
+    description: "Modelo de staging para la ingesta y tipificación uniforme del dataset comparativo de modelos 2026."
+    columns:
+      - name: model_id_raw_name
+        description: "Nombre original en la tabla comparativa."
+      - name: model_name_standard
+        description: "Nombre formateado tras remover contenidos entre paréntesis y limpiar strings."
+      - name: model_name_order
+        description: "ID de ordenamiento del modelo basado en su nombre original."
+
+  # 8. stg_modelo.sql
+  - name: stg_modelo
+    description: "Modelo core/tabla que consolida y prioriza los atributos de los modelos de IA mediante COALESCE de múltiples fuentes (OpenRouter, LLM Complete, etc.)."
+    columns:
+      - name: id_model
+        description: "Identificador único de anclaje para el modelo de IA."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_comercial
+        description: "Nombre comercial definitivo resuelto por orden de prioridad de fuentes."
+      - name: provider
+        description: "Organización proveedora o creadora del modelo (ej. OpenAI, Anthropic, Meta)."
+      - name: familia_nombre
+        description: "Familia tecnológica a la que pertenece el modelo (ej. GPT-4, Llama, Claude)."
+      - name: context_window
+        description: "Tamaño máximo de la ventana de contexto calculada y unificada en tokens numéricos."
+      - name: multimodal
+        description: "Flag booleano que consolida si el modelo procesa entradas de Visión, Audio o Video."
+      - name: opensource
+        description: "Flag booleano unificado que define si los pesos del modelo son abiertos (Open Weights/Source)."
+      - name: fecha_lanzamiento
+        description: "Fecha de lanzamiento oficial casteada en formato DATE."
+
+  # 9. stg_modelo_union.sql
+  - name: stg_modelo_union
+    description: "Unión final (UNION ALL) de los catálogos de modelos procesados de fuentes internas y de Hugging Face."
+    columns:
+      - name: id_model
+        description: "Identificador global del modelo de IA unificado."
+      - name: nombre_comercial
+        description: "Nombre comercial expuesto."
+      - name: provider
+        description: "Proveedor dueño del algoritmo."
+      - name: familia_nombre
+        description: "Familia de pertenencia del modelo."
+      - name: context_window
+        description: "Tokens máximos de la ventana de contexto."
+      - name: multimodal
+        description: "Flag de soporte multimedia."
+      - name: opensource
+        description: "Flag de código/pesos abiertos."
+      - name: fecha_lanzamiento
+        description: "Fecha de salida al mercado."
+
+  # 10. stg_model_union.sql
+  - name: stg_model_union
+    description: "Modelo de staging de de-duplicación que une los nombres base (raw y estándar) de todas las fuentes satélite."
+    columns:
+      - name: model_id_raw_name
+        description: "Nombre original del modelo presente en el cruce de uniones distinct."
+      - name: model_name_standard
+        description: "Nombre estandarizado correspondiente sin duplicados."
+
+  # 11. stg_model_union_ids.sql
+  - name: stg_model_union_ids
+    description: "Modelo de staging encargado de unificar los identificadores crudos y generar la clave subrogada global única (`id_model`) para cada modelo de IA en el ecosistema."
+    columns:
+      - name: id_model
+        description: "Clave subrogada única generada mediante el hash del model_name_order."
+        tests:
+          - unique
+          - not_null
+      - name: model_id_raw_name
+        description: "Nombre técnico original proveniente de la combinación de todas las fuentes."
+      - name: model_name_standard
+        description: "Nombre limpio y estandarizado del modelo de IA."
+      - name: model_name_order
+        description: "Clave normalizada utilizada para realizar los cruces (joins) exactos entre las fuentes."
+
+  # 12. stg_new_nuevo_openroute.sql
+  - name: stg_new_nuevo_openroute
+    description: "Staging para el nuevo set de datos de OpenRouter. Extrae el proveedor y normaliza el nombre base técnico."
+    columns:
+      - name: model_id_raw_name
+        description: "ID original del modelo en OpenRouter (habitualmente incluye el proveedor, ej: 'meta-llama/')."
+      - name: model_name_standard
+        description: "Nombre comercial limpio extrayendo el segundo componente del path y removiendo paréntesis."
+      - name: model_name_order
+        description: "Cadena normalizada para asegurar el ordenamiento y matching del modelo."
+
+  # 13. stg_nuevo_models.sql
+  - name: stg_nuevo_models
+    description: "Modelo de staging para la ingesta y limpieza directa de la tabla base de especificaciones de modelos."
+    columns:
+      - name: model_id_raw_name
+        description: "ID de origen del modelo en la tabla base."
+      - name: model_name_standard
+        description: "Nombre del modelo procesado mediante la macro de limpieza estándar."
+      - name: model_name_order
+        description: "Llave única de orden generada sobre el ID del modelo."
+
+  # 14. stg_nuevo_openroute.sql
+  - name: stg_nuevo_openroute
+    description: "Staging para el catálogo primario de OpenRouter, extrayendo la metadata de nombres comerciales de los endpoints."
+    columns:
+      - name: model_id_raw_name
+        description: "Clave única del modelo (campo `id` en la fuente original)."
+      - name: model_name_standard
+        description: "Nombre canónico del modelo limpio de contenidos adicionales en paréntesis."
+      - name: model_name_order
+        description: "Llave de ordenamiento calculada a partir del nombre descriptivo del modelo."
+
+  # 15. stg_planes.sql
+  - name: stg_planes
+    description: Modelo de staging que determina y desglosa los planes de facturación y disponibilidad comercial 
+      para cada modelo de IA ('Free', 'Standard', 'Reasoning', 'Cached', 'Batch') basándose en las 
+      características y flags booleanos extraídos de las fuentes de OpenRouter.
+    columns:
+      - name: id_modelo
+        description: "Clave única del modelo de IA (vinculada a stg_model_union_ids)."
+        tests:
+          - not_null
+      - name: tipo_plan
+        description: "Tipo de plan comercial asignado al modelo según sus capacidades de procesamiento."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Free', 'Standard', 'Reasoning', 'Cached', 'Batch']
+      - name: unidad_facturacion
+        description: "Métrica base utilizada para medir el consumo (por ejemplo: 'token por millon')."
+
+  # 16. stg_precio_modelo.sql
+  - name: stg_precio_modelo
+    description: Modelo de staging económico que calcula de manera dinámica los costos financieros por millón de tokens, 
+      tanto de entrada (input) como de salida (output), aplicando reglas de negocio y descuentos volumétricos 
+      (como el 50% de descuento en planes Batch) según la tipología del plan activo.
+    columns:
+      - name: id_precio_modelo
+        description: "Clave subrogada única del registro de precio, calculada mediante el hash de la combinación del ID del modelo y su fecha de vigencia."
+        tests:
+          - unique
+          - not_null
+      - name: id_modelo
+        description: "Clave foránea que identifica al modelo de IA asociado al precio."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_model_union_ids')
+                field: id_model
+      - name: id_plan_precio
+        description: "Identificador único de la combinación y estructura del plan tarifario."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('plan_precio')
+                field: id_plan_precio
+      - name: precio_por_M_entrada
+        description: "Precio final calculado para la ingesta de un millón de tokens de entrada (Input), incluyendo lógica de descuentos."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: precio_por_M_salida
+        description: "Precio final calculado para la generación de un millón de tokens de salida (Output) o escritura/razonamiento según corresponda."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: fecha
+        description: "Fecha de captura o vigencia asociada a las tarifas del modelo."
+      - name: moneda
+        description: "Divisa del esquema de cobros (por defecto '$')."
+
+  # 17. stg_proveedor.sql
+  - name: stg_proveedor
+    description: "Modelo de staging para la consolidación de las entidades proveedoras de IA que exponen servicios mediante APIs."
+    columns:
+      - name: id_proveedor
+        description: "Clave única del proveedor de API generada por hashing."
+        tests:
+          - unique
+          - not_null
+      - name: proveedor
+        description: "Nombre comercial de la organización distribuidora (ej. Anthropic, OpenAI)."
+      - name: tipo_proveedor
+        description: "Clasificación estática de la arquitectura de distribución (fijada como 'API')."
+
+  # 18. stg_servidor.sql
+  - name: stg_servidor
+    description: Modelo de staging de infraestructura física. Normaliza las características técnicas de los servidores, 
+      calcula el número de GPUs instaladas de forma dinámica mediante expresiones regulares y unifica los 
+      costos operativos por hora (On-Demand / Spot) y mensuales junto con sus respectivas divisas.
+    columns:
+      - name: id_servidor
+        description: "Clave subrogada única que identifica de forma unívoca a la combinación Servidor-Proveedor."
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        description: "Nombre comercial o código técnico del modelo de servidor físico."
+      - name: tipo
+        description: "Tipo o categoría de la instancia de cómputo (ej. Dedicado, Compartido)."
+      - name: num_gpus
+        description: "Cantidad total de tarjetas GPU instaladas en el nodo, extraída mediante expresiones regulares."
+      - name: vram_total_gb
+        description: "Memoria de video (VRAM) total combinada disponible en el servidor expresada en Gigabytes."
+      - name: ram_gb
+        description: "Memoria RAM del sistema disponible en el servidor."
+      - name: precio_on_demand_hr
+        description: "Costo financiero por hora del servidor bajo la modalidad 'Bajo Demanda'."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: precio_spot_hr
+        description: "Costo financiero por hora del servidor bajo la modalidad de subasta 'Spot'."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: precio_mensual
+        description: "Costo total al mes del servidor, limpio de caracteres especiales y convertido a formato numérico."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: egress_fees_gb
+        description: "Costo financiero asociado a la tasa de transferencia o salida de datos por Gigabyte."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: moneda
+        description: "Divisa identificada para las tarifas del servidor físico ('USD' o 'EUR')."
+        tests:
+          - accepted_values:
+              values: ['USD', 'EUR']
+      - name: id_gpu
+        description: "Clave foránea que conecta directamente con el catálogo maestro de hardware (stg_gpu)."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_gpu')
+                field: id_gpu
+      - name: id_proveedor
+        description: "Clave foránea que vincula al proveedor dueño de la infraestructura física (mapeada a stg_proveedor)."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_proveedor')
+                field: id_proveedor
+              config:
+                severity: warn

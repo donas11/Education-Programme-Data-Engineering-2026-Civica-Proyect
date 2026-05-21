@@ -1,0 +1,4 @@
+model_id,model_name,provider,model_family,release_date,parameters_billion,active_parameters_billion,architecture,context_window_k,license,open_weight,modality,training_data_cutoff
+demo-model-alpha,Demo Model Alpha,Demo Org,Demo Family,2026-05-15,7.0,7.0,Dense Transformer,128,Apache-2.0,1,Text,2025-12-01
+demo-model-beta,Demo Model Beta,Demo Org,Demo Family,2026-05-20,13.0,13.0,Dense Transformer,256,Apache-2.0,1,Text,2025-12-01
+demo-model-gamma,Demo Model Gamma,Demo Org,Demo Family,2026-06-01,70.0,12.0,Transformer (MoE),512,Proprietary,0,Text+Vision,2026-01-01

@@ -1,0 +1,3063 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="slides-format" content="viewport" />
+        <title>Presentación Interactiva</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <style type="text/tailwindcss">
+            @theme {
+                --color-bg: #0d1117;
+                --color-bg-deep: #060910;
+                --color-surface: #161b22;
+                --color-surface-2: #21262d;
+                --color-text: #e6edf3;
+                --color-text-secondary: #8b949e;
+                --color-text-muted: #484f58;
+                --color-accent-1: #58a6ff;
+                --color-accent-2: #bc8cff;
+                --color-accent-3: #3fb950;
+                --color-accent-4: #f78166;
+                --color-glass-bg: rgba(255, 255, 255, 0.05);
+                --color-glass-border: rgba(255, 255, 255, 0.08);
+                --color-vignette: rgba(0, 0, 0, 0.5);
+                --font-display: "Instrument Serif", serif;
+                --font-body: "Inter", sans-serif;
+            }
+        </style>
+        <style>
+            :root {
+                --color-bg: #1c2830;
+                --color-text: #e6edf3;
+                --glow-color-rgb: 255, 140, 0;
+            }
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                background: #1c2830;
+                margin: 0;
+            }
+            body {
+                font-family: "Inter", sans-serif;
+                color: var(--color-text);
+                overflow: hidden;
+                height: 100vh;
+                width: 100vw;
+            }
+
+            /* === DECK NAVIGATION === */
+            .deck {
+                width: 100vw;
+                height: 100vh;
+                position: relative;
+            }
+            .slide {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transform: scale(0.96);
+                transition:
+                    opacity 0.6s ease,
+                    transform 0.6s ease;
+                pointer-events: none;
+                overflow: hidden;
+            }
+            .slide.active {
+                opacity: 1;
+                transform: scale(1);
+                pointer-events: all;
+            }
+            .slide > .content {
+                position: relative;
+                z-index: 2;
+                width: 100%;
+                max-width: 1100px;
+                padding: clamp(1rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.5rem) 80px;
+                max-height: 100vh;
+                overflow-y: auto;
+                scrollbar-width: none;
+            }
+            .slide > .content::-webkit-scrollbar {
+                display: none;
+            }
+            .reveal {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            /* === NAV === */
+            .nav-controls {
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                z-index: 100;
+                background: rgba(22, 27, 34, 0.9);
+                backdrop-filter: blur(12px);
+                padding: 8px 20px;
+                border-radius: 40px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .nav-btn {
+                width: 36px;
+                height: 36px;
+                border: none;
+                background: rgba(255, 255, 255, 0.06);
+                color: #58a6ff;
+                border-radius: 50%;
+                font-size: 1.1rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s;
+            }
+            .nav-btn:hover {
+                background: rgba(88, 166, 255, 0.15);
+            }
+            .slide-dots {
+                display: flex;
+                gap: 7px;
+            }
+            .slide-dots .dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.15);
+                cursor: pointer;
+                transition:
+                    background 0.3s,
+                    transform 0.3s;
+            }
+            .slide-dots .dot.active {
+                background: #58a6ff;
+                transform: scale(1.4);
+            }
+            .slide-counter {
+                font-size: 0.75rem;
+                color: #484f58;
+                min-width: 36px;
+                text-align: center;
+                font-family: "Inter", monospace;
+            }
+            .slide-title-indicator {
+                font-size: 0.7rem;
+                color: #58a6ff;
+                opacity: 0.7;
+                max-width: 180px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            /* === DECORATIVE === */
+            @keyframes float-slow {
+                0% {
+                    transform: translate(0, 0) scale(1);
+                }
+                33% {
+                    transform: translate(50px, -40px) scale(1.1);
+                }
+                66% {
+                    transform: translate(-30px, 30px) scale(0.92);
+                }
+                100% {
+                    transform: translate(0, 0) scale(1);
+                }
+            }
+            @keyframes float-drift {
+                0% {
+                    transform: translate(0, 0) scale(1) rotate(0deg);
+                }
+                50% {
+                    transform: translate(-60px, -50px) scale(1.12) rotate(3deg);
+                }
+                100% {
+                    transform: translate(0, 0) scale(1) rotate(0deg);
+                }
+            }
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-12px);
+                }
+            }
+            @keyframes pulse-ring {
+                0%,
+                100% {
+                    box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.4);
+                }
+                50% {
+                    box-shadow: 0 0 0 10px rgba(88, 166, 255, 0);
+                }
+            }
+            @keyframes glow-pulse {
+                0%,
+                100% {
+                    text-shadow:
+                        0 0 20px rgba(88, 166, 255, 0.5),
+                        0 0 40px rgba(88, 166, 255, 0.2);
+                }
+                50% {
+                    text-shadow:
+                        0 0 30px rgba(88, 166, 255, 0.8),
+                        0 0 60px rgba(88, 166, 255, 0.3);
+                }
+            }
+            @keyframes shimmer {
+                0% {
+                    background-position: -200% 0;
+                }
+                100% {
+                    background-position: 200% 0;
+                }
+            }
+            @keyframes draw-line {
+                from {
+                    stroke-dashoffset: 1000;
+                }
+                to {
+                    stroke-dashoffset: 0;
+                }
+            }
+
+            .gradient-mesh {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                overflow: hidden;
+                pointer-events: none;
+            }
+            .blob {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(70px);
+                animation: float-slow 12s ease-in-out infinite;
+            }
+            .blob:nth-child(2) {
+                animation: float-drift 16s ease-in-out infinite;
+            }
+            .blob:nth-child(3) {
+                animation: float-slow 20s ease-in-out infinite reverse;
+            }
+
+            .slide::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                pointer-events: none;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+                background-repeat: repeat;
+                background-size: 256px 256px;
+                opacity: 0.025;
+                mix-blend-mode: overlay;
+            }
+            .slide::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                pointer-events: none;
+                background: radial-gradient(
+                    ellipse at center,
+                    transparent 50%,
+                    var(--color-vignette) 100%
+                );
+            }
+
+            /* === TEXT GLOW === */
+            .text-glow {
+                text-shadow:
+                    0 0 20px rgba(88, 166, 255, 0.5),
+                    0 0 40px rgba(88, 166, 255, 0.2);
+            }
+            .stat-glow {
+                text-shadow:
+                    0 0 30px rgba(88, 166, 255, 0.6),
+                    0 0 60px rgba(88, 166, 255, 0.25);
+                animation: glow-pulse 3s ease-in-out infinite;
+            }
+
+            /* === GLASS CARD === */
+            .glass-card {
+                background: rgba(255, 255, 255, 0.04);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 12px;
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+            .glass-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 32px rgba(88, 166, 255, 0.12);
+            }
+
+            /* === EXPAND/MODAL SYSTEM === */
+            .expand-btn {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: rgba(88, 166, 255, 0.15);
+                border: 1px solid rgba(88, 166, 255, 0.3);
+                color: #58a6ff;
+                border-radius: 6px;
+                padding: 4px 8px;
+                font-size: 0.65rem;
+                cursor: pointer;
+                font-family: "Inter", sans-serif;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                transition:
+                    background 0.2s,
+                    transform 0.15s;
+                z-index: 10;
+            }
+            .expand-btn:hover {
+                background: rgba(88, 166, 255, 0.25);
+                transform: scale(1.05);
+            }
+
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 200;
+                background: rgba(6, 9, 16, 0.88);
+                backdrop-filter: blur(8px);
+                align-items: center;
+                justify-content: center;
+            }
+            .modal-overlay.open {
+                display: flex;
+            }
+            .modal-box {
+                background: #161b22;
+                border: 1px solid rgba(88, 166, 255, 0.2);
+                border-radius: 16px;
+                width: min(92vw, 900px);
+                max-height: 85vh;
+                overflow-y: auto;
+                padding: 2rem;
+                position: relative;
+                animation: modal-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            @keyframes modal-in {
+                from {
+                    opacity: 0;
+                    transform: scale(0.92) translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1) translateY(0);
+                }
+            }
+            .modal-close {
+                position: absolute;
+                top: 14px;
+                right: 16px;
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #8b949e;
+                border-radius: 8px;
+                width: 32px;
+                height: 32px;
+                cursor: pointer;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s;
+            }
+            .modal-close:hover {
+                background: rgba(247, 129, 102, 0.2);
+                color: #f78166;
+            }
+
+            /* === DIAGRAMS === */
+            .diagram-node {
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                padding: 10px 14px;
+                text-align: center;
+                font-size: 0.8rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                position: relative;
+            }
+            .diagram-node:hover {
+                border-color: #58a6ff;
+                background: rgba(88, 166, 255, 0.1);
+                transform: scale(1.05);
+            }
+            .diagram-node.blue {
+                border-color: rgba(88, 166, 255, 0.4);
+                background: rgba(88, 166, 255, 0.08);
+            }
+            .diagram-node.green {
+                border-color: rgba(63, 185, 80, 0.4);
+                background: rgba(63, 185, 80, 0.08);
+            }
+            .diagram-node.purple {
+                border-color: rgba(188, 140, 255, 0.4);
+                background: rgba(188, 140, 255, 0.08);
+            }
+            .diagram-node.orange {
+                border-color: rgba(247, 129, 102, 0.4);
+                background: rgba(247, 129, 102, 0.08);
+            }
+            .diagram-node.gold {
+                border-color: rgba(210, 173, 57, 0.4);
+                background: rgba(210, 173, 57, 0.08);
+            }
+            .diagram-arrow {
+                color: #484f58;
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* === BARS === */
+            .bar-track {
+                background: rgba(255, 255, 255, 0.06);
+                border-radius: 4px;
+                overflow: hidden;
+                height: 10px;
+            }
+            .bar-fill {
+                height: 100%;
+                border-radius: 4px;
+                width: 0%;
+                transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            /* === TIMELINE === */
+            .timeline-line {
+                position: absolute;
+                left: 20px;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: linear-gradient(
+                    to bottom,
+                    #58a6ff,
+                    #bc8cff,
+                    #3fb950
+                );
+            }
+            .timeline-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: #58a6ff;
+                border: 2px solid #0d1117;
+                flex-shrink: 0;
+                animation: pulse-ring 2.5s ease-in-out infinite;
+            }
+
+            /* === TOOLTIPS ON DIAGRAM NODES === */
+            .node-tooltip {
+                display: none;
+                position: absolute;
+                bottom: calc(100% + 8px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: #21262d;
+                border: 1px solid rgba(88, 166, 255, 0.3);
+                border-radius: 8px;
+                padding: 8px 12px;
+                font-size: 0.7rem;
+                white-space: nowrap;
+                color: #e6edf3;
+                z-index: 50;
+                pointer-events: none;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            }
+            .diagram-node:hover .node-tooltip {
+                display: block;
+            }
+
+            /* === PARTICLE CANVAS === */
+            .particle-canvas {
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+            }
+
+            /* ══════════════════════════════════════════════
+           FULL-SCREEN CARBON FIBER + HEXAGON BACKGROUND
+        ══════════════════════════════════════════════ */
+            :root {
+                --color-bg: #1c2830 !important;
+                --hex-orange: #ff8c00;
+                --glow-color-rgb: 255, 140, 0;
+            }
+            html,
+            body {
+                background: #1c2830 !important;
+            }
+
+            .slide {
+                background: #1c2830 !important;
+            }
+
+            /* Full-screen fixed background layer shared by all slides */
+            #global-bg {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                pointer-events: none;
+                overflow: hidden;
+            }
+
+            /* Carbon fiber texture */
+            #global-bg .cf {
+                position: absolute;
+                inset: 0;
+                background-color: #1c2830;
+                background-image:
+                    repeating-linear-gradient(
+                        45deg,
+                        rgba(0, 0, 0, 0.18) 0px,
+                        rgba(0, 0, 0, 0.18) 1px,
+                        transparent 1px,
+                        transparent 7px
+                    ),
+                    repeating-linear-gradient(
+                        -45deg,
+                        rgba(0, 0, 0, 0.12) 0px,
+                        rgba(0, 0, 0, 0.12) 1px,
+                        transparent 1px,
+                        transparent 7px
+                    );
+                background-size: 14px 14px;
+            }
+
+            /* Subtle top-left radial lighter area (matches photo) */
+            #global-bg .radial-light {
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(
+                    ellipse 65% 55% at 18% 28%,
+                    rgba(50, 75, 90, 0.55) 0%,
+                    transparent 65%
+                );
+            }
+
+            /* Vignette edges */
+            #global-bg .vignette {
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(
+                    ellipse at center,
+                    transparent 45%,
+                    rgba(10, 16, 20, 0.7) 100%
+                );
+            }
+
+            /* ── HEXAGON SVG layer ── */
+            #global-bg .hex-layer {
+                position: absolute;
+                inset: 0;
+            }
+
+            @keyframes hex-breathe {
+                0%,
+                100% {
+                    opacity: 0.9;
+                    filter: drop-shadow(0 0 5px #ff8c00)
+                        drop-shadow(0 0 12px rgba(255, 100, 0, 0.5));
+                }
+                50% {
+                    opacity: 1;
+                    filter: drop-shadow(0 0 9px #ffa500)
+                        drop-shadow(0 0 22px rgba(255, 140, 0, 0.6))
+                        drop-shadow(0 0 38px rgba(255, 80, 0, 0.25));
+                }
+            }
+            @keyframes hex-breathe-slow {
+                0%,
+                100% {
+                    opacity: 0.55;
+                    filter: drop-shadow(0 0 3px #ff6600);
+                }
+                50% {
+                    opacity: 0.8;
+                    filter: drop-shadow(0 0 7px #ff8c00)
+                        drop-shadow(0 0 14px rgba(255, 120, 0, 0.4));
+                }
+            }
+            @keyframes neon-flicker {
+                0%,
+                89%,
+                91%,
+                96%,
+                100% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 0.55;
+                }
+                95% {
+                    opacity: 0.75;
+                }
+            }
+            .neon-bright {
+                animation: hex-breathe 3s ease-in-out infinite;
+            }
+            .neon-dim {
+                animation: hex-breathe-slow 5s ease-in-out infinite 1.2s;
+            }
+            .neon-flk {
+                animation:
+                    hex-breathe 3s ease-in-out infinite,
+                    neon-flicker 7s ease-in-out infinite 2s;
+            }
+
+            /* Override blobs (no longer needed) */
+            .blob {
+                display: none !important;
+            }
+            .gradient-mesh {
+                display: none !important;
+            }
+            .particle-canvas {
+                z-index: 2 !important;
+            }
+
+            /* Nav / UI orange theme */
+            .nav-controls {
+                background: rgba(16, 22, 27, 0.92) !important;
+                border-color: rgba(255, 140, 0, 0.2) !important;
+            }
+            .nav-btn {
+                color: #ff8c00 !important;
+                background: rgba(255, 140, 0, 0.08) !important;
+            }
+            .nav-btn:hover {
+                background: rgba(255, 140, 0, 0.2) !important;
+            }
+            .slide-dots .dot.active {
+                background: #ff8c00 !important;
+            }
+            .slide-title-indicator {
+                color: #ff8c00 !important;
+            }
+            .glass-card {
+                background: rgba(16, 22, 27, 0.68) !important;
+                border-color: rgba(255, 255, 255, 0.07) !important;
+                backdrop-filter: blur(14px) !important;
+            }
+            .glass-card:hover {
+                border-color: rgba(255, 140, 0, 0.35) !important;
+                box-shadow: 0 8px 30px rgba(255, 140, 0, 0.13) !important;
+            }
+            .expand-btn {
+                background: rgba(255, 140, 0, 0.12) !important;
+                border-color: rgba(255, 140, 0, 0.3) !important;
+                color: #ff8c00 !important;
+            }
+            .diagram-node.blue {
+                border-color: rgba(255, 140, 0, 0.4) !important;
+                background: rgba(255, 140, 0, 0.07) !important;
+            }
+            .diagram-node:hover {
+                border-color: #ff8c00 !important;
+                background: rgba(255, 140, 0, 0.12) !important;
+            }
+            .modal-box {
+                background: #141b1f !important;
+                border-color: rgba(255, 140, 0, 0.2) !important;
+            }
+            .timeline-line {
+                background: linear-gradient(
+                    to bottom,
+                    #ff8c00,
+                    #ffd080,
+                    #3fb950
+                ) !important;
+            }
+            .timeline-dot {
+                background: #ff8c00 !important;
+            }
+
+            /* === REDUCED MOTION === */
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.01ms !important;
+                    transition-duration: 0.2s !important;
+                }
+            }
+
+            /* === SCROLLABLE inside modal === */
+            .modal-box::-webkit-scrollbar {
+                width: 6px;
+            }
+            .modal-box::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .modal-box::-webkit-scrollbar-thumb {
+                background: rgba(88, 166, 255, 0.3);
+                border-radius: 3px;
+            }
+
+            /* === CODE BLOCK === */
+            .code-block {
+                background: #0d1117;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 8px;
+                padding: 1rem;
+                font-family: "JetBrains Mono", "Courier New", monospace;
+                font-size: 0.72rem;
+                line-height: 1.6;
+                color: #e6edf3;
+                overflow-x: auto;
+            }
+            .code-kw {
+                color: #ff7b72;
+            }
+            .code-str {
+                color: #a5d6ff;
+            }
+            .code-cmt {
+                color: #484f58;
+            }
+            .code-fn {
+                color: #d2a8ff;
+            }
+            .code-num {
+                color: #f2cc60;
+            }
+        </style>
+    </head>
+    <body>
+        <style>
+            /* Oculta navegación inferior */
+            .nav-controls {
+                display: none !important;
+            }
+
+            /* TIMER */
+            #presentation-timer {
+                position: fixed;
+                bottom: 18px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 6px;
+                z-index: 99999;
+                pointer-events: none;
+            }
+
+            .p-block {
+                width: 18px;
+                height: 5px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.08);
+
+                transition:
+                    background 0.5s ease,
+                    box-shadow 0.5s ease,
+                    transform 0.3s ease;
+            }
+
+            .p-block.active {
+                background: #ff8c00;
+
+                box-shadow:
+                    0 0 10px rgba(255, 140, 0, 0.8),
+                    0 0 20px rgba(255, 140, 0, 0.35);
+
+                transform: scaleX(1.15);
+            }
+
+            /* BOTONES */
+            #timer-controls {
+                position: fixed;
+                bottom: 14px;
+                right: 14px;
+                display: flex;
+                gap: 7px;
+                z-index: 99999;
+            }
+
+            .t-btn {
+                width: 11px;
+                height: 11px;
+                border: none;
+                border-radius: 50%;
+                cursor: pointer;
+                opacity: 0.45;
+                transition: 0.2s;
+            }
+
+            .t-btn:hover {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            .t-start {
+                background: #22c55e;
+            }
+            .t-pause {
+                background: #f59e0b;
+            }
+            .t-reset {
+                background: #ef4444;
+            }
+        </style>
+
+        <!-- TIMER -->
+        <div id="presentation-timer"></div>
+
+        <!-- CONTROLES -->
+        <div id="timer-controls">
+            <button class="t-btn t-start" id="startBtn"></button>
+
+            <button class="t-btn t-pause" id="pauseBtn"></button>
+
+            <button class="t-btn t-reset" id="resetBtn"></button>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const TOTAL_MINUTES = 10;
+                const TOTAL_SECONDS = TOTAL_MINUTES * 60;
+
+                let remainingSeconds = TOTAL_SECONDS;
+                let timer = null;
+                let running = false;
+
+                const timerContainer =
+                    document.getElementById("presentation-timer");
+
+                // Crear rectángulos
+                for (let i = 0; i < TOTAL_MINUTES; i++) {
+                    const block = document.createElement("div");
+
+                    block.className = "p-block";
+
+                    timerContainer.appendChild(block);
+                }
+
+                const blocks = document.querySelectorAll(".p-block");
+
+                function updateBlocks() {
+                    const completed =
+                        TOTAL_MINUTES - Math.ceil(remainingSeconds / 60);
+
+                    blocks.forEach((block, index) => {
+                        if (index < completed) {
+                            block.classList.add("active");
+                        } else {
+                            block.classList.remove("active");
+                        }
+                    });
+
+                    // Final
+                    if (remainingSeconds <= 0) {
+                        clearInterval(timer);
+
+                        running = false;
+
+                        blocks.forEach((block) => {
+                            block.classList.add("active");
+                        });
+                    }
+                }
+
+                // START
+                document
+                    .getElementById("startBtn")
+                    .addEventListener("click", () => {
+                        if (running) return;
+
+                        running = true;
+
+                        timer = setInterval(() => {
+                            remainingSeconds--;
+
+                            updateBlocks();
+
+                            if (remainingSeconds <= 0) {
+                                clearInterval(timer);
+                            }
+                        }, 1000);
+                    });
+
+                // PAUSE
+                document
+                    .getElementById("pauseBtn")
+                    .addEventListener("click", () => {
+                        clearInterval(timer);
+
+                        running = false;
+                    });
+
+                // RESET
+                document
+                    .getElementById("resetBtn")
+                    .addEventListener("click", () => {
+                        clearInterval(timer);
+
+                        running = false;
+
+                        remainingSeconds = TOTAL_SECONDS;
+
+                        blocks.forEach((block) => {
+                            block.classList.remove("active");
+                        });
+
+                        updateBlocks();
+                    });
+
+                updateBlocks();
+            });
+        </script>
+
+        <!-- ════════════════════════════════════════
+     GLOBAL CARBON FIBER + HEXAGON BACKGROUND
+     (fixed, behind all slides)
+════════════════════════════════════════ -->
+        <div id="global-bg">
+            <div class="cf"></div>
+            <div class="radial-light"></div>
+
+            <!-- Full-viewport SVG hex layer -->
+            <svg
+                class="hex-layer"
+                viewBox="0 0 1440 900"
+                preserveAspectRatio="xMidYMid slice"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <defs>
+                    <filter
+                        id="glow-strong"
+                        x="-60%"
+                        y="-60%"
+                        width="220%"
+                        height="220%"
+                    >
+                        <feGaussianBlur stdDeviation="5" result="b1" />
+                        <feGaussianBlur stdDeviation="12" result="b2" />
+                        <feMerge>
+                            <feMergeNode in="b2" />
+                            <feMergeNode in="b1" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                    <filter
+                        id="glow-soft"
+                        x="-50%"
+                        y="-50%"
+                        width="200%"
+                        height="200%"
+                    >
+                        <feGaussianBlur stdDeviation="3" result="b" />
+                        <feMerge>
+                            <feMergeNode in="b" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                    <!-- Carbon pattern inside hexes -->
+                    <pattern
+                        id="carbon"
+                        patternUnits="userSpaceOnUse"
+                        width="10"
+                        height="10"
+                        patternTransform="rotate(45)"
+                    >
+                        <rect width="10" height="10" fill="#111820" />
+                        <line
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="10"
+                            stroke="rgba(255,255,255,0.04)"
+                            stroke-width="1"
+                        />
+                        <line
+                            x1="0"
+                            y1="0"
+                            x2="10"
+                            y2="0"
+                            stroke="rgba(255,255,255,0.03)"
+                            stroke-width="1"
+                        />
+                    </pattern>
+                </defs>
+
+                <!-- ══ BOTTOM-RIGHT CLUSTER (main, like the photo) ══ -->
+                <!-- Hex sizes: ~130px flat-to-flat -->
+                <!-- Center big hex -->
+                <polygon
+                    points="1150,620 1225,577 1225,491 1150,448 1075,491 1075,577"
+                    fill="url(#carbon)"
+                    stroke="none"
+                />
+                <!-- Right hex -->
+                <polygon
+                    points="1300,700 1375,657 1375,571 1300,528 1225,571 1225,657"
+                    fill="url(#carbon)"
+                    stroke="none"
+                />
+                <!-- Left hex -->
+                <polygon
+                    points="1000,700 1075,657 1075,571 1000,528 925,571 925,657"
+                    fill="url(#carbon)"
+                    stroke="none"
+                />
+                <!-- Bottom-center hex -->
+                <polygon
+                    points="1150,780 1225,737 1225,651 1150,608 1075,651 1075,737"
+                    fill="url(#carbon)"
+                    stroke="none"
+                />
+                <!-- Top-right hex -->
+                <polygon
+                    points="1300,540 1375,497 1375,411 1300,368 1225,411 1225,497"
+                    fill="url(#carbon)"
+                    stroke="none"
+                />
+                <!-- Far-right partial hex -->
+                <polygon
+                    points="1440,610 1440,524 1440,480 1440,460 1375,411 1375,497"
+                    fill="url(#carbon)"
+                    stroke="none"
+                    opacity="0.5"
+                />
+                <!-- Bottom-right corner hex -->
+                <polygon
+                    points="1300,860 1375,817 1375,731 1300,688 1225,731 1225,817"
+                    fill="url(#carbon)"
+                    stroke="none"
+                    opacity="0.7"
+                />
+                <!-- Extra bottom hex -->
+                <polygon
+                    points="1150,940 1225,897 1225,811 1150,768 1075,811 1075,897"
+                    fill="url(#carbon)"
+                    stroke="none"
+                    opacity="0.5"
+                />
+
+                <!-- ══ NEON ORANGE EDGES — bright cluster ══ -->
+                <g class="neon-bright" filter="url(#glow-strong)">
+                    <!-- Center hex outline -->
+                    <polygon
+                        points="1150,620 1225,577 1225,491 1150,448 1075,491 1075,577"
+                        fill="none"
+                        stroke="#ff8c00"
+                        stroke-width="2.5"
+                    />
+                    <!-- Shared edge center→right -->
+                    <line
+                        x1="1225"
+                        y1="577"
+                        x2="1225"
+                        y2="491"
+                        stroke="#ffa500"
+                        stroke-width="3"
+                    />
+                    <!-- Right hex top edge -->
+                    <polyline
+                        points="1225,571 1300,528 1375,571"
+                        fill="none"
+                        stroke="#ff8c00"
+                        stroke-width="2.5"
+                    />
+                    <!-- Connecting line between center and right -->
+                    <line
+                        x1="1225"
+                        y1="577"
+                        x2="1300"
+                        y2="620"
+                        stroke="#ffd080"
+                        stroke-width="2"
+                    />
+                </g>
+
+                <g class="neon-flk" filter="url(#glow-strong)">
+                    <!-- Right hex partial outline -->
+                    <polyline
+                        points="1300,700 1375,657 1375,571 1300,528"
+                        fill="none"
+                        stroke="#ff8c00"
+                        stroke-width="2.5"
+                    />
+                </g>
+
+                <g class="neon-dim" filter="url(#glow-soft)">
+                    <!-- Left hex -->
+                    <polygon
+                        points="1000,700 1075,657 1075,571 1000,528 925,571 925,657"
+                        fill="none"
+                        stroke="#cc6600"
+                        stroke-width="1.8"
+                    />
+                    <!-- Bottom hex -->
+                    <polygon
+                        points="1150,780 1225,737 1225,651 1150,608 1075,651 1075,737"
+                        fill="none"
+                        stroke="#aa5500"
+                        stroke-width="1.5"
+                        opacity="0.7"
+                    />
+                    <!-- Top right -->
+                    <polygon
+                        points="1300,540 1375,497 1375,411 1300,368 1225,411 1225,497"
+                        fill="none"
+                        stroke="#bb6600"
+                        stroke-width="1.5"
+                        opacity="0.6"
+                    />
+                </g>
+
+                <!-- ══ SCATTERED ACCENT HEXES (background depth) ══ -->
+                <!-- Top-left area — small, very dim -->
+                <g opacity="0.25" class="neon-dim">
+                    <polygon
+                        points="80,120 120,97 120,51 80,28 40,51 40,97"
+                        fill="url(#carbon)"
+                        stroke="#ff8c00"
+                        stroke-width="1.2"
+                    />
+                    <polygon
+                        points="150,165 190,142 190,96 150,73 110,96 110,142"
+                        fill="url(#carbon)"
+                        stroke="#cc6600"
+                        stroke-width="1"
+                    />
+                    <polygon
+                        points="80,210 120,187 120,141 80,118 40,141 40,187"
+                        fill="url(#carbon)"
+                        stroke="#aa5500"
+                        stroke-width="0.8"
+                    />
+                </g>
+
+                <!-- Mid-left sparse hexes -->
+                <g opacity="0.12">
+                    <polygon
+                        points="30,480 70,457 70,411 30,388 -10,411 -10,457"
+                        fill="url(#carbon)"
+                        stroke="#ff8c00"
+                        stroke-width="1"
+                    />
+                    <polygon
+                        points="100,520 140,497 140,451 100,428 60,451 60,497"
+                        fill="url(#carbon)"
+                        stroke="#ff8c00"
+                        stroke-width="0.8"
+                    />
+                </g>
+
+                <!-- Top-center faint -->
+                <g opacity="0.08">
+                    <polygon
+                        points="680,40 730,12 730,-34 680,-62 630,-34 630,12"
+                        fill="url(#carbon)"
+                        stroke="#ff8c00"
+                        stroke-width="1"
+                    />
+                    <polygon
+                        points="760,80 810,52 810,6 760,-22 710,6 710,52"
+                        fill="url(#carbon)"
+                        stroke="#ff8c00"
+                        stroke-width="0.7"
+                    />
+                </g>
+
+                <!-- Bottom-left faint -->
+                <g opacity="0.1">
+                    <polygon
+                        points="200,820 250,792 250,736 200,708 150,736 150,792"
+                        fill="url(#carbon)"
+                        stroke="#cc6600"
+                        stroke-width="1"
+                    />
+                    <polygon
+                        points="130,880 180,852 180,796 130,768 80,796 80,852"
+                        fill="url(#carbon)"
+                        stroke="#aa5500"
+                        stroke-width="0.8"
+                    />
+                </g>
+            </svg>
+
+            <div class="vignette"></div>
+        </div>
+
+        <!-- Mouse spotlight -->
+        <div
+            id="spotlight"
+            style="position: fixed; inset: 0; z-index: 99; pointer-events: none"
+        ></div>
+
+        <!-- MODAL OVERLAY -->
+        <div class="modal-overlay" id="modal">
+            <div class="modal-box" id="modal-box">
+                <button
+                    class="modal-close"
+                    onclick="closeModal()"
+                    title="Cerrar (Esc)"
+                >
+                    ✕
+                </button>
+                <div id="modal-content"></div>
+            </div>
+        </div>
+
+        <div class="deck">
+            <!-- ═══════════════════════════════════════
+         SLIDE 1: TÍTULO
+    ═══════════════════════════════════════ -->
+            <div class="slide active" data-slide="1" data-title="Inicio">
+                <div class="gradient-mesh">
+                    <div
+                        class="blob"
+                        style="
+                            width: 500px;
+                            height: 500px;
+                            top: -120px;
+                            right: -80px;
+                            background: #58a6ff;
+                            opacity: 0.12;
+                        "
+                    ></div>
+                    <div
+                        class="blob"
+                        style="
+                            width: 350px;
+                            height: 350px;
+                            bottom: -100px;
+                            left: -60px;
+                            background: #bc8cff;
+                            opacity: 0.1;
+                        "
+                    ></div>
+                    <div
+                        class="blob"
+                        style="
+                            width: 250px;
+                            height: 250px;
+                            top: 35%;
+                            left: 10%;
+                            background: #3fb950;
+                            opacity: 0.07;
+                        "
+                    ></div>
+                </div>
+                <canvas class="particle-canvas" id="pc1"></canvas>
+                <div class="content" style="text-align: center">
+                    <div
+                        style="
+                            width: 480px;
+                            height: 480px;
+                            margin: 0 auto -0.5rem;
+                            animation: float 3.5s ease-in-out infinite;
+                            position: relative;
+                            filter: drop-shadow(0 0 32px rgba(255, 140, 0, 0.5))
+                                drop-shadow(0 16px 40px rgba(0, 0, 0, 0.7));
+                        "
+                        class="reveal"
+                    >
+
+                        <img
+                            src="./Bulbasurf1.png"
+                            style="
+                                width: 200%;
+                                height: 100%;
+                                object-fit: contain;
+                            "
+                            alt="Bulbasaur F1 Car"
+                        />
+                    </div>
+                    <h1
+                        class="reveal"
+                        style="
+                            font-family: &quot;Instrument Serif&quot;, serif;
+                            font-size: clamp(2.5rem, 6vw, 4.5rem);
+                            font-weight: 400;
+                            background: linear-gradient(
+                                135deg,
+                                #ff8c00,
+                                #ffd080,
+                                #ff8c00
+                            );
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                            background-clip: text;
+                            margin-bottom: 1rem;
+                            line-height: 1.2;
+                        "
+                    >
+                        Modelos LLM
+                    </h1>
+
+                    <div class="profile-card"
+
+
+
+                        <div class="profile-info">
+                            <div class="profile-name"></div>
+                            <p
+                                class="reveal"
+                                style="
+                                    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+                                    color: #8b949e;
+                                    letter-spacing: 0.15em;
+                                    text-transform: uppercase;
+                                    margin-bottom: 2rem;
+                                "
+                            >
+                                <img class="avatar rounded-2 avatar-user" src="https://avatars.githubusercontent.com/u/16038113?s=400&amp;u=973a03fc852828f1050a00cb4204a62f632fccdf&amp;v=4" width="125" height="125" alt="@donas11">
+                                Alejandro Manuel do Nascimento Rodríguez
+
+                            </p>
+
+                            <div
+                                class="reveal"
+                                style="
+                                    display: flex;
+                                    gap: 12px;
+                                    justify-content: center;
+                                    flex-wrap: wrap;
+                                    font-size: 0.78rem;
+                                    color: #8b949e;
+                                "
+                            >
+                                <a
+                                    href="https://github.com/donas11"
+                                    target="_blank"
+                                    class="github-link"
+                                >
+                                <span
+                                    style="
+                                        background: rgba(88, 166, 255, 0.1);
+                                        border: 1px solid
+                                            rgba(88, 166, 255, 0.2);
+                                        border-radius: 20px;
+                                        padding: 6px 14px;
+                                    "
+                                    >
+
+                                    https://github.com/donas11</span
+                                >
+                                </a
+                            </div>
+                        </div>
+                    </div>
+
+                    <p
+                        class="reveal"
+                        style="
+                            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+                            color: #8b949e;
+                            letter-spacing: 0.15em;
+                            text-transform: uppercase;
+                            margin-bottom: 2rem;
+                        "
+                    ></p>
+                    <div
+                        class="reveal"
+                        style="
+                            display: flex;
+                            gap: 12px;
+                            justify-content: center;
+                            flex-wrap: wrap;
+                            font-size: 0.78rem;
+                            color: #8b949e;
+                        "
+                    ></div>
+                </div>
+            </div>
+
+
+
+
+                <div class="slide" data-slide="2" data-title="Stack Tecnológico">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;top:-60px;left:-40px;background:#58a6ff;opacity:0.07;"></div>
+        </div>
+        <div class="content" style="position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1rem,3vw,2.5rem);">
+            <div class="reveal" style="font-size:0.68rem;text-transform:uppercase;letter-spacing:.15em;color:#58a6ff;margin-bottom:.3rem;">Tecnologías</div>
+            <h2 class="reveal" style="font-family:'Instrument Serif',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:400;margin-bottom:1rem;">Stack Tecnológico</h2>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;">
+                <div class="reveal glass-card" style="padding:1rem;display:flex;gap:12px;align-items:flex-start;">
+                    <div style="font-size:1.6rem;flex-shrink:0;">🐙</div>
+                    <div>
+                        <div style="font-weight:700;color:#3fb950;font-size:0.8rem;margin-bottom:3px;">GitHub Actions</div>
+                        <div style="font-size:0.7rem;color:#8b949e;line-height:1.5;">CI/CD — ingesta automática al hacer push a ramas <code style="color:#ffa040;">DEV</code> / <code style="color:#d2a839;">PRE</code> / <code style="color:#3fb950;">PRO</code>. Path filter en <code style="color:#bc8cff;">1_data/</code>, <code style="color:#bc8cff;">3_ingest/</code>.</div>
+                    </div>
+                </div>
+                <div class="reveal glass-card" style="padding:1rem;display:flex;gap:12px;align-items:flex-start;">
+                    <div style="font-size:1.6rem;flex-shrink:0;">⚡</div>
+                    <div>
+                        <div style="font-weight:700;color:#ffa040;font-size:0.8rem;margin-bottom:3px;">dlt — data load tool</div>
+                        <div style="font-size:0.7rem;color:#8b949e;line-height:1.5;">Ingesta CSV → Snowflake con 3 write dispositions: <code style="color:#58a6ff;">append</code>, <code style="color:#58a6ff;">merge</code>, <code style="color:#58a6ff;">replace</code>. Pipeline <code style="color:#bc8cff;">llm_csv_ingestion</code>.</div>
+                    </div>
+                </div>
+                <div class="reveal glass-card" style="padding:1rem;display:flex;gap:12px;align-items:flex-start;">
+                    <div style="font-size:1.6rem;flex-shrink:0;">⚙️</div>
+                    <div>
+                        <div style="font-weight:700;color:#bc8cff;font-size:0.8rem;margin-bottom:3px;">dbt</div>
+                        <div style="font-size:0.7rem;color:#8b949e;line-height:1.5;">Transformación SQL — staging, silver, gold, snapshots SCD2, tests y docs. Packages: <code style="color:#58a6ff;">dbt_date</code>, <code style="color:#58a6ff;">dbt_utils</code>, <code style="color:#58a6ff;">dbt_expectations</code>.</div>
+                    </div>
+                </div>
+                <div class="reveal glass-card" style="padding:1rem;display:flex;gap:12px;align-items:flex-start;">
+                    <div style="font-size:1.6rem;flex-shrink:0;">❄️</div>
+                    <div>
+                        <div style="font-weight:700;color:#58a6ff;font-size:0.8rem;margin-bottom:3px;">Snowflake</div>
+                        <div style="font-size:0.7rem;color:#8b949e;line-height:1.5;">Data warehouse central. <strong style="color:#e6edf3;">3 entornos</strong> × <strong style="color:#e6edf3;">3 capas</strong>. Warehouse <code style="color:#bc8cff;">PROYECTDE</code> con auto-suspend 60s.</div>
+                    </div>
+                </div>
+                <div class="reveal glass-card" style="padding:1rem;display:flex;gap:12px;align-items:flex-start;grid-column:1/-1;">
+                    <div style="font-size:1.6rem;flex-shrink:0;">📊</div>
+                    <div>
+                        <div style="font-weight:700;color:#f9c74f;font-size:0.8rem;margin-bottom:3px;">Power BI</div>
+                        <div style="font-size:0.7rem;color:#8b949e;line-height:1.5;">Visualización final — conecta directamente a las tablas <strong style="color:#ffd700;">GOLD</strong> para dashboards analíticos de modelos, precios, benchmarks y TCO.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="slide" data-slide="3" data-title="Pipeline Visual">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;top:-60px;right:-40px;background:#3fb950;opacity:0.07;"></div>
+            <div class="blob" style="width:240px;height:240px;bottom:-40px;left:-30px;background:#ff8c00;opacity:0.06;"></div>
+        </div>
+        <div class="content" style="max-width:1100px;padding-bottom:72px;">
+            <div class="reveal" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:#3fb950;margin-bottom:0.4rem;">Pipeline de Datos</div>
+            <h2 class="reveal" style="font-family:'Instrument Serif',serif;font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:400;margin-bottom:1.2rem;">Flujo completo: Fuentes → BI</h2>
+
+            <div class="reveal glass-card" style="padding:1.4rem;position:relative;overflow:hidden;">
+                <button class="expand-btn" onclick="expandModal('pipeline_svg')">🔍 Expandir</button>
+
+                <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg"
+                     style="width:100%;height:auto;max-height:340px;"
+                     id="pipeline-svg">
+                    <defs>
+                        <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="rgba(255,255,255,0.25)"/>
+                        </marker>
+                        <marker id="arr-orange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#ff8c00"/>
+                        </marker>
+                        <marker id="arr-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#3fb950"/>
+                        </marker>
+                        <filter id="node-glow">
+                            <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="rgba(255,140,0,0.3)"/>
+                        </filter>
+                        <filter id="green-glow">
+                            <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="rgba(63,185,80,0.3)"/>
+                        </filter>
+                        <linearGradient id="snowflake-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1a3a5c"/>
+                            <stop offset="100%" style="stop-color:#0d2035"/>
+                        </linearGradient>
+                        <linearGradient id="dbt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#2d1b4e"/>
+                            <stop offset="100%" style="stop-color:#1a0f30"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- ── LAYER LABELS ── -->
+                    <text x="62" y="18" font-size="9" fill="rgba(255,255,255,0.3)" font-family="Inter,sans-serif" letter-spacing="1" text-anchor="middle">FUENTES</text>
+                    <text x="248" y="18" font-size="9" fill="rgba(255,255,255,0.3)" font-family="Inter,sans-serif" letter-spacing="1" text-anchor="middle">INGESTA</text>
+                    <text x="450" y="18" font-size="9" fill="rgba(255,140,0,0.6)" font-family="Inter,sans-serif" letter-spacing="1" text-anchor="middle">SNOWFLAKE</text>
+                    <text x="670" y="18" font-size="9" fill="rgba(188,140,255,0.6)" font-family="Inter,sans-serif" letter-spacing="1" text-anchor="middle">TRANSFORM</text>
+                    <text x="845" y="18" font-size="9" fill="rgba(63,185,80,0.6)" font-family="Inter,sans-serif" letter-spacing="1" text-anchor="middle">CONSUMO</text>
+
+                    <!-- ── VERTICAL SEPARATORS ── -->
+                    <line x1="155" y1="25" x2="155" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/>
+                    <line x1="340" y1="25" x2="340" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/>
+                    <line x1="560" y1="25" x2="560" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/>
+                    <line x1="760" y1="25" x2="760" y2="320" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/>
+
+                    <!-- ── SOURCE NODES ── -->
+                    <!-- OpenRouter -->
+                    <rect x="10" y="50" width="100" height="38" rx="8" fill="rgba(255,140,0,0.1)" stroke="rgba(255,140,0,0.35)" stroke-width="1.2"/>
+                    <text x="60" y="65" font-size="10" fill="#ffa040" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">🤖 OpenRouter</text>
+                    <text x="60" y="80" font-size="8.5" fill="rgba(255,255,255,0.45)" font-family="Inter,sans-serif" text-anchor="middle">REST API</text>
+
+                    <!-- HuggingFace -->
+                    <rect x="10" y="105" width="100" height="38" rx="8" fill="rgba(255,140,0,0.08)" stroke="rgba(255,140,0,0.25)" stroke-width="1.2"/>
+                    <text x="60" y="120" font-size="10" fill="#ffa040" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">🤗 HuggingFace</text>
+                    <text x="60" y="135" font-size="8.5" fill="rgba(255,255,255,0.45)" font-family="Inter,sans-serif" text-anchor="middle">API + Scraping</text>
+
+                    <!-- Datasets Kaggle -->
+                    <rect x="10" y="160" width="100" height="38" rx="8" fill="rgba(255,140,0,0.06)" stroke="rgba(255,140,0,0.2)" stroke-width="1.2"/>
+                    <text x="60" y="175" font-size="10" fill="#ffa040" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">📊 Datasets Kaggle</text>
+                    <text x="60" y="190" font-size="8.5" fill="rgba(255,255,255,0.45)" font-family="Inter,sans-serif" text-anchor="middle">CSV / Web</text>
+
+                    <!-- Seed requisitos -->
+                    <rect x="10" y="215" width="100" height="38" rx="8" fill="rgba(255,140,0,0.05)" stroke="rgba(255,140,0,0.18)" stroke-width="1.2"/>
+                    <text x="60" y="230" font-size="9.5" fill="#ffa040" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">🔬 Seeds CSV</text>
+                    <text x="60" y="245" font-size="8.5" fill="rgba(255,255,255,0.45)" font-family="Inter,sans-serif" text-anchor="middle">Requisitos</text>
+
+                    <!-- ── ARROWS sources → ingesta ── -->
+                    <line x1="110" y1="69" x2="170" y2="115" stroke="rgba(255,140,0,0.3)" stroke-width="1.2" marker-end="url(#arr)"/>
+                    <line x1="110" y1="124" x2="170" y2="124" stroke="rgba(255,140,0,0.3)" stroke-width="1.2" marker-end="url(#arr)"/>
+                    <line x1="110" y1="179" x2="170" y2="132" stroke="rgba(255,140,0,0.3)" stroke-width="1.2" marker-end="url(#arr)"/>
+                    <line x1="110" y1="234" x2="170" y2="138" stroke="rgba(255,140,0,0.3)" stroke-width="1.2" marker-end="url(#arr)"/>
+
+                    <!-- ── INGESTA: dlt + Airbyte ── -->
+                    <rect x="168" y="90" width="110" height="70" rx="10" fill="rgba(88,166,255,0.08)" stroke="rgba(88,166,255,0.25)" stroke-width="1.5"/>
+                    <text x="223" y="112" font-size="10" fill="#58a6ff" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">⚡ dlt</text>
+                    <text x="223" y="127" font-size="8.5" fill="rgba(255,255,255,0.4)" font-family="Inter,sans-serif" text-anchor="middle">data load tool</text>
+                    <line x1="168" y1="147" x2="278" y2="147" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                    <text x="223" y="165" font-size="9" fill="rgba(140,200,255,0.6)" font-family="Inter,sans-serif" text-anchor="middle">+ Airbyte</text>
+
+                    <!-- ── ARROW ingesta → RAW ── -->
+                    <line x1="278" y1="125" x2="348" y2="125" stroke="#ff8c00" stroke-width="1.8" marker-end="url(#arr-orange)" stroke-dasharray="none"/>
+
+                    <!-- ── SNOWFLAKE BOX ── -->
+                    <rect x="345" y="35" width="208" height="270" rx="12" fill="url(#snowflake-grad)" stroke="rgba(255,140,0,0.3)" stroke-width="1.5"/>
+                    <text x="449" y="58" font-size="11" fill="#58a6ff" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">❄️  SNOWFLAKE</text>
+
+                    <!-- RAW -->
+                    <rect x="360" y="68" width="80" height="34" rx="7" fill="rgba(255,140,0,0.15)" stroke="rgba(255,140,0,0.4)" stroke-width="1.2"/>
+                    <text x="400" y="82" font-size="10" fill="#ff8c00" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">RAW</text>
+                    <text x="400" y="95" font-size="8" fill="rgba(255,255,255,0.4)" font-family="Inter,sans-serif" text-anchor="middle">Sin procesar</text>
+
+                    <!-- BRONZE -->
+                    <rect x="360" y="115" width="80" height="34" rx="7" fill="rgba(210,143,57,0.15)" stroke="rgba(210,143,57,0.4)" stroke-width="1.2"/>
+                    <text x="400" y="129" font-size="10" fill="#d28f39" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">BRONZE</text>
+                    <text x="400" y="142" font-size="8" fill="rgba(255,255,255,0.4)" font-family="Inter,sans-serif" text-anchor="middle">Limpieza</text>
+
+                    <!-- SILVER -->
+                    <rect x="360" y="162" width="80" height="34" rx="7" fill="rgba(192,192,192,0.12)" stroke="rgba(192,192,192,0.35)" stroke-width="1.2"/>
+                    <text x="400" y="176" font-size="10" fill="#c0c0c0" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">SILVER</text>
+                    <text x="400" y="189" font-size="8" fill="rgba(255,255,255,0.4)" font-family="Inter,sans-serif" text-anchor="middle">Enriquecido</text>
+
+                    <!-- GOLD -->
+                    <rect x="360" y="209" width="80" height="34" rx="7" fill="rgba(255,215,0,0.12)" stroke="rgba(255,215,0,0.4)" stroke-width="1.2"/>
+                    <text x="400" y="223" font-size="10" fill="#ffd700" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">GOLD</text>
+                    <text x="400" y="236" font-size="8" fill="rgba(255,255,255,0.4)" font-family="Inter,sans-serif" text-anchor="middle">Star Schema</text>
+
+                    <!-- Internal arrows RAW→BRONZE→SILVER→GOLD -->
+                    <line x1="400" y1="102" x2="400" y2="115" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arr)"/>
+                    <line x1="400" y1="149" x2="400" y2="162" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arr)"/>
+                    <line x1="400" y1="196" x2="400" y2="209" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arr)"/>
+
+                    <!-- dbt label inside snowflake -->
+                    <rect x="458" y="100" width="82" height="140" rx="8" fill="url(#dbt-grad)" stroke="rgba(188,140,255,0.3)" stroke-width="1.2"/>
+                    <text x="499" y="120" font-size="11" fill="#bc8cff" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">⚙️ dbt</text>
+                    <text x="499" y="136" font-size="8" fill="rgba(255,255,255,0.35)" font-family="Inter,sans-serif" text-anchor="middle">Transformations</text>
+                    <line x1="458" y1="145" x2="540" y2="145" stroke="rgba(188,140,255,0.15)" stroke-width="1"/>
+                    <text x="499" y="162" font-size="7.5" fill="rgba(188,140,255,0.7)" font-family="Inter,sans-serif" text-anchor="middle">staging/</text>
+                    <text x="499" y="175" font-size="7.5" fill="rgba(188,140,255,0.7)" font-family="Inter,sans-serif" text-anchor="middle">intermediate/</text>
+                    <text x="499" y="188" font-size="7.5" fill="rgba(188,140,255,0.7)" font-family="Inter,sans-serif" text-anchor="middle">marts/core</text>
+                    <text x="499" y="201" font-size="7.5" fill="rgba(188,140,255,0.7)" font-family="Inter,sans-serif" text-anchor="middle">marts/finance</text>
+                    <text x="499" y="217" font-size="7.5" fill="rgba(188,140,255,0.55)" font-family="Inter,sans-serif" text-anchor="middle">tests + docs</text>
+
+                    <!-- dbt arrows from layers -->
+                    <line x1="440" y1="135" x2="458" y2="145" stroke="rgba(188,140,255,0.25)" stroke-width="1" stroke-dasharray="3,2"/>
+                    <line x1="440" y1="179" x2="458" y2="170" stroke="rgba(188,140,255,0.25)" stroke-width="1" stroke-dasharray="3,2"/>
+                    <line x1="440" y1="226" x2="458" y2="200" stroke="rgba(188,140,255,0.25)" stroke-width="1" stroke-dasharray="3,2"/>
+
+                    <!-- ── ARROW Snowflake → CI/CD ── -->
+                    <line x1="553" y1="170" x2="575" y2="170" stroke="#bc8cff" stroke-width="1.8" marker-end="url(#arr)"/>
+
+                    <!-- ── CI/CD + GITHUB ACTIONS ── -->
+                    <rect x="575" y="100" width="115" height="140" rx="10" fill="rgba(63,185,80,0.07)" stroke="rgba(63,185,80,0.25)" stroke-width="1.5"/>
+                    <text x="632" y="122" font-size="10" fill="#3fb950" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">🐙 CI/CD</text>
+                    <text x="632" y="136" font-size="8" fill="rgba(255,255,255,0.35)" font-family="Inter,sans-serif" text-anchor="middle">GitHub Actions</text>
+                    <line x1="575" y1="148" x2="690" y2="148" stroke="rgba(63,185,80,0.1)" stroke-width="1"/>
+                    <rect x="587" y="158" width="85" height="22" rx="5" fill="rgba(88,166,255,0.1)" stroke="rgba(88,166,255,0.2)" stroke-width="1"/>
+                    <text x="629" y="173" font-size="8.5" fill="#58a6ff" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">DEV</text>
+                    <rect x="587" y="186" width="85" height="22" rx="5" fill="rgba(210,173,57,0.1)" stroke="rgba(210,173,57,0.2)" stroke-width="1"/>
+                    <text x="629" y="201" font-size="8.5" fill="#d2a839" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">PRE</text>
+                    <rect x="587" y="214" width="85" height="22" rx="5" fill="rgba(63,185,80,0.1)" stroke="rgba(63,185,80,0.2)" stroke-width="1"/>
+                    <text x="629" y="229" font-size="8.5" fill="#3fb950" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">PRO</text>
+
+                    <!-- ── ARROW CI/CD → Consumo ── -->
+                    <line x1="690" y1="170" x2="768" y2="140" stroke="#3fb950" stroke-width="1.8" marker-end="url(#arr-green)"/>
+                    <line x1="690" y1="190" x2="768" y2="200" stroke="#3fb950" stroke-width="1.8" marker-end="url(#arr-green)"/>
+
+                    <!-- ── CONSUMO ── -->
+                    <rect x="768" y="95" width="110" height="46" rx="9" fill="rgba(63,185,80,0.08)" stroke="rgba(63,185,80,0.28)" stroke-width="1.3"/>
+                    <text x="823" y="114" font-size="10" fill="#3fb950" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">📊 BI / Analytics</text>
+                    <text x="823" y="128" font-size="8" fill="rgba(255,255,255,0.4)" font-family="Inter,sans-serif" text-anchor="middle">Dashboards · Métricas</text>
+
+                    <rect x="768" y="175" width="110" height="46" rx="9" fill="rgba(255,140,0,0.07)" stroke="rgba(255,140,0,0.25)" stroke-width="1.3"/>
+                    <text x="823" y="194" font-size="10" fill="#ffa040" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">🔍 LLM Comparator</text>
+                    <text x="823" y="208" font-size="8" fill="rgba(255,255,255,0.4)" font-family="Inter,sans-serif" text-anchor="middle">Precios · Benchmarks</text>
+
+                    <!-- Bottom note -->
+                    <text x="450" y="315" font-size="8.5" fill="rgba(255,255,255,0.18)" font-family="Inter,sans-serif" text-anchor="middle">
+                        Arquitectura ELT — Snowflake como capa central · dbt para transformaciones · GitHub Actions para orquestación
+                    </text>
+                </svg>
+            </div>
+
+            <div class="reveal" style="margin-top:10px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:0.68rem;text-align:center;">
+                <div style="color:#ffa040;">📥 4 fuentes</div>
+                <div style="color:#58a6ff;">⚡ dlt + Airbyte</div>
+                <div style="color:#ff8c00;">❄️ 4 capas</div>
+                <div style="color:#bc8cff;">⚙️ dbt models</div>
+                <div style="color:#3fb950;">🚀 DEV/PRE/PRO</div>
+            </div>
+        </div>
+    </div>
+
+<div class="slide" data-slide="4" data-title="Modelo ER Silver">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;top:-70px;right:-50px;background:#bc8cff;opacity:0.07;"></div>
+        </div>
+        <div class="content" style="max-width:100%;padding:0;height:calc(100vh - 0px);display:flex;flex-direction:column;padding-bottom:56px;box-sizing:border-box;">
+            <!-- Header bar -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 24px;background:rgba(16,22,27,0.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,140,0,0.15);flex-shrink:0;position:relative;z-index:10;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:#ffa040;">Modelado</span>
+                    <span style="color:#484f58;">·</span>
+                    <span style="font-size:0.85rem;font-weight:600;color:#e6edf3;">Modelo Lógico Silver — Entidad Relación</span>
+                </div>
+                <div style="display:flex;gap:8px;font-size:0.65rem;color:#8b949e;">
+                    <span style="background:rgba(76,201,240,0.1);border:1px solid rgba(76,201,240,0.2);border-radius:4px;padding:2px 8px;color:#4cc9f0;">Entidades base</span>
+                    <span style="background:rgba(247,37,133,0.1);border:1px solid rgba(247,37,133,0.2);border-radius:4px;padding:2px 8px;color:#f72585;">Entidades nuevas</span>
+                    <span style="background:rgba(249,199,79,0.1);border:1px solid rgba(249,199,79,0.2);border-radius:4px;padding:2px 8px;color:#f9c74f;">PK</span>
+                    <span style="background:rgba(199,125,255,0.1);border:1px solid rgba(199,125,255,0.2);border-radius:4px;padding:2px 8px;color:#c77dff;">FK</span>
+                </div>
+            </div>
+            <!-- Iframe with full ER diagram -->
+            <div style="flex:1;position:relative;overflow:hidden;">
+                <iframe 
+                    id="er-frame"
+                    srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;es&quot; data-theme=&quot;dark&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;title&gt;Modelo Lógico Silver — LLM Analytics&lt;/title&gt;
+&lt;link href=&quot;https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+:root {
+  --bg:#0d1117; --surface:#161b27; --surface2:#1e2536;
+  --border:rgba(255,255,255,0.07); --text:#e2e8f0;
+  --muted:#94a3b8; --faint:#3d4a5c;
+  --font:'Satoshi','Inter',sans-serif;
+  --core:#1d6ef5; --dim:#0d9488; --fact:#7c3aed; --new:#ea580c;
+  --pk:#f59e0b; --fk:#60a5fa; --nf:#4ade80;
+  --rad:8px; --hh:36px; --rh:20px;
+}
+[data-theme=&quot;light&quot;]{
+  --bg:#f0f4f8; --surface:#ffffff; --surface2:#f8fafc;
+  --border:rgba(0,0,0,0.09); --text:#0f172a;
+  --muted:#475569; --faint:#cbd5e1;
+  --pk:#b45309; --fk:#1d4ed8; --nf:#15803d;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden;}
+
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;height:50px;background:var(--surface);
+  border-bottom:1px solid var(--border);position:fixed;
+  top:0;left:0;right:0;z-index:100;
+}
+.logo{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;}
+.logo span{color:var(--muted);font-weight:400;}
+.legend{display:flex;align-items:center;gap:14px;font-size:10.5px;color:var(--muted);}
+.li{display:flex;align-items:center;gap:5px;}
+.ld{width:9px;height:9px;border-radius:2px;}
+.tbtn{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--muted);padding:4px 12px;border-radius:6px;
+  cursor:pointer;font-size:11px;font-family:var(--font);
+  transition:all .15s;
+}
+.tbtn:hover{color:var(--text);}
+
+.wrap{position:absolute;top:50px;left:0;right:0;bottom:0;overflow:auto;}
+.cvs{position:relative;width:1440px;height:1200px;}
+.svgl{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+
+/* dots bg */
+.cvs::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);
+  background-size:24px 24px;
+  pointer-events:none;
+}
+
+.ent{
+  position:absolute;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--rad);
+  z-index:2;box-shadow:0 4px 20px rgba(0,0,0,.35);
+  transition:box-shadow .2s,transform .2s;
+}
+.ent:hover{box-shadow:0 8px 36px rgba(0,0,0,.55);transform:translateY(-2px);}
+
+.eh{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 10px;height:var(--hh);
+  border-radius:var(--rad) var(--rad) 0 0;
+  font-size:11.5px;font-weight:700;color:#fff;letter-spacing:.2px;
+}
+.ebg{font-size:8.5px;font-weight:600;letter-spacing:.5px;
+  padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.15);}
+
+.eb{padding:3px 0;}
+
+.f{
+  display:flex;align-items:center;gap:6px;
+  padding:0 10px;height:var(--rh);font-size:10px;
+  transition:background .1s;
+}
+.f:hover{background:rgba(255,255,255,.03);}
+
+.fi{font-size:8.5px;width:11px;flex-shrink:0;text-align:center;line-height:1;}
+.fn{flex:1;color:#a0aec0;font-weight:500;}
+.fn.pk{color:var(--pk);font-weight:700;}
+.fn.fk{color:var(--fk);}
+.fn.nf{color:var(--nf);}
+.ft{color:var(--faint);font-size:8.5px;flex-shrink:0;font-family:'SF Mono',monospace;}
+.dv{height:1px;background:var(--border);margin:2px 0;}
+
+/* entity colors */
+.ec .eh{background:var(--core);}
+.ec{border-color:rgba(29,110,245,.25);}
+.ed .eh{background:var(--dim);}
+.ed{border-color:rgba(13,148,136,.25);}
+.ef .eh{background:var(--fact);}
+.ef{border-color:rgba(124,58,237,.25);}
+.en .eh{background:var(--new);}
+.en{border-color:rgba(234,88,12,.35);}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--faint);border-radius:3px;}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div class=&quot;hdr&quot;&gt;
+  &lt;div style=&quot;display:flex;align-items:center;gap:20px;&quot;&gt;
+    &lt;div class=&quot;logo&quot;&gt;
+      &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.2&quot;&gt;
+        &lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;9&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5&quot;/&gt;
+        &lt;path d=&quot;M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6&quot;/&gt;
+      &lt;/svg&gt;
+      Modelo Lógico Silver &lt;span&gt;— LLM Analytics&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;legend&quot;&gt;
+      &lt;div class=&quot;li&quot;&gt;&lt;div class=&quot;ld&quot; style=&quot;background:var(--core)&quot;&gt;&lt;/div&gt;Core&lt;/div&gt;
+      &lt;div class=&quot;li&quot;&gt;&lt;div class=&quot;ld&quot; style=&quot;background:var(--dim)&quot;&gt;&lt;/div&gt;Dimensión&lt;/div&gt;
+      &lt;div class=&quot;li&quot;&gt;&lt;div class=&quot;ld&quot; style=&quot;background:var(--fact)&quot;&gt;&lt;/div&gt;Hecho / SCD2&lt;/div&gt;
+      &lt;div class=&quot;li&quot;&gt;&lt;div class=&quot;ld&quot; style=&quot;background:var(--new)&quot;&gt;&lt;/div&gt;Entidad nueva&lt;/div&gt;
+      &lt;div class=&quot;li&quot; style=&quot;margin-left:6px&quot;&gt;&lt;div class=&quot;ld&quot; style=&quot;background:var(--pk)&quot;&gt;&lt;/div&gt;PK&lt;/div&gt;
+      &lt;div class=&quot;li&quot;&gt;&lt;div class=&quot;ld&quot; style=&quot;background:var(--fk)&quot;&gt;&lt;/div&gt;FK&lt;/div&gt;
+      &lt;div class=&quot;li&quot;&gt;&lt;div class=&quot;ld&quot; style=&quot;background:var(--nf)&quot;&gt;&lt;/div&gt;Campo añadido&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class=&quot;tbtn&quot; id=&quot;tbtn&quot; onclick=&quot;toggleTheme()&quot;&gt;☀ Modo claro&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;wrap&quot;&gt;
+&lt;div class=&quot;cvs&quot; id=&quot;cvs&quot;&gt;
+&lt;svg class=&quot;svgl&quot; id=&quot;svgl&quot;&gt;&lt;/svg&gt;
+
+&lt;!-- proveedor --&gt;
+&lt;div class=&quot;ent ed&quot; id=&quot;e-proveedor&quot; style=&quot;left:30px;top:195px;width:205px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;proveedor &lt;span class=&quot;ebg&quot;&gt;DIM&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_proveedor&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;nombre&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- familia --&gt;
+&lt;div class=&quot;ent ed&quot; id=&quot;e-familia&quot; style=&quot;left:30px;top:380px;width:205px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;familia &lt;span class=&quot;ebg&quot;&gt;DIM&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_familia&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;nombre&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- region --&gt;
+&lt;div class=&quot;ent ed&quot; id=&quot;e-region&quot; style=&quot;left:30px;top:740px;width:195px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;region &lt;span class=&quot;ebg&quot;&gt;DIM&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_region&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;region&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- moneda --&gt;
+&lt;div class=&quot;ent ed&quot; id=&quot;e-moneda&quot; style=&quot;left:30px;top:900px;width:195px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;moneda &lt;span class=&quot;ebg&quot;&gt;DIM&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_moneda&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;moneda&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- MODELO (core) --&gt;
+&lt;div class=&quot;ent ec&quot; id=&quot;e-modelo&quot; style=&quot;left:490px;top:60px;width:265px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;modelo &lt;span class=&quot;ebg&quot;&gt;CORE&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_modelo&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;model_slug&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_proveedor&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;nombre_comercial&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_familia&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;tamanho_ventana_ctx&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;arquitectura&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;parametros_B&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;open_weight&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;multimodal&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;opensource&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;modalidad&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;training_data_cutoff&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DATE&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;fecha_de_lanzamiento&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;TIMESTAMP&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- plan_precio --&gt;
+&lt;div class=&quot;ent ef&quot; id=&quot;e-plan_precio&quot; style=&quot;left:295px;top:590px;width:248px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;plan_precio &lt;span class=&quot;ebg&quot;&gt;FACT&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_plan_precio&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;tipo_plan&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;unidad_facturacion&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_modelo&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_region&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- precio_modelo --&gt;
+&lt;div class=&quot;ent ef&quot; id=&quot;e-precio_modelo&quot; style=&quot;left:295px;top:810px;width:258px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;precio_modelo &lt;span class=&quot;ebg&quot;&gt;SCD2&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_precio_modelo&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;precio_por_M_entrada&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;precio_por_M_salida&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;median_latency_ms&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;throughput_tps&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;free_tier&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;fecha&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;TIMESTAMP&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;valid_from&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;TIMESTAMP&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;valid_to&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;TIMESTAMP&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;is_current&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_plan_precio&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_moneda&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- test_benchmark --&gt;
+&lt;div class=&quot;ent ef&quot; id=&quot;e-test_benchmark&quot; style=&quot;left:855px;top:80px;width:250px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;test_benchmark &lt;span class=&quot;ebg&quot;&gt;FACT&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_test_benchmark&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_benchmark&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_modelo&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;puntuacion&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;evaluation_date&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;TIMESTAMP&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;notes&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- benchmark --&gt;
+&lt;div class=&quot;ent ed&quot; id=&quot;e-benchmark&quot; style=&quot;left:1140px;top:265px;width:255px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;benchmark &lt;span class=&quot;ebg&quot;&gt;DIM&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_benchmark&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;nombre_corto&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;full_name&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;descripcion&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;TEXT&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_area_competencia&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;metric&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;num_tasks&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;★&lt;/span&gt;&lt;span class=&quot;fn nf&quot;&gt;saturated&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- area_competencia --&gt;
+&lt;div class=&quot;ent ed&quot; id=&quot;e-area_competencia&quot; style=&quot;left:1140px;top:75px;width:255px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;area_competencia &lt;span class=&quot;ebg&quot;&gt;DIM&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_area_competencia&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;area_competencia&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- safety_modelo (NUEVO) --&gt;
+&lt;div class=&quot;ent en&quot; id=&quot;e-safety_modelo&quot; style=&quot;left:855px;top:490px;width:258px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;safety_modelo &lt;span class=&quot;ebg&quot;&gt;NUEVO&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_safety&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_modelo&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;dv&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;toxicity_score&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;bias_score&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;refusal_rate&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;hallucination_rate&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;instruction_following&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;jailbreak_resistance&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;factuality_score&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;rlhf_aligned&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;safety_training&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;VARCHAR&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;fecha&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;TIMESTAMP&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;is_current&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- performance_modelo (NUEVO) --&gt;
+&lt;div class=&quot;ent en&quot; id=&quot;e-performance_modelo&quot; style=&quot;left:855px;top:895px;width:252px&quot;&gt;
+  &lt;div class=&quot;eh&quot;&gt;performance_modelo &lt;span class=&quot;ebg&quot;&gt;NUEVO&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;eb&quot;&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔑&lt;/span&gt;&lt;span class=&quot;fn pk&quot;&gt;id_performance&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;🔗&lt;/span&gt;&lt;span class=&quot;fn fk&quot;&gt;id_modelo&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;INTEGER&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;dv&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;intelligence_index&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;speed_tps&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;latency_s&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;price_blended&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;DECIMAL&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;fecha&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;TIMESTAMP&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;f&quot;&gt;&lt;span class=&quot;fi&quot;&gt;&lt;/span&gt;&lt;span class=&quot;fn&quot;&gt;is_current&lt;/span&gt;&lt;span class=&quot;ft&quot;&gt;BOOLEAN&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;&lt;!-- /cvs --&gt;
+&lt;/div&gt;&lt;!-- /wrap --&gt;
+
+&lt;script&gt;
+function toggleTheme(){
+  const h=document.documentElement,b=document.getElementById('tbtn');
+  const dark=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',dark?'light':'dark');
+  b.textContent=dark?'🌙 Modo oscuro':'☀ Modo claro';
+  setTimeout(drawLines,50);
+}
+
+function pt(id,side){
+  const el=document.getElementById('e-'+id);
+  if(!el)return null;
+  const x=el.offsetLeft,y=el.offsetTop,w=el.offsetWidth,h=el.offsetHeight;
+  if(side==='left')  return[x,       y+h/2];
+  if(side==='right') return[x+w,     y+h/2];
+  if(side==='top')   return[x+w/2,   y    ];
+  if(side==='bottom')return[x+w/2,   y+h  ];
+}
+
+function addLine(svg,p1,s1,p2,s2,col,lbl){
+  if(!p1||!p2)return;
+  const dist=Math.max(Math.abs(p2[0]-p1[0]),Math.abs(p2[1]-p1[1]))*0.42;
+  const cd=Math.max(dist,55);
+  const off={left:[-cd,0],right:[cd,0],top:[0,-cd],bottom:[0,cd]};
+  const [dx1,dy1]=off[s1],[dx2,dy2]=off[s2];
+  const cx1=p1[0]+dx1,cy1=p1[1]+dy1,cx2=p2[0]+dx2,cy2=p2[1]+dy2;
+
+  // line
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d',`M${p1[0]} ${p1[1]} C${cx1} ${cy1},${cx2} ${cy2},${p2[0]} ${p2[1]}`);
+  path.setAttribute('stroke',col);path.setAttribute('stroke-width','1.5');
+  path.setAttribute('fill','none');path.setAttribute('opacity','0.6');
+  svg.appendChild(path);
+
+  // arrow
+  const ang=Math.atan2(p2[1]-cy2,p2[0]-cx2);
+  const as=7;
+  const ax1=p2[0]-as*Math.cos(ang-0.35),ay1=p2[1]-as*Math.sin(ang-0.35);
+  const ax2=p2[0]-as*Math.cos(ang+0.35),ay2=p2[1]-as*Math.sin(ang+0.35);
+  const arr=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+  arr.setAttribute('points',`${p2[0]},${p2[1]} ${ax1},${ay1} ${ax2},${ay2}`);
+  arr.setAttribute('fill',col);arr.setAttribute('opacity','0.7');
+  svg.appendChild(arr);
+
+  // label bg+text
+  if(lbl){
+    const mx=(p1[0]+p2[0])/2+(dy1-dy2)*0.08,my=(p1[1]+p2[1])/2+(dx2-dx1)*0.08;
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    bg.setAttribute('x',mx-13);bg.setAttribute('y',my-9);
+    bg.setAttribute('width',26);bg.setAttribute('height',15);
+    bg.setAttribute('rx',4);bg.setAttribute('fill','#0d1117');bg.setAttribute('opacity','0.85');
+    svg.appendChild(bg);
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',mx);t.setAttribute('y',my+2.5);
+    t.setAttribute('text-anchor','middle');t.setAttribute('font-size','8.5');
+    t.setAttribute('fill',col);t.setAttribute('opacity','0.9');
+    t.setAttribute('font-family','Satoshi,Inter,sans-serif');t.setAttribute('font-weight','700');
+    t.textContent=lbl;
+    svg.appendChild(t);
+  }
+}
+
+function drawLines(){
+  const svg=document.getElementById('svgl');
+  svg.innerHTML='';
+  const C={core:'#3b82f6',dim:'#2dd4bf',fact:'#a78bfa',new:'#fb923c'};
+  const rels=[
+    ['proveedor','right','modelo','left',   C.dim, '1:N'],
+    ['familia',  'right','modelo','left',   C.dim, '1:N'],
+    ['modelo','bottom','plan_precio','top',  C.fact,'1:N'],
+    ['modelo','right','test_benchmark','left',C.fact,'1:N'],
+    ['modelo','right','safety_modelo','left', C.new,'1:N'],
+    ['modelo','right','performance_modelo','left',C.new,'1:N'],
+    ['plan_precio','bottom','precio_modelo','top',C.fact,'1:N'],
+    ['plan_precio','left','region','right',  C.dim, 'N:1'],
+    ['precio_modelo','left','moneda','right', C.dim, 'N:1'],
+    ['test_benchmark','right','benchmark','left',C.dim,'N:1'],
+    ['benchmark','top','area_competencia','bottom',C.dim,'N:1'],
+  ];
+  rels.forEach(r=&gt;addLine(svg,pt(r[0],r[1]),r[1],pt(r[2],r[3]),r[3],r[4],r[5]));
+}
+
+window.addEventListener('load',()=&gt;setTimeout(drawLines,120));
+window.addEventListener('resize',drawLines);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"
+                    style="width:100%;height:100%;border:none;display:block;"
+                    scrolling="no"
+                    title="Modelo ER Silver">
+                </iframe>
+            </div>
+            <div style="text-align:center;padding:6px;font-size:0.62rem;color:#484f58;background:rgba(16,22,27,0.7);flex-shrink:0;">
+                Arrastra los nodos · Scroll para zoom · Hover para detalles de columnas
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-slide="5" data-title="Roles, Usuarios & CI/CD">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;top:-60px;left:-40px;background:#3fb950;opacity:0.07;"></div>
+        </div>
+        <div class="content" style="position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1rem,3vw,2.5rem);">
+            <div class="reveal" style="font-size:0.68rem;text-transform:uppercase;letter-spacing:.15em;color:#3fb950;margin-bottom:.3rem;">Snowflake · GitHub Actions</div>
+            <h2 class="reveal" style="font-family:'Instrument Serif',serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:400;margin-bottom:1rem;">Roles, Usuarios & CI/CD</h2>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+
+                <!-- ROLES -->
+                <div class="reveal glass-card" style="padding:0.9rem;">
+                    <div style="font-size:0.65rem;text-transform:uppercase;color:#58a6ff;font-weight:700;margin-bottom:0.6rem;letter-spacing:.08em;">🔐 Roles Snowflake</div>
+                    <table style="width:100%;border-collapse:collapse;font-size:0.62rem;">
+                        <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                            <th style="text-align:left;color:#484f58;padding:3px 6px;font-weight:600;">Rol</th>
+                            <th style="text-align:left;color:#484f58;padding:3px 6px;font-weight:600;">Acceso</th>
+                        </tr>
+                        <tr><td style="padding:4px 6px;color:#58a6ff;font-family:monospace;border-bottom:1px solid rgba(255,255,255,0.04);">DEV_ROLE_INGEST</td><td style="padding:4px 6px;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">BRONZE DEV → RAW</td></tr>
+                        <tr><td style="padding:4px 6px;color:#d2a839;font-family:monospace;border-bottom:1px solid rgba(255,255,255,0.04);">PRE_ROLE_INGEST</td><td style="padding:4px 6px;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">BRONZE PRE → RAW</td></tr>
+                        <tr><td style="padding:4px 6px;color:#3fb950;font-family:monospace;border-bottom:1px solid rgba(255,255,255,0.04);">PRO_ROLE_INGEST</td><td style="padding:4px 6px;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">BRONZE PRO → RAW</td></tr>
+                        <tr><td style="padding:4px 6px;color:#58a6ff;font-family:monospace;border-bottom:1px solid rgba(255,255,255,0.04);">DEV_ROLE_TRANSFORM</td><td style="padding:4px 6px;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">BRONZE+SILVER+GOLD DEV</td></tr>
+                        <tr><td style="padding:4px 6px;color:#d2a839;font-family:monospace;border-bottom:1px solid rgba(255,255,255,0.04);">PRE_ROLE_TRANSFORM</td><td style="padding:4px 6px;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">BRONZE+SILVER+GOLD PRE</td></tr>
+                        <tr><td style="padding:4px 6px;color:#3fb950;font-family:monospace;">PRO_ROLE_TRANSFORM</td><td style="padding:4px 6px;color:#8b949e;">BRONZE+SILVER+GOLD PRO</td></tr>
+                    </table>
+                </div>
+
+                <!-- USUARIOS + CI/CD -->
+                <div style="display:flex;flex-direction:column;gap:0.7rem;">
+                    <div class="reveal glass-card" style="padding:0.9rem;">
+                        <div style="font-size:0.65rem;text-transform:uppercase;color:#bc8cff;font-weight:700;margin-bottom:0.6rem;letter-spacing:.08em;">👤 Usuarios</div>
+                        <div style="font-size:0.62rem;font-family:monospace;line-height:1.9;color:#8b949e;">
+                            <span style="color:#58a6ff;">USR_DLT_PDE</span> → DEV_ROLE_INGEST<br>
+                            <span style="color:#d2a839;">USR_DLT_PRE_PDE</span> → PRE_ROLE_INGEST<br>
+                            <span style="color:#3fb950;">USR_DLT_PRO_PDE</span> → PRO_ROLE_INGEST<br>
+                            <span style="color:#58a6ff;">USR_DBT_PDE</span> → DEV_ROLE_TRANSFORM<br>
+                            <span style="color:#d2a839;">USR_DBT_PRE_PDE</span> → PRE_ROLE_TRANSFORM<br>
+                            <span style="color:#3fb950;">USR_DBT_PRO_PDE</span> → PRO_ROLE_TRANSFORM
+                        </div>
+                        <div style="margin-top:6px;font-size:0.6rem;color:#484f58;">Warehouse: <code style="color:#bc8cff;">PROYECTDE</code> · auto-suspend: 60s</div>
+                    </div>
+                    <div class="reveal glass-card" style="padding:0.9rem;">
+                        <div style="font-size:0.65rem;text-transform:uppercase;color:#3fb950;font-weight:700;margin-bottom:0.6rem;letter-spacing:.08em;">🚀 GitHub Actions Workflows</div>
+                        <div style="display:flex;flex-direction:column;gap:4px;font-size:0.62rem;">
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <span style="background:rgba(88,166,255,0.12);border:1px solid rgba(88,166,255,0.2);border-radius:4px;padding:1px 7px;color:#58a6ff;font-family:monospace;">ingest_dev.yml</span>
+                                <span style="color:#8b949e;">push → DEV</span>
+                            </div>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <span style="background:rgba(210,168,57,0.12);border:1px solid rgba(210,168,57,0.2);border-radius:4px;padding:1px 7px;color:#d2a839;font-family:monospace;">ingest_pre.yml</span>
+                                <span style="color:#8b949e;">push → PRE</span>
+                            </div>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <span style="background:rgba(63,185,80,0.12);border:1px solid rgba(63,185,80,0.2);border-radius:4px;padding:1px 7px;color:#3fb950;font-family:monospace;">ingest_pro.yml</span>
+                                <span style="color:#8b949e;">push → PRO + workflow_dispatch</span>
+                            </div>
+                            <div style="margin-top:4px;font-size:0.6rem;color:#484f58;">Path filter: <code style="color:#bc8cff;">1_data/</code> · <code style="color:#bc8cff;">3_ingest/</code> · <code style="color:#bc8cff;">requirements.txt</code></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-slide="6" data-title="Arquitectura Medallion">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:400px;height:400px;top:-80px;right:-60px;background:#ff8c00;opacity:0.08;"></div>
+        </div>
+        <div class="content" style="position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1rem,3vw,2.5rem);">
+            <div class="reveal" style="font-size:0.68rem;text-transform:uppercase;letter-spacing:.15em;color:#ff8c00;margin-bottom:.3rem;">Arquitectura</div>
+            <h2 class="reveal" style="font-family:'Instrument Serif',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:400;margin-bottom:1.2rem;">Arquitectura Medallion</h2>
+
+            <div style="display:grid;grid-template-columns:1fr;gap:0.7rem;">
+
+                <!-- BRONZE -->
+                <div class="reveal glass-card" style="padding:1rem;border-left:3px solid rgba(210,143,57,0.7);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.5rem;">
+                        <span style="font-size:0.75rem;font-weight:700;color:#d28f39;text-transform:uppercase;letter-spacing:.1em;">🟤 BRONZE — RAW</span>
+                        <span style="font-size:0.65rem;color:#484f58;font-family:monospace;">DEV_BRONZE_BD_MODELOS.RAW</span>
+                    </div>
+                    <p style="font-size:0.75rem;color:#8b949e;line-height:1.5;">CSVs crudos ingestados con <strong style="color:#58a6ff;">dlt</strong> — sin transformación. Datos en su estado original desde las fuentes.</p>
+                </div>
+
+                <!-- SILVER -->
+                <div class="reveal glass-card" style="padding:1rem;border-left:3px solid rgba(192,192,192,0.5);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;">
+                        <span style="font-size:0.75rem;font-weight:700;color:#c0c0c0;text-transform:uppercase;letter-spacing:.1em;">⚪ SILVER — Staging + Models</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:0.7rem;">
+                        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:8px;">
+                            <div style="color:#58a6ff;font-weight:600;margin-bottom:3px;font-family:monospace;font-size:0.65rem;">STAGING</div>
+                            <div style="color:#8b949e;">Vistas intermedias <code style="color:#bc8cff;font-size:0.62rem;">stg_*</code></div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:8px;">
+                            <div style="color:#c0c0c0;font-weight:600;margin-bottom:3px;font-family:monospace;font-size:0.65rem;">SILVER</div>
+                            <div style="color:#8b949e;">Vistas limpias — modelo, precio</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:8px;">
+                            <div style="color:#f72585;font-weight:600;margin-bottom:3px;font-family:monospace;font-size:0.65rem;">SNAPSHOT</div>
+                            <div style="color:#8b949e;">SCD2 histórico <code style="color:#bc8cff;font-size:0.62rem;">snp_*</code></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GOLD -->
+                <div class="reveal glass-card" style="padding:1rem;border-left:3px solid rgba(255,215,0,0.5);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;">
+                        <span style="font-size:0.75rem;font-weight:700;color:#ffd700;text-transform:uppercase;letter-spacing:.1em;">🟡 GOLD — Core + Marts</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.7rem;">
+                        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:8px;">
+                            <div style="color:#ffd700;font-weight:600;margin-bottom:3px;font-size:0.65rem;font-family:monospace;">GOLD_CORE</div>
+                            <div style="color:#8b949e;">6 dimensiones puras + 2 tablas de hechos (Star Schema)</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:8px;">
+                            <div style="color:#ffa040;font-weight:600;margin-bottom:3px;font-size:0.65rem;font-family:monospace;">GOLD_MART</div>
+                            <div style="color:#8b949e;">7 marts analíticos — value score, pricing, TCO, leaderboard…</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="reveal" style="margin-top:0.8rem;display:flex;gap:8px;flex-wrap:wrap;">
+                <span style="background:rgba(88,166,255,0.1);border:1px solid rgba(88,166,255,0.2);border-radius:20px;padding:3px 10px;font-size:0.65rem;color:#58a6ff;">❄️ Snowflake</span>
+                <span style="background:rgba(188,140,255,0.1);border:1px solid rgba(188,140,255,0.2);border-radius:20px;padding:3px 10px;font-size:0.65rem;color:#bc8cff;">⚙️ dbt</span>
+                <span style="background:rgba(255,140,0,0.1);border:1px solid rgba(255,140,0,0.2);border-radius:20px;padding:3px 10px;font-size:0.65rem;color:#ffa040;">⚡ dlt</span>
+                <span style="background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.2);border-radius:20px;padding:3px 10px;font-size:0.65rem;color:#3fb950;">3 entornos DEV / PRE / PRO</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-slide="7" data-title="Ingesta dlt">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;top:-50px;right:-40px;background:#ffa040;opacity:0.07;"></div>
+        </div>
+        <div class="content" style="position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1rem,3vw,2.5rem);">
+            <div class="reveal" style="font-size:0.68rem;text-transform:uppercase;letter-spacing:.15em;color:#ffa040;margin-bottom:.3rem;">Ingesta</div>
+            <h2 class="reveal" style="font-family:'Instrument Serif',serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:400;margin-bottom:0.9rem;">Ingesta dlt — <code style="font-size:0.75em;color:#bc8cff;">ingest_csv_to_snowflake.py</code></h2>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.7rem;">
+
+                <!-- MERGE -->
+                <div class="reveal glass-card" style="padding:0.9rem;grid-column:1/3;border-top:2px solid rgba(88,166,255,0.4);">
+                    <div style="font-size:0.7rem;font-weight:700;color:#58a6ff;margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:.08em;">🔄 MERGE — upsert por PK</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:0.63rem;font-family:monospace;">
+                        <div style="color:#8b949e;">models <span style="color:#484f58;">→ model_id</span></div>
+                        <div style="color:#8b949e;">benchmarks <span style="color:#484f58;">→ benchmark_id</span></div>
+                        <div style="color:#8b949e;">safety_alignment <span style="color:#484f58;">→ model_id</span></div>
+                        <div style="color:#8b949e;">huggingface_models <span style="color:#484f58;">→ model_id</span></div>
+                        <div style="color:#8b949e;">openrouter_models <span style="color:#484f58;">→ id</span></div>
+                        <div style="color:#8b949e;">proveedores <span style="color:#484f58;">→ proveedor</span></div>
+                        <div style="color:#8b949e;">servidores <span style="color:#484f58;">→ Modelo_GPU</span></div>
+                        <div style="color:#8b949e;">llm_complete_dataset <span style="color:#484f58;">→ model_name</span></div>
+                        <div style="color:#8b949e;">llm_model_comparison_2026 <span style="color:#484f58;">→ Model</span></div>
+                        <div style="color:#8b949e;">ai_models_performance <span style="color:#484f58;">→ Model</span></div>
+                        <div style="color:#8b949e;">proveedores_servidor <span style="color:#484f58;">→ [Prov, Mod]</span></div>
+                        <div style="color:#8b949e;">nuevo_openrouter_modelos <span style="color:#484f58;">→ id</span></div>
+                    </div>
+                </div>
+
+                <!-- APPEND + REPLACE -->
+                <div style="display:flex;flex-direction:column;gap:0.7rem;">
+                    <div class="reveal glass-card" style="padding:0.9rem;border-top:2px solid rgba(63,185,80,0.4);">
+                        <div style="font-size:0.7rem;font-weight:700;color:#3fb950;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:.08em;">➕ APPEND</div>
+                        <div style="font-size:0.65rem;font-family:monospace;color:#8b949e;">benchmark_scores<br><span style="color:#484f58;font-size:0.6rem;">acumula filas nuevas</span></div>
+                    </div>
+                    <div class="reveal glass-card" style="padding:0.9rem;border-top:2px solid rgba(247,37,133,0.4);">
+                        <div style="font-size:0.7rem;font-weight:700;color:#f72585;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:.08em;">🔁 REPLACE</div>
+                        <div style="font-size:0.65rem;font-family:monospace;color:#8b949e;">seed_Moneda<br>seed_Planes<br>seed_Region<br><span style="color:#484f58;font-size:0.6rem;">reemplazo completo</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal" style="margin-top:0.7rem;display:flex;gap:8px;align-items:center;font-size:0.68rem;color:#484f58;">
+                <span>Pipeline:</span>
+                <code style="color:#bc8cff;background:rgba(188,140,255,0.08);padding:2px 8px;border-radius:4px;">llm_csv_ingestion</code>
+                <span>→ Dataset:</span>
+                <code style="color:#d28f39;background:rgba(210,143,57,0.08);padding:2px 8px;border-radius:4px;">RAW</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-slide="8" data-title="Incrementales & Snapshots">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;top:-60px;right:-40px;background:#bc8cff;opacity:0.08;"></div>
+        </div>
+        <div class="content" style="position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1rem,3vw,2.5rem);">
+            <div class="reveal" style="font-size:0.68rem;text-transform:uppercase;letter-spacing:.15em;color:#bc8cff;margin-bottom:.3rem;">dbt</div>
+            <h2 class="reveal" style="font-family:'Instrument Serif',serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:400;margin-bottom:1rem;">Modelos Incrementales & Snapshots SCD2</h2>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+
+                <!-- INCREMENTALES -->
+                <div>
+                    <div class="reveal" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:.12em;color:#58a6ff;margin-bottom:0.5rem;font-weight:600;">⚡ Modelos Incrementales</div>
+
+                    <div class="reveal glass-card" style="padding:0.9rem;margin-bottom:0.6rem;border-left:3px solid rgba(88,166,255,0.4);">
+                        <div style="font-size:0.73rem;font-weight:700;color:#e6edf3;margin-bottom:4px;font-family:monospace;">test_benchmark</div>
+                        <div style="font-size:0.65rem;color:#8b949e;margin-bottom:6px;">→ <code style="color:#c0c0c0;">SILVER.TEST_BENCHMARK</code></div>
+                        <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:8px;font-family:monospace;font-size:0.6rem;color:#58a6ff;line-height:1.6;">
+                            unique_key = <span style="color:#f9c74f;">'id_test'</span><br>
+                            <span style="color:#bc8cff;">WHERE</span> fecha > MAX(fecha)<br>
+                            <span style="color:#484f58;">-- Solo scores nuevos</span>
+                        </div>
+                    </div>
+
+                    <div class="reveal glass-card" style="padding:0.9rem;border-left:3px solid rgba(88,166,255,0.4);">
+                        <div style="font-size:0.73rem;font-weight:700;color:#e6edf3;margin-bottom:4px;font-family:monospace;">precio_modelo</div>
+                        <div style="font-size:0.65rem;color:#8b949e;margin-bottom:6px;">→ <code style="color:#c0c0c0;">SILVER.PRECIO_MODELO</code></div>
+                        <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:8px;font-family:monospace;font-size:0.6rem;color:#58a6ff;line-height:1.6;">
+                            unique_key = <span style="color:#f9c74f;">'id_precio_modelo'</span><br>
+                            <span style="color:#bc8cff;">WHERE</span> fecha > MAX(fecha)<br>
+                            <span style="color:#484f58;">-- Solo precios nuevos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SNAPSHOTS -->
+                <div>
+                    <div class="reveal" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:.12em;color:#f72585;margin-bottom:0.5rem;font-weight:600;">📸 Snapshots SCD2</div>
+
+                    <div class="reveal glass-card" style="padding:0.9rem;margin-bottom:0.6rem;border-left:3px solid rgba(247,37,133,0.4);">
+                        <div style="font-size:0.73rem;font-weight:700;color:#e6edf3;margin-bottom:4px;font-family:monospace;">snp_modelo</div>
+                        <div style="font-size:0.65rem;color:#8b949e;margin-bottom:6px;">→ <code style="color:#c0c0c0;">SNAPSHOT.SNP_MODELO</code></div>
+                        <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:8px;font-family:monospace;font-size:0.6rem;color:#f72585;line-height:1.6;">
+                            strategy = <span style="color:#f9c74f;">'check'</span><br>
+                            unique_key = <span style="color:#f9c74f;">'id_modelo'</span><br>
+                            check_cols: nombre_comercial,<br>
+                            &nbsp;context_window, multimodal,<br>
+                            &nbsp;opensource, fecha_lanzamiento
+                        </div>
+                    </div>
+
+                    <div class="reveal glass-card" style="padding:0.9rem;border-left:3px solid rgba(247,37,133,0.4);">
+                        <div style="font-size:0.73rem;font-weight:700;color:#e6edf3;margin-bottom:4px;font-family:monospace;">snp_precio_modelo</div>
+                        <div style="font-size:0.65rem;color:#8b949e;margin-bottom:6px;">→ <code style="color:#c0c0c0;">SNAPSHOT.SNP_PRECIO_MODELO</code></div>
+                        <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:8px;font-family:monospace;font-size:0.6rem;color:#f72585;line-height:1.6;">
+                            strategy = <span style="color:#f9c74f;">'check'</span><br>
+                            unique_key = <span style="color:#f9c74f;">'id_precio_modelo'</span><br>
+                            check_cols: precio_M_entrada,<br>
+                            &nbsp;precio_M_salida, tipo_plan
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal" style="margin-top:0.7rem;font-size:0.65rem;color:#484f58;text-align:center;">
+                Ambos modelos usan <code style="color:#bc8cff;">on_schema_change = 'append_new_columns'</code> — compatibilidad futura garantizada
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-slide="9" data-title="Capa Gold — Star Schema">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;top:-70px;right:-50px;background:#ffd700;opacity:0.06;"></div>
+        </div>
+        <div class="content" style="position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1rem,3vw,2.5rem);">
+            <div class="reveal" style="font-size:0.68rem;text-transform:uppercase;letter-spacing:.15em;color:#ffd700;margin-bottom:.3rem;">Gold Layer</div>
+            <h2 class="reveal" style="font-family:'Instrument Serif',serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:400;margin-bottom:1rem;">Capa Gold — Star Schema</h2>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+
+                <!-- GOLD CORE -->
+                <div>
+                    <div class="reveal" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:.1em;color:#ffd700;margin-bottom:0.5rem;font-weight:600;">⭐ GOLD_CORE — Dimensiones + Hechos</div>
+                    <div class="reveal glass-card" style="padding:0.8rem;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                                <th style="text-align:left;font-size:0.62rem;color:#484f58;padding:4px 6px;font-weight:600;text-transform:uppercase;">Tabla</th>
+                                <th style="text-align:left;font-size:0.62rem;color:#484f58;padding:4px 6px;font-weight:600;text-transform:uppercase;">Descripción</th>
+                            </tr>
+                            <tr><td style="padding:5px 6px;font-size:0.65rem;font-family:monospace;color:#58a6ff;border-bottom:1px solid rgba(255,255,255,0.04);">dim_fecha</td><td style="padding:5px 6px;font-size:0.65rem;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">Calendario 2020–2031 (dbt_date)</td></tr>
+                            <tr><td style="padding:5px 6px;font-size:0.65rem;font-family:monospace;color:#58a6ff;border-bottom:1px solid rgba(255,255,255,0.04);">dim_modelo</td><td style="padding:5px 6px;font-size:0.65rem;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">Modelos de IA sin agregados</td></tr>
+                            <tr><td style="padding:5px 6px;font-size:0.65rem;font-family:monospace;color:#58a6ff;border-bottom:1px solid rgba(255,255,255,0.04);">dim_proveedor</td><td style="padding:5px 6px;font-size:0.65rem;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">Proveedores deduplicados</td></tr>
+                            <tr><td style="padding:5px 6px;font-size:0.65rem;font-family:monospace;color:#58a6ff;border-bottom:1px solid rgba(255,255,255,0.04);">dim_region</td><td style="padding:5px 6px;font-size:0.65rem;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">Regiones geográficas</td></tr>
+                            <tr><td style="padding:5px 6px;font-size:0.65rem;font-family:monospace;color:#58a6ff;border-bottom:1px solid rgba(255,255,255,0.04);">dim_plan</td><td style="padding:5px 6px;font-size:0.65rem;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">Free · Standard · Reasoning · Cached · Batch</td></tr>
+                            <tr><td style="padding:5px 6px;font-size:0.65rem;font-family:monospace;color:#58a6ff;border-bottom:1px solid rgba(255,255,255,0.04);">dim_benchmark</td><td style="padding:5px 6px;font-size:0.65rem;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.04);">Catálogo de benchmarks</td></tr>
+                            <tr><td style="padding:5px 6px;font-size:0.65rem;font-family:monospace;color:#f9c74f;">fct_precio</td><td style="padding:5px 6px;font-size:0.65rem;color:#8b949e;">Precios por modelo × plan × fecha</td></tr>
+                            <tr><td style="padding:5px 6px;font-size:0.65rem;font-family:monospace;color:#f9c74f;">fct_benchmark</td><td style="padding:5px 6px;font-size:0.65rem;color:#8b949e;">Scores por modelo × test × fecha</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GOLD MART -->
+                <div>
+                    <div class="reveal" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:.1em;color:#ffa040;margin-bottom:0.5rem;font-weight:600;">🏪 GOLD_MART — Analítica de negocio</div>
+                    <div style="display:flex;flex-direction:column;gap:0.45rem;">
+                        <div class="reveal glass-card" style="padding:7px 12px;display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.65rem;font-family:monospace;color:#ffa040;min-width:180px;">mrt_model_value_score</span>
+                            <span style="font-size:0.63rem;color:#8b949e;">Relación calidad-precio</span>
+                        </div>
+                        <div class="reveal glass-card" style="padding:7px 12px;display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.65rem;font-family:monospace;color:#ffa040;min-width:180px;">mrt_price_trend_analysis</span>
+                            <span style="font-size:0.63rem;color:#8b949e;">Tendencias de precios</span>
+                        </div>
+                        <div class="reveal glass-card" style="padding:7px 12px;display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.65rem;font-family:monospace;color:#ffa040;min-width:180px;">mrt_reasoning_leaderboard</span>
+                            <span style="font-size:0.63rem;color:#8b949e;">Ranking modelos reasoning</span>
+                        </div>
+                        <div class="reveal glass-card" style="padding:7px 12px;display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.65rem;font-family:monospace;color:#ffa040;min-width:180px;">mrt_api_vs_selfhosted</span>
+                            <span style="font-size:0.63rem;color:#8b949e;">API vs Self-hosted</span>
+                        </div>
+                        <div class="reveal glass-card" style="padding:7px 12px;display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.65rem;font-family:monospace;color:#ffa040;min-width:180px;">mrt_provider_market_analysis</span>
+                            <span style="font-size:0.63rem;color:#8b949e;">Análisis de mercado</span>
+                        </div>
+                        <div class="reveal glass-card" style="padding:7px 12px;display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.65rem;font-family:monospace;color:#ffa040;min-width:180px;">mrt_total_cost_of_ownership</span>
+                            <span style="font-size:0.63rem;color:#8b949e;">TCO por infraestructura</span>
+                        </div>
+                        <div class="reveal glass-card" style="padding:7px 12px;display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.65rem;font-family:monospace;color:#ffa040;min-width:180px;">mrt_infraestructura</span>
+                            <span style="font-size:0.63rem;color:#8b949e;">Catálogo GPUs y servidores</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-slide="10" data-title="Estructura dbt">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;bottom:-60px;right:-40px;background:#bc8cff;opacity:0.07;"></div>
+        </div>
+        <div class="content" style="position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1rem,3vw,2.5rem);">
+            <div class="reveal" style="font-size:0.68rem;text-transform:uppercase;letter-spacing:.15em;color:#bc8cff;margin-bottom:.3rem;">dbt Project</div>
+            <h2 class="reveal" style="font-family:'Instrument Serif',serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:400;margin-bottom:1rem;">Estructura del Proyecto dbt</h2>
+
+            <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:0.8rem;">
+
+                <!-- FILE TREE -->
+                <div class="reveal glass-card" style="padding:1rem;">
+                    <div style="font-size:0.6rem;color:#484f58;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;font-weight:600;">📁 4_dbt/Civica_project/</div>
+                    <div style="font-family:monospace;font-size:0.62rem;line-height:1.9;color:#8b949e;">
+                        <span style="color:#ffa040;">models/</span><br>
+                        &nbsp;&nbsp;<span style="color:#c0c0c0;">stagging/intermediate/</span> <span style="color:#484f58;">→ STAGING</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8b949e;">stg_modelo · stg_servidor · stg_gpu</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8b949e;">stg_proveedor · stg_planes · stg_model_union_ids</span><br>
+                        &nbsp;&nbsp;<span style="color:#c0c0c0;">modelo.sql · proveedor.sql</span> <span style="color:#484f58;">→ SILVER</span><br>
+                        &nbsp;&nbsp;<span style="color:#c0c0c0;">precio_modelo.sql</span> <span style="color:#58a6ff;">incremental</span><br>
+                        &nbsp;&nbsp;<span style="color:#c0c0c0;">test_benchmark.sql</span> <span style="color:#58a6ff;">incremental</span><br>
+                        <span style="color:#ffa040;">marts/</span><br>
+                        &nbsp;&nbsp;<span style="color:#ffd700;">dimensions/</span> <span style="color:#484f58;">→ GOLD_CORE (6 dims)</span><br>
+                        &nbsp;&nbsp;<span style="color:#ffd700;">facts/</span> <span style="color:#484f58;">→ GOLD_CORE (fct_precio, fct_benchmark)</span><br>
+                        &nbsp;&nbsp;<span style="color:#ffa040;">marts/</span> <span style="color:#484f58;">→ GOLD_MART (7 marts)</span><br>
+                        <span style="color:#f72585;">snapshots/</span> <span style="color:#484f58;">snp_modelo · snp_precio_modelo</span><br>
+                        <span style="color:#3fb950;">macros/</span> · <span style="color:#3fb950;">seeds/</span> · <span style="color:#3fb950;">tests/</span>
+                    </div>
+                </div>
+
+                <!-- PACKAGES + CAPAS -->
+                <div style="display:flex;flex-direction:column;gap:0.7rem;">
+                    <div class="reveal glass-card" style="padding:0.9rem;">
+                        <div style="font-size:0.65rem;text-transform:uppercase;color:#58a6ff;font-weight:700;margin-bottom:0.6rem;letter-spacing:.08em;">📦 Packages dbt</div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <span style="background:rgba(88,166,255,0.1);border:1px solid rgba(88,166,255,0.2);border-radius:20px;padding:3px 10px;font-size:0.65rem;color:#58a6ff;font-family:monospace;">dbt_date</span>
+                            <span style="background:rgba(188,140,255,0.1);border:1px solid rgba(188,140,255,0.2);border-radius:20px;padding:3px 10px;font-size:0.65rem;color:#bc8cff;font-family:monospace;">dbt_utils</span>
+                            <span style="background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.2);border-radius:20px;padding:3px 10px;font-size:0.65rem;color:#3fb950;font-family:monospace;">dbt_expectations</span>
+                        </div>
+                    </div>
+
+                    <div class="reveal glass-card" style="padding:0.9rem;">
+                        <div style="font-size:0.65rem;text-transform:uppercase;color:#ffd700;font-weight:700;margin-bottom:0.6rem;letter-spacing:.08em;">🏗 Schemas por capa</div>
+                        <div style="font-size:0.65rem;line-height:2;font-family:monospace;">
+                            <div><span style="color:#d28f39;">BRONZE</span> → <span style="color:#8b949e;">RAW (tablas físicas)</span></div>
+                            <div><span style="color:#484f58;">SILVER/STAGING</span> → <span style="color:#8b949e;">Vistas intermedias</span></div>
+                            <div><span style="color:#c0c0c0;">SILVER</span> → <span style="color:#8b949e;">Vistas limpias + incrementales</span></div>
+                            <div><span style="color:#f72585;">SNAPSHOT</span> → <span style="color:#8b949e;">SCD2 histórico</span></div>
+                            <div><span style="color:#ffd700;">GOLD_CORE</span> → <span style="color:#8b949e;">Tablas dimensionales + hechos</span></div>
+                            <div><span style="color:#ffa040;">GOLD_MART</span> → <span style="color:#8b949e;">Marts analíticos de negocio</span></div>
+                        </div>
+                    </div>
+
+                    <div class="reveal glass-card" style="padding:0.9rem;">
+                        <div style="font-size:0.65rem;text-transform:uppercase;color:#3fb950;font-weight:700;margin-bottom:0.5rem;letter-spacing:.08em;">🌐 Entornos</div>
+                        <div style="display:flex;gap:6px;">
+                            <span style="background:rgba(88,166,255,0.1);border:1px solid rgba(88,166,255,0.2);border-radius:6px;padding:4px 12px;font-size:0.68rem;color:#58a6ff;font-weight:600;">DEV</span>
+                            <span style="color:#484f58;align-self:center;">→</span>
+                            <span style="background:rgba(210,168,57,0.1);border:1px solid rgba(210,168,57,0.2);border-radius:6px;padding:4px 12px;font-size:0.68rem;color:#d2a839;font-weight:600;">PRE</span>
+                            <span style="color:#484f58;align-self:center;">→</span>
+                            <span style="background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.2);border-radius:6px;padding:4px 12px;font-size:0.68rem;color:#3fb950;font-weight:600;">PRO</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════
+         SLIDE 9: MODELO ER — iframe embed
+    ═══════════════════════════════════════ -->
+    
+
+</div><!-- .deck -->
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls">
+            <button
+                class="nav-btn"
+                onclick="changeSlide(-1)"
+                title="Anterior (←)"
+            >
+                &#8249;
+            </button>
+            <div class="slide-dots" id="dots"></div>
+            <button
+                class="nav-btn"
+                onclick="changeSlide(1)"
+                title="Siguiente (→)"
+            >
+                &#8250;
+            </button>
+            <span class="slide-counter" id="counter">1 / 10</span>
+            <span class="slide-title-indicator" id="slide-title">Inicio</span>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════
+     MODAL CONTENT TEMPLATES
+═══════════════════════════════════════════════════ -->
+        <script>
+            const MODALS = {
+                arch: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">Arquitectura Completa del Sistema</h2>
+        <p style="color:#8b949e;font-size:0.82rem;margin-bottom:1.5rem;line-height:1.6;">Vista detallada de todas las capas de la plataforma de datos LLM, desde la ingesta hasta la capa de consumo.</p>
+        <div style="display:grid;gap:12px;">
+            <div style="background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.2);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#58a6ff;margin-bottom:6px;font-size:0.85rem;">🔵 Capa de Ingesta (Sources)</div>
+                <div style="font-size:0.78rem;color:#8b949e;line-height:1.7;">
+                    • <b style="color:#e6edf3;">dlt (data load tool)</b>: Pipelines Python declarativos para CSV y APIs REST<br>
+                    • <b style="color:#e6edf3;">Airbyte</b>: Conectores preconstruidos para fuentes externas<br>
+                    • <b style="color:#e6edf3;">Custom scripts</b>: Web scraping con requests + BeautifulSoup4<br>
+                    • <b style="color:#e6edf3;">Kafka</b> (futuro): Event streaming para datos en tiempo real
+                </div>
+            </div>
+            <div style="background:rgba(247,129,102,0.06);border:1px solid rgba(247,129,102,0.2);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#f78166;margin-bottom:6px;font-size:0.85rem;">❄️ Snowflake — Capas de Almacenamiento</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.75rem;">
+                    <div style="background:rgba(255,255,255,0.03);border-radius:6px;padding:8px;">
+                        <b style="color:#f78166;">RAW</b><br><span style="color:#8b949e;">Datos originales sin modificar. Schema exacto de la fuente. Append-only.</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03);border-radius:6px;padding:8px;">
+                        <b style="color:#d2a839;">BRONZE</b><br><span style="color:#8b949e;">Limpieza básica, tipos correctos, deduplicación, renombrado de columnas.</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03);border-radius:6px;padding:8px;">
+                        <b style="color:#c0c0c0;">SILVER</b><br><span style="color:#8b949e;">Enriquecimiento, joins entre fuentes, cálculos derivados, normalización.</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03);border-radius:6px;padding:8px;">
+                        <b style="color:#ffd700;">GOLD</b><br><span style="color:#8b949e;">Dimensional model (Star Schema). Optimizado para consultas de BI.</span>
+                    </div>
+                </div>
+            </div>
+            <div style="background:rgba(188,140,255,0.06);border:1px solid rgba(188,140,255,0.2);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#bc8cff;margin-bottom:6px;font-size:0.85rem;">⚙️ dbt — Transformaciones</div>
+                <div style="font-size:0.78rem;color:#8b949e;line-height:1.7;">
+                    • Modelos SQL con Jinja2 templating<br>
+                    • Tests de unicidad, not_null, relaciones de FK<br>
+                    • Documentación automática con dbt docs<br>
+                    • Lineage graph para trazabilidad completa<br>
+                    • MetricFlow para capa semántica (roadmap)
+                </div>
+            </div>
+        </div>
+    `,
+                cicd: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">Pipeline CI/CD — GitHub Actions</h2>
+        <p style="color:#8b949e;font-size:0.82rem;margin-bottom:1.2rem;line-height:1.6;">Automatización completa del ciclo de vida del código, desde el commit hasta producción.</p>
+        <div style="background:#0d1117;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1rem;margin-bottom:1rem;font-family:'Courier New',monospace;font-size:0.72rem;line-height:1.8;color:#e6edf3;">
+            <span style="color:#bc8cff;">name:</span> <span style="color:#a5d6ff;">Deploy LLM Platform</span><br>
+            <span style="color:#bc8cff;">on:</span> [<span style="color:#a5d6ff;">push</span>, <span style="color:#a5d6ff;">pull_request</span>]<br><br>
+            <span style="color:#bc8cff;">jobs:</span><br>
+            &nbsp;&nbsp;<span style="color:#bc8cff;">test:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#bc8cff;">steps:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span style="color:#a5d6ff;">dbt test --profiles-dir .</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span style="color:#a5d6ff;">pytest tests/</span><br>
+            &nbsp;&nbsp;<span style="color:#bc8cff;">deploy-dev:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#bc8cff;">environment:</span> <span style="color:#f2cc60;">development</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#bc8cff;">steps:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span style="color:#a5d6ff;">dbt run --target dev</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="background:rgba(63,185,80,0.06);border:1px solid rgba(63,185,80,0.2);border-radius:8px;padding:12px;">
+                <div style="font-weight:700;color:#3fb950;font-size:0.82rem;margin-bottom:6px;">✓ Checks automáticos</div>
+                <div style="font-size:0.72rem;color:#8b949e;line-height:1.6;">• dbt compile (sintaxis SQL)<br>• dbt test (calidad de datos)<br>• sqlfluff lint<br>• pytest unit tests</div>
+            </div>
+            <div style="background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:12px;">
+                <div style="font-weight:700;color:#58a6ff;font-size:0.82rem;margin-bottom:6px;">🚀 Despliegue por entorno</div>
+                <div style="font-size:0.72rem;color:#8b949e;line-height:1.6;">• DEV: push a feature branch<br>• PRE: merge a develop<br>• PRO: merge a main + aprobación manual</div>
+            </div>
+        </div>
+    `,
+                schema: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">Esquema Dimensional — Star Schema</h2>
+        <p style="color:#8b949e;font-size:0.82rem;margin-bottom:1.2rem;line-height:1.6;">Modelo dimensional optimizado para análisis de precios y rendimiento de LLMs.</p>
+        <div style="display:grid;gap:10px;">
+            <div style="background:rgba(247,129,102,0.08);border:1px solid rgba(247,129,102,0.25);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#f78166;font-size:0.85rem;margin-bottom:8px;">⭐ FACT_LLM_PRICING (Tabla de Hechos)</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.72rem;color:#8b949e;">
+                    <div>• <b style="color:#e6edf3;">fact_id</b> BIGINT (PK)</div>
+                    <div>• <b style="color:#e6edf3;">model_sk</b> INT (FK → DIM_MODEL)</div>
+                    <div>• <b style="color:#e6edf3;">provider_sk</b> INT (FK → DIM_PROVIDER)</div>
+                    <div>• <b style="color:#e6edf3;">date_sk</b> INT (FK → DIM_DATE)</div>
+                    <div>• <b style="color:#e6edf3;">precio_input_1m</b> FLOAT ($/1M tokens)</div>
+                    <div>• <b style="color:#e6edf3;">precio_output_1m</b> FLOAT</div>
+                    <div>• <b style="color:#e6edf3;">context_window</b> INT</div>
+                    <div>• <b style="color:#e6edf3;">latency_p50_ms</b> FLOAT</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div style="background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:10px;">
+                    <div style="font-weight:700;color:#58a6ff;font-size:0.78rem;margin-bottom:6px;">🤖 DIM_MODEL</div>
+                    <div style="font-size:0.7rem;color:#8b949e;line-height:1.6;">model_sk · model_id<br>model_name · family<br>parameters_b · modality<br>is_open_source · launch_date</div>
+                </div>
+                <div style="background:rgba(63,185,80,0.06);border:1px solid rgba(63,185,80,0.2);border-radius:8px;padding:10px;">
+                    <div style="font-weight:700;color:#3fb950;font-size:0.78rem;margin-bottom:6px;">🏢 DIM_PROVIDER</div>
+                    <div style="font-size:0.7rem;color:#8b949e;line-height:1.6;">provider_sk · provider_id<br>provider_name · hq_country<br>founded_year · is_open_source<br>api_base_url</div>
+                </div>
+            </div>
+        </div>
+    `,
+                snowflake: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">❄️ Snowflake — Características Clave</h2>
+        <div style="display:grid;gap:10px;">
+            <div style="background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.2);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#58a6ff;font-size:0.85rem;margin-bottom:6px;">Time Travel (0-90 días)</div>
+                <div style="font-size:0.78rem;color:#8b949e;line-height:1.7;">Recuperación de datos eliminados o modificados. Consulta con AT TIMESTAMP o BEFORE STATEMENT. Útil para debugging de pipelines y auditoría.</div>
+            </div>
+            <div style="background:rgba(63,185,80,0.06);border:1px solid rgba(63,185,80,0.2);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#3fb950;font-size:0.85rem;margin-bottom:6px;">Zero-Copy Cloning</div>
+                <div style="font-size:0.78rem;color:#8b949e;line-height:1.7;">Clona tablas/schemas/databases instantáneamente sin copiar datos físicamente. Permite entornos DEV/PRE/PRO con coste mínimo de almacenamiento.</div>
+            </div>
+            <div style="background:rgba(188,140,255,0.06);border:1px solid rgba(188,140,255,0.2);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#bc8cff;font-size:0.85rem;margin-bottom:6px;">Virtual Warehouses (Compute)</div>
+                <div style="font-size:0.78rem;color:#8b949e;line-height:1.7;">Separación storage/compute. Auto-suspend y auto-resume para optimizar costes. Multi-cluster para concurrencia. Tamaños XS→4XL.</div>
+            </div>
+        </div>
+    `,
+                dbt: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">🔧 dbt — Data Build Tool</h2>
+        <div style="display:grid;gap:10px;">
+            <div style="background:rgba(188,140,255,0.06);border:1px solid rgba(188,140,255,0.2);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#bc8cff;font-size:0.85rem;margin-bottom:6px;">Estructura del Proyecto</div>
+                <div style="background:#0d1117;border-radius:6px;padding:10px;font-family:monospace;font-size:0.72rem;color:#e6edf3;line-height:1.8;">
+                    models/<br>
+                    &nbsp;&nbsp;staging/     <span style="color:#484f58;"># stg_openrouter.sql</span><br>
+                    &nbsp;&nbsp;intermediate/ <span style="color:#484f58;"># int_models_enriched.sql</span><br>
+                    &nbsp;&nbsp;marts/<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;core/      <span style="color:#484f58;"># dim_model.sql</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;finance/   <span style="color:#484f58;"># fact_pricing.sql</span><br>
+                    tests/<br>
+                    macros/
+                </div>
+            </div>
+            <div style="background:rgba(63,185,80,0.06);border:1px solid rgba(63,185,80,0.2);border-radius:10px;padding:1rem;">
+                <div style="font-weight:700;color:#3fb950;font-size:0.85rem;margin-bottom:6px;">Tests de Calidad</div>
+                <div style="font-size:0.78rem;color:#8b949e;line-height:1.7;">unique, not_null, accepted_values, relationships. Custom generic tests. dbt-expectations para validaciones avanzadas.</div>
+            </div>
+        </div>
+    `,
+                python: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">🐍 Python — Ingesta y Pipelines</h2>
+        <div style="background:#0d1117;border:1px solid rgba(63,185,80,0.2);border-radius:10px;padding:1rem;font-family:monospace;font-size:0.72rem;line-height:1.8;">
+            <span style="color:#ff7b72;">import</span> <span style="color:#e6edf3;">dlt</span><br><br>
+            <span style="color:#d2a8ff;">@dlt.source</span><br>
+            <span style="color:#ff7b72;">def</span> <span style="color:#d2a8ff;">openrouter_source</span>():<br>
+            &nbsp;&nbsp;<span style="color:#ff7b72;">return</span> <span style="color:#e6edf3;">fetch_models_resource()</span><br><br>
+            <span style="color:#d2a8ff;">@dlt.resource</span>(<span style="color:#79c0ff;">write_disposition</span>=<span style="color:#a5d6ff;">"replace"</span>)<br>
+            <span style="color:#ff7b72;">def</span> <span style="color:#d2a8ff;">fetch_models_resource</span>():<br>
+            &nbsp;&nbsp;<span style="color:#e6edf3;">resp</span> = <span style="color:#e6edf3;">requests.get(OPENROUTER_URL)</span><br>
+            &nbsp;&nbsp;<span style="color:#ff7b72;">yield</span> <span style="color:#e6edf3;">resp.json()[</span><span style="color:#a5d6ff;">"data"</span><span style="color:#e6edf3;">]</span><br><br>
+            <span style="color:#484f58;"># Run pipeline</span><br>
+            <span style="color:#e6edf3;">pipeline</span> = <span style="color:#e6edf3;">dlt.pipeline(</span><br>
+            &nbsp;&nbsp;<span style="color:#79c0ff;">destination</span>=<span style="color:#a5d6ff;">"snowflake"</span>,<br>
+            &nbsp;&nbsp;<span style="color:#79c0ff;">dataset_name</span>=<span style="color:#a5d6ff;">"raw_openrouter"</span><br>
+            <span style="color:#e6edf3;">)</span>
+        </div>
+    `,
+                github: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">🐙 GitHub Actions — CI/CD</h2>
+        <p style="color:#8b949e;font-size:0.82rem;line-height:1.6;">Automatización completa con workflows para cada entorno. Secrets gestionados por entorno (DEV/PRE/PRO). dbt Cloud CLI para ejecuciones remotas.</p>
+    `,
+                k8s: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">☸️ K3s en Raspberry Pi</h2>
+        <p style="color:#8b949e;font-size:0.82rem;line-height:1.6;">Clúster Kubernetes ligero on-premises. Ideal para pruebas de orquestación de pipelines, Airflow, y servicios de datos con coste mínimo.</p>
+    `,
+                openrouter: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">🤖 OpenRouter API</h2>
+        <p style="color:#8b949e;font-size:0.82rem;line-height:1.6;">Fuente principal de precios y disponibilidad de modelos LLM. Más de 150 modelos de 24+ proveedores. Precios en tiempo real por token (input/output). Endpoint unificado para benchmarking.</p>
+    `,
+                pipeline_svg: `
+        <h2 style="font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:1rem;color:#e6edf3;">Pipeline Completo: Fuentes → BI</h2>
+        <p style="color:#8b949e;font-size:0.82rem;margin-bottom:1rem;line-height:1.6;">Arquitectura ELT de extremo a extremo. Snowflake como data warehouse central con 4 capas de madurez del dato.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.75rem;">
+            <div style="background:rgba(255,140,0,0.06);border:1px solid rgba(255,140,0,0.2);border-radius:8px;padding:10px;">
+                <b style="color:#ffa040;">📥 Fuentes de datos</b><br><br>
+                <span style="color:#8b949e;line-height:1.6;">OpenRouter API · HuggingFace · AiDataHub · ArtificialAnalysis.io</span>
+            </div>
+            <div style="background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:10px;">
+                <b style="color:#58a6ff;">⚡ Ingesta</b><br><br>
+                <span style="color:#8b949e;line-height:1.6;">dlt (data load tool) + Airbyte para conectores estándar</span>
+            </div>
+            <div style="background:rgba(255,140,0,0.06);border:1px solid rgba(255,140,0,0.2);border-radius:8px;padding:10px;">
+                <b style="color:#ff8c00;">❄️ Snowflake layers</b><br><br>
+                <span style="color:#8b949e;line-height:1.6;">RAW → BRONZE → SILVER → GOLD (Star Schema dimensional)</span>
+            </div>
+            <div style="background:rgba(63,185,80,0.06);border:1px solid rgba(63,185,80,0.2);border-radius:8px;padding:10px;">
+                <b style="color:#3fb950;">🚀 Entornos CI/CD</b><br><br>
+                <span style="color:#8b949e;line-height:1.6;">GitHub Actions · DEV / PRE / PRO automáticos con aprobación manual a PRO</span>
+            </div>
+        </div>
+    `,
+            };
+
+            // === MODAL SYSTEM ===
+            function expandModal(key) {
+                const content = MODALS[key];
+                if (!content) return;
+                document.getElementById("modal-content").innerHTML = content;
+                document.getElementById("modal").classList.add("open");
+                document.body.style.overflow = "hidden";
+            }
+            function closeModal() {
+                document.getElementById("modal").classList.remove("open");
+                document.body.style.overflow = "";
+            }
+            document
+                .getElementById("modal")
+                .addEventListener("click", function (e) {
+                    if (e.target === this) closeModal();
+                });
+
+            // === DECK NAVIGATION ===
+            let current = 1;
+            const slides = document.querySelectorAll(".slide");
+            const total = slides.length;
+            const dotsContainer = document.getElementById("dots");
+            const counter = document.getElementById("counter");
+            const titleEl = document.getElementById("slide-title");
+
+            for (let i = 1; i <= total; i++) {
+                const dot = document.createElement("div");
+                dot.className = "dot" + (i === 1 ? " active" : "");
+                dot.onclick = () => goToSlide(i);
+                dot.title =
+                    document.querySelector(`[data-slide="${i}"]`).dataset
+                        .title || "";
+                dotsContainer.appendChild(dot);
+            }
+
+            function goToSlide(n) {
+                const prev = document.querySelector(".slide.active");
+                const next = document.querySelector(
+                    `.slide[data-slide="${n}"]`,
+                );
+                if (!next || n === current) return;
+                prev.classList.remove("active");
+                next.classList.add("active");
+                current = n;
+                updateNav();
+                animateSlide(next);
+            }
+            function changeSlide(dir) {
+                let n = current + dir;
+                if (n < 1) n = total;
+                if (n > total) n = 1;
+                goToSlide(n);
+            }
+            function updateNav() {
+                document
+                    .querySelectorAll(".dot")
+                    .forEach((d, i) =>
+                        d.classList.toggle("active", i + 1 === current),
+                    );
+                counter.textContent = current + " / " + total;
+                const t =
+                    document.querySelector(`.slide[data-slide="${current}"]`)
+                        ?.dataset.title || "";
+                titleEl.textContent = t;
+            }
+            document.addEventListener("keydown", (e) => {
+                if (
+                    document.getElementById("modal").classList.contains("open")
+                ) {
+                    if (e.key === "Escape") closeModal();
+                    return;
+                }
+                if (e.key === "ArrowRight" || e.key === " ") {
+                    e.preventDefault();
+                    changeSlide(1);
+                }
+                if (e.key === "ArrowLeft") {
+                    e.preventDefault();
+                    changeSlide(-1);
+                }
+            });
+            let touchStartX = 0;
+            document.addEventListener("touchstart", (e) => {
+                touchStartX = e.touches[0].clientX;
+            });
+            document.addEventListener("touchend", (e) => {
+                const diff = touchStartX - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+            });
+
+            // === REVEAL ANIMATION ===
+            function animateSlide(slide) {
+                slide.querySelectorAll(".reveal").forEach((el, i) => {
+                    el.style.transition = "none";
+                    el.style.opacity = "0";
+                    el.style.transform = "translateY(18px)";
+                    el.offsetHeight;
+                    const delay = i * 0.07;
+                    el.style.transition = `opacity 0.4s ease ${delay}s, transform 0.4s ease ${delay}s`;
+                    el.style.opacity = "1";
+                    el.style.transform = "translateY(0)";
+                });
+                // animate bars
+                slide.querySelectorAll(".bar-fill").forEach((bar, i) => {
+                    bar.style.width = "0%";
+                    bar.style.transition = `width 0.9s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s`;
+                    bar.offsetHeight;
+                    bar.style.width = (bar.dataset.width || "0") + "%";
+                });
+                // animate counters
+                slide
+                    .querySelectorAll("[data-count]:not(.counted)")
+                    .forEach((el) => {
+                        el.classList.add("counted");
+                        const target = parseInt(el.dataset.count);
+                        let cur = 0;
+                        const step = target / 40;
+                        const timer = setInterval(() => {
+                            cur += step;
+                            if (cur >= target) {
+                                cur = target;
+                                clearInterval(timer);
+                            }
+                            el.textContent = Math.round(cur);
+                        }, 30);
+                    });
+            }
+
+            // === PARTICLES ===
+            function initParticles(canvasId, count, interactive) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                const ctx = canvas.getContext("2d");
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                let mx = -1000,
+                    my = -1000;
+                const particles = Array.from({ length: count }, () => ({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.25,
+                    vy: (Math.random() - 0.5) * 0.25,
+                    size: Math.random() * 2 + 0.5,
+                    alpha: Math.random() * 0.3 + 0.05,
+                }));
+                if (interactive) {
+                    canvas.addEventListener("mousemove", (e) => {
+                        mx = e.clientX;
+                        my = e.clientY;
+                    });
+                    canvas.addEventListener("mouseleave", () => {
+                        mx = -1000;
+                        my = -1000;
+                    });
+                }
+                (function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach((p) => {
+                        if (interactive) {
+                            const dx = p.x - mx,
+                                dy = p.y - my,
+                                dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 100) {
+                                p.vx += (dx / dist) * 0.15;
+                                p.vy += (dy / dist) * 0.15;
+                            }
+                        }
+                        p.vx *= 0.98;
+                        p.vy *= 0.98;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if (p.x < 0) p.x = canvas.width;
+                        if (p.x > canvas.width) p.x = 0;
+                        if (p.y < 0) p.y = canvas.height;
+                        if (p.y > canvas.height) p.y = 0;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255,140,0,${p.alpha})`;
+                        ctx.fill();
+                    });
+                    requestAnimationFrame(animate);
+                })();
+            }
+            initParticles("pc1", 50, true);
+            initParticles("pc6", 25, false);
+            initParticles("pc8", 50, true);
+
+            // === MOUSE SPOTLIGHT ===
+            document.addEventListener("mousemove", (e) => {
+                document.getElementById("spotlight").style.background =
+                    `radial-gradient(500px circle at ${e.clientX}px ${e.clientY}px, rgba(255,140,0,0.045), transparent 40%)`;
+            });
+
+            // === INIT FIRST SLIDE ===
+            animateSlide(document.querySelector(".slide.active"));
+            updateNav();
+
+            // ═══════════════════════════════════════════
+            // SECRET PRESENTER TIMER — 10 min, 10 bars
+            // Click bottom-left (above nav) to start/pause
+            // Ctrl+Shift+T as keyboard shortcut backup
+            // Triple-click = reset
+            // ═══════════════════════════════════════════
+            (function () {
+                const TOTAL_MS = 10 * 60 * 1000;
+                const BARS = 10;
+                const WARN_MINS = 2;
+
+                let elapsed = 0;
+                let startTime = null;
+                let running = false;
+                let rafId = null;
+                let clickCount = 0;
+                let clickTimer = null;
+
+                const timerEl = document.getElementById("secret-timer");
+                const trigEl = document.getElementById("timer-trigger");
+                const bars = Array.from({ length: BARS }, (_, i) =>
+                    document.getElementById("tbar-" + i),
+                );
+
+                function updateBars(ms) {
+                    const capped = Math.min(ms, TOTAL_MS);
+                    const secPerBar = TOTAL_MS / 1000 / BARS;
+                    const totalSecs = capped / 1000;
+                    const curBar = Math.floor(totalSecs / secPerBar);
+                    const barPct = (
+                        ((totalSecs % secPerBar) / secPerBar) *
+                        100
+                    ).toFixed(2);
+                    bars.forEach((bar, i) => {
+                        const warn = i >= BARS - WARN_MINS;
+                        bar.className = "timer-dot" + (warn ? " warn" : "");
+                        if (i < curBar) {
+                            bar.classList.add("done");
+                            bar.style.removeProperty("--progress");
+                        } else if (i === curBar && capped < TOTAL_MS) {
+                            bar.classList.add("active");
+                            bar.style.setProperty("--progress", barPct + "%");
+                        } else {
+                            bar.style.removeProperty("--progress");
+                        }
+                    });
+                }
+
+                function tick() {
+                    if (!running) return;
+                    const ms = elapsed + (performance.now() - startTime);
+                    updateBars(ms);
+                    if (ms >= TOTAL_MS) {
+                        running = false;
+                        bars.forEach((b) => {
+                            b.className = "timer-dot done warn";
+                            b.style.removeProperty("--progress");
+                        });
+                        return;
+                    }
+                    rafId = requestAnimationFrame(tick);
+                }
+
+                function updateTriggerState() {
+                    if (running) {
+                        trigEl.classList.add("running");
+                        trigEl.classList.remove("paused");
+                        trigEl.textContent = "⏱";
+                    } else if (elapsed > 0) {
+                        trigEl.classList.add("paused");
+                        trigEl.classList.remove("running");
+                        trigEl.textContent = "⏸";
+                    } else {
+                        trigEl.classList.remove("running", "paused");
+                        trigEl.textContent = "⏱";
+                    }
+                }
+
+                function start() {
+                    if (running) return;
+                    running = true;
+                    startTime = performance.now();
+                    timerEl.classList.add("visible");
+                    updateTriggerState();
+                    tick();
+                }
+
+                function pause() {
+                    if (!running) return;
+                    elapsed += performance.now() - startTime;
+                    running = false;
+                    cancelAnimationFrame(rafId);
+                    updateTriggerState();
+                }
+
+                function reset() {
+                    pause();
+                    elapsed = 0;
+                    startTime = null;
+                    running = false;
+                    cancelAnimationFrame(rafId);
+                    bars.forEach((b) => {
+                        b.className = "timer-dot";
+                        b.style.removeProperty("--progress");
+                    });
+                    timerEl.classList.remove("visible");
+                    clickCount = 0;
+                    updateTriggerState();
+                }
+
+                function handleActivation() {
+                    clickCount++;
+                    clearTimeout(clickTimer);
+                    if (clickCount >= 3) {
+                        reset();
+                        return;
+                    }
+                    clickTimer = setTimeout(function () {
+                        if (running) {
+                            pause();
+                        } else {
+                            start();
+                        }
+                        clickCount = 0;
+                    }, 300);
+                }
+
+                trigEl.addEventListener(
+                    "click",
+                    function (e) {
+                        e.stopPropagation();
+                        handleActivation();
+                    },
+                    true,
+                );
+
+                document.addEventListener("keydown", function (e) {
+                    if (e.altKey && e.key === "t") {
+                        e.preventDefault();
+                        handleActivation();
+                    }
+                });
+
+                // Keep running accurately when switching tabs/windows
+                let hiddenAt = null;
+                document.addEventListener("visibilitychange", function () {
+                    if (document.hidden) {
+                        if (running) {
+                            elapsed += performance.now() - startTime;
+                            running = false;
+                            cancelAnimationFrame(rafId);
+                            hiddenAt = Date.now();
+                        }
+                    } else {
+                        if (hiddenAt !== null) {
+                            elapsed += Date.now() - hiddenAt;
+                            hiddenAt = null;
+                            if (elapsed < TOTAL_MS) {
+                                running = true;
+                                startTime = performance.now();
+                                timerEl.classList.add("visible");
+                                tick();
+                            } else {
+                                updateBars(TOTAL_MS);
+                            }
+                        }
+                    }
+                });
+            })();
+        </script>
+
+        <!-- ═══════════════════════════════
+     SECRET PRESENTER TIMER
+     Trigger: click bottom-left corner
+═══════════════════════════════ -->
+        <div id="secret-timer">
+            <div class="timer-dot" id="tbar-0"></div>
+            <div class="timer-dot" id="tbar-1"></div>
+            <div class="timer-dot" id="tbar-2"></div>
+            <div class="timer-dot" id="tbar-3"></div>
+            <div class="timer-dot" id="tbar-4"></div>
+            <div class="timer-dot" id="tbar-5"></div>
+            <div class="timer-dot" id="tbar-6"></div>
+            <div class="timer-dot" id="tbar-7"></div>
+            <div class="timer-dot" id="tbar-8"></div>
+            <div class="timer-dot" id="tbar-9"></div>
+        </div>
+        <div id="timer-trigger" title="Cronómetro (Alt+T)">⏱</div>
+    </body>
+</html>

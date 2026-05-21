@@ -95,3 +95,5 @@ xiaomi-milm-2,Xiaomi MiLM 2,Xiaomi,MiLM,2025-07-20,150.0,150.0,Dense Transformer
 internlm-3,InternLM 3,Shanghai AI Lab,InternLM,2025-04-10,100.0,100.0,Dense Transformer,128,Apache 2.0,1,Text+Vision+Code,2025-02
 baichuan-4,Baichuan 4,Baichuan AI,Baichuan,2025-06-01,130.0,130.0,Dense Transformer,128,Proprietary,0,Text+Vision,2025-04
 yi-lightning,Yi-Lightning,01.AI,Yi,2024-10-01,,,Dense Transformer,200,Proprietary,0,Text,2024-08
+demo-model-gamma,Demo Model Gamma,Demo Org,Demo Family,2026-06-01,70.0,12.0,Transformer (MoE),512,Proprietary,0,Text+Vision,2026-01-01
+

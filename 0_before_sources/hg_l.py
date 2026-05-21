@@ -3,6 +3,21 @@ from huggingface_hub import HfApi
 
 api = HfApi()
 
+
+_org_cache = {}
+
+def is_verified_org(uploader: str) -> bool:
+    if uploader in _org_cache:
+        return _org_cache[uploader]  # ya lo sabemos, no llamar de nuevo
+    try:
+        org_info = api.get_organization(uploader)
+        result = org_info is not None
+    except Exception:
+        result = False
+    _org_cache[uploader] = result    # guardar para próximas veces
+    return result
+
+
 # Lista de licencias Open Source (Normalizada a minúsculas)
 OS_LICENSES = [
     "mit",
@@ -75,6 +90,9 @@ for m in models:
         any(lic in license_id for lic in SELF_DEPLOYABLE_LICENSES) and has_weights
     )
 
+    uploader = m.id.split("/")[0] if "/" in m.id else "unknown"
+
+
     row = {
         "name": m.id,
         "category": getattr(m, "pipeline_tag", "other"),
@@ -97,6 +115,7 @@ for m in models:
             t in ["vision", "image-to-text", "multimodal"] for t in (m.tags or [])
         ),
         "apiAvailable": True if getattr(m, "pipeline_tag", None) else False,
+        "is_verified_org": is_verified_org(uploader),
         "is_instruct": any("instruct" in t.lower() for t in (m.tags or [])),
         "is_gguf": any("gguf" in t.lower() for t in (m.tags or [])),
         "languages": ", ".join(card.get("language", []))
