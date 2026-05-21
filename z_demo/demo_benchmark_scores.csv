@@ -1,0 +1,15 @@
+model_id,benchmark_id,score,evaluation_date,notes
+demo-model-alpha,mmlu,91.5,2026-06-01,Modelo demo para prueba incremental
+demo-model-alpha,humaneval,93.2,2026-06-01,
+demo-model-alpha,gsm8k,97.8,2026-06-01,
+demo-model-beta,mmlu,88.3,2026-06-15,Segundo modelo demo
+demo-model-beta,humaneval,89.1,2026-06-15,
+demo-model-beta,gsm8k,95.4,2026-06-15,
+demo-model-gamma,mmlu,94.7,2026-07-01,Tercer modelo demo con fecha posterior
+demo-model-gamma,humaneval,96.0,2026-07-01,
+demo-model-gamma,gsm8k,99.1,2026-07-01,
+demo-model-gamma,math500,93.5,2026-07-01,
+gpt-4o,mmlu,83.5,2026-06-10,Score actualizado de modelo existente
+gpt-4o,humaneval,86.2,2026-06-10,
+claude-opus-4,mmlu,87.1,2026-06-20,Score actualizado de modelo existente
+claude-opus-4,humaneval,92.8,2026-06-20,

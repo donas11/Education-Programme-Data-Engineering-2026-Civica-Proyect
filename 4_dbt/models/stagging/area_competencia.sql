@@ -1,12 +1,9 @@
-{{ config(
-  schema = 'INTERMEDIATE',
-  materialized = 'table'
-) }}
+{{ config(materialized='view') }}
 
 WITH base AS (
   SELECT DISTINCT
     category AS area_competencia
-  from {{ source('bronze_raw', 'benchmarks') }} 
+  from {{ source('bronze_raw', 'benchmarks') }}
 ),
 
 final AS (

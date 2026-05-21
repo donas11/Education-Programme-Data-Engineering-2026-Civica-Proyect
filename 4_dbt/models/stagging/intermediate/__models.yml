@@ -162,7 +162,7 @@ models:
     description: "Modelo de staging encargado de unificar los identificadores crudos y generar la clave subrogada global única (`id_model`) para cada modelo de IA en el ecosistema."
     columns:
       - name: id_model
-        description: "Clave subrogada única generada mediante el hash del nombre de ordenamiento."
+        description: "Clave subrogada única generada mediante el hash del model_name_order."
         tests:
           - unique
           - not_null
@@ -226,33 +226,7 @@ models:
       - name: unidad_facturacion
         description: "Métrica base utilizada para medir el consumo (por ejemplo: 'token por millon')."
 
-  # 16. stg_precio_modelo.sql
-  - name: stg_precio_modelo
-    description: Modelo de staging económico que calcula de manera dinámica los costos financieros por millón de tokens, 
-      tanto de entrada (input) como de salida (output), aplicando reglas de negocio y descuentos volumétricos 
-      (como el 50% de descuento en planes Batch) según la tipología del plan activo.
-    columns:
-      - name: id_precio_modelo
-        description: "Clave subrogada única del registro de precio, calculada mediante el hash de la combinación del ID del modelo y su fecha de vigencia."
-        tests:
-          - unique
-          - not_null
-      - name: id_modelo
-        description: "Clave foránea que identifica al modelo de IA asociado al precio."
-        tests:
-          - not_null
-      - name: id_plan_precio
-        description: "Identificador único de la combinación y estructura del plan tarifario."
-      - name: precio_por_M_entrada
-        description: "Precio final calculado para la ingesta de un millón de tokens de entrada (Input), incluyendo lógica de descuentos."
-      - name: precio_por_M_salida
-        description: "Precio final calculado para la generación de un millón de tokens de salida (Output) o escritura/razonamiento según corresponda."
-      - name: fecha
-        description: "Fecha de captura o vigencia asociada a las tarifas del modelo."
-      - name: moneda
-        description: "Divisa del esquema de cobros (por defecto '$')."
-
-  # 17. stg_proveedor.sql
+  # 18. stg_proveedor.sql
   - name: stg_proveedor
     description: "Modelo de staging para la consolidación de las entidades proveedoras de IA que exponen servicios mediante APIs."
     columns:
@@ -289,19 +263,47 @@ models:
         description: "Memoria RAM del sistema disponible en el servidor."
       - name: precio_on_demand_hr
         description: "Costo financiero por hora del servidor bajo la modalidad 'Bajo Demanda'."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
       - name: precio_spot_hr
         description: "Costo financiero por hora del servidor bajo la modalidad de subasta 'Spot'."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
       - name: precio_mensual
         description: "Costo total al mes del servidor, limpio de caracteres especiales y convertido a formato numérico."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
       - name: egress_fees_gb
         description: "Costo financiero asociado a la tasa de transferencia o salida de datos por Gigabyte."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
       - name: moneda
         description: "Divisa identificada para las tarifas del servidor físico ('USD' o 'EUR')."
         tests:
           - accepted_values:
-            arguments:
-              values: ['USD', 'EUR']
+              arguments:
+                values: ['USD', 'EUR']
       - name: id_gpu
         description: "Clave foránea que conecta directamente con el catálogo maestro de hardware (stg_gpu)."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_gpu')
+                field: id_gpu
       - name: id_proveedor
         description: "Clave foránea que vincula al proveedor dueño de la infraestructura física (mapeada a stg_proveedor)."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_proveedor')
+                field: id_proveedor
+              config:
+                severity: warn

@@ -1,6 +1,4 @@
-{{ config(
-  materialized = 'view'
-) }}
+{{ config(materialized='view') }}
 
 with src as (
     select *
@@ -14,6 +12,7 @@ MONEDA AS(
     Simbolo	as simbolo,
     Abreviatura as abreviatura
   FROM src
+  WHERE TRIM(Abreviatura) IN ('USD', 'EUR')
 )
 
 SELECT * FROM moneda
