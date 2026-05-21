@@ -1,0 +1,512 @@
+version: 2
+
+models:
+  - name: dim_modelo
+    description: "Dimensión pura de modelos de IA con atributos de proveedor y familia."
+    columns:
+      - name: id_modelo
+        description: "Clave única del modelo de IA."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_comercial
+        description: "Nombre comercial del modelo."
+      - name: id_proveedor
+        description: "FK al proveedor del modelo."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_proveedor')
+                field: id_proveedor
+      - name: nombre_proveedor
+        description: "Nombre del proveedor (OpenAI, Anthropic, Meta, etc.)."
+      - name: tipo_proveedor
+        description: "Tipo de proveedor (API, INSTANCIA, BOTH)."
+      - name: id_familia
+        description: "FK a la familia del modelo."
+      - name: familia_nombre
+        description: "Familia tecnológica del modelo (GPT-4, Claude, Llama, etc.)."
+      - name: context_window
+        description: "Ventana de contexto en tokens."
+      - name: multimodal
+        description: "Indicador de soporte multimodal."
+      - name: opensource
+        description: "Indicador de código/pesos abiertos."
+      - name: fecha_lanzamiento
+        description: "Fecha de lanzamiento del modelo."
+
+  - name: dim_proveedor
+    description: "Dimensión de proveedores de modelos de IA."
+    columns:
+      - name: id_proveedor
+        description: "Clave única del proveedor."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_proveedor
+        description: "Nombre del proveedor."
+      - name: tipo_proveedor
+        description: "Tipo de proveedor (API, INSTANCIA, BOTH)."
+
+  - name: dim_region
+    description: "Dimensión de regiones geográficas."
+    columns:
+      - name: id_region
+        description: "Clave única de la región."
+        tests:
+          - unique
+          - not_null
+      - name: region
+        description: "Nombre de la región."
+
+  - name: dim_fecha
+    description: "Dimensión de fecha con desglose temporal completo."
+    columns:
+      - name: id_fecha
+        description: "Clave única de fecha en formato YYYYMMDD."
+        tests:
+          - unique
+          - not_null
+      - name: fecha
+        description: "Fecha completa."
+      - name: anho
+        description: "Año."
+      - name: mes
+        description: "Mes del año (1-12)."
+      - name: trimestre
+        description: "Trimestre del año (1-4)."
+      - name: semana
+        description: "Semana del año (1-53)."
+      - name: nombre_dia
+        description: "Nombre del día de la semana."
+      - name: nombre_mes
+        description: "Nombre del mes."
+
+  - name: dim_plan
+    description: "Dimensión de planes tarifarios."
+    columns:
+      - name: id_plan_precio
+        description: "Clave única del plan tarifario."
+        tests:
+          - unique
+          - not_null
+      - name: tipo_plan
+        description: "Tipo de plan (Free, Standard, Reasoning, Cached, Batch)."
+      - name: unidad_facturacion
+        description: "Unidad de facturación."
+
+  - name: dim_benchmark
+    description: "Dimensión pura de benchmarks de evaluación."
+    columns:
+      - name: id_benchmark
+        description: "Clave única del benchmark."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_corto
+        description: "Nombre corto del benchmark (MMLU, GPQA, etc.)."
+      - name: descripcion
+        description: "Descripción completa del benchmark."
+      - name: id_area_competencia
+        description: "FK al área de competencia."
+      - name: nombre_area_competencia
+        description: "Nombre del área de competencia."
+
+  - name: fct_precio
+    description: "Tabla de hechos de precios con FKs a dimensiones."
+    columns:
+      - name: id_precio_modelo
+        description: "Clave única del registro de precio."
+        tests:
+          - unique
+          - not_null
+      - name: id_modelo
+        description: "FK al modelo."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_modelo')
+                field: id_modelo
+      - name: id_plan_precio
+        description: "FK al plan tarifario (incluye contexto de modelo y región)."
+      - name: id_region
+        description: "FK a la región geográfica."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_region')
+                field: id_region
+      - name: id_fecha
+        description: "FK a la fecha de vigencia del precio."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_fecha')
+                field: id_fecha
+      - name: precio_por_M_entrada
+        description: "Precio por millón de tokens de entrada."
+      - name: precio_por_M_salida
+        description: "Precio por millón de tokens de salida."
+
+  - name: fct_benchmark
+    description: "Tabla de hechos de scores de benchmark con FKs a dimensiones."
+    columns:
+      - name: id_test
+        description: "Clave única de la evaluación."
+        tests:
+          - unique
+          - not_null
+      - name: id_model
+        description: "FK al modelo evaluado."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_modelo')
+                field: id_modelo
+      - name: id_benchmark
+        description: "FK al benchmark evaluado."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_benchmark')
+                field: id_benchmark
+      - name: id_fecha
+        description: "FK a la fecha de la evaluación."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_fecha')
+                field: id_fecha
+      - name: puntuacion
+        description: "Puntuación obtenida en la evaluación."
+      - name: benchmark_id
+        description: "ID original del benchmark en la fuente."
+
+  - name: mrt_infraestructura
+    description: "Mart de infraestructura con costos de servidores, GPUs y métricas de eficiencia."
+    columns:
+      - name: id_servidor
+        description: "Clave única del servidor."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_proveedor
+        description: "Proveedor de infraestructura."
+      - name: modelo_servidor
+        description: "Modelo de servidor físico."
+      - name: num_gpus
+        description: "Número de GPUs instaladas."
+      - name: vram_total_gb
+        description: "VRAM total del servidor en GB."
+      - name: ram_gb
+        description: "RAM del sistema en GB."
+      - name: precio_on_demand_hr
+        description: "Precio por hora on-demand."
+      - name: precio_spot_hr
+        description: "Precio por hora spot."
+      - name: precio_mensual
+        description: "Precio mensual."
+      - name: egress_fees_gb
+        description: "Costo de transferencia de datos por GB."
+      - name: moneda
+        description: "Moneda (USD, EUR)."
+      - name: id_gpu
+        description: "Clave de la GPU."
+      - name: gpu_nombre
+        description: "Nombre comercial de la GPU."
+      - name: arquitectura
+        description: "Arquitectura de la GPU."
+      - name: gpu_vram_gb
+        description: "VRAM de la GPU en GB."
+      - name: ancho_banda_gbs
+        description: "Ancho de banda de memoria en GB/s."
+      - name: tdp_w
+        description: "TDP en vatios."
+      - name: fp16_tflops
+        description: "Rendimiento FP16 en TFLOPS."
+      - name: precio_on_demand_por_gpu
+        description: "Precio on-demand por GPU."
+      - name: precio_spot_por_gpu
+        description: "Precio spot por GPU."
+      - name: costo_por_tflop
+        description: "Costo por TFLOP (precio / rendimiento)."
+
+  - name: mrt_model_value_score
+    description: "Mart analítico que calcula un score compuesto de valor (rendimiento/precio) por modelo y área de competencia."
+    columns:
+      - name: id_model
+        description: "Clave única del modelo."
+        tests:
+          - not_null
+      - name: modelo_nombre
+        description: "Nombre comercial del modelo."
+      - name: nombre_proveedor
+        description: "Proveedor del modelo."
+      - name: familia_nombre
+        description: "Familia tecnológica del modelo."
+      - name: nombre_area_competencia
+        description: "Área de competencia (MMLU, GPQA, etc.)."
+      - name: puntuacion_promedio_area
+        description: "Puntuación promedio en el área de competencia."
+      - name: num_evaluaciones_area
+        description: "Número de evaluaciones en el área."
+      - name: precio_promedio_entrada
+        description: "Precio promedio por millón de tokens de entrada."
+      - name: precio_promedio_salida
+        description: "Precio promedio por millón de tokens de salida."
+      - name: precio_promedio_total
+        description: "Precio promedio total (entrada + salida) / 2."
+      - name: score_valor
+        description: "Score compuesto: puntuacion_promedio_area / precio_promedio_total."
+      - name: ranking_area
+        description: "Ranking dentro del área de competencia."
+      - name: ranking_global
+        description: "Ranking global across todas las áreas."
+
+  - name: mrt_price_trend_analysis
+    description: "Mart analítico de evolución de precios con métricas de cambio porcentual y rangos históricos."
+    columns:
+      - name: id_modelo
+        description: "Clave del modelo."
+        tests:
+          - not_null
+      - name: modelo_nombre
+        description: "Nombre comercial del modelo."
+      - name: nombre_proveedor
+        description: "Proveedor del modelo."
+      - name: familia_nombre
+        description: "Familia tecnológica del modelo."
+      - name: fecha
+        description: "Fecha de vigencia del precio."
+      - name: precio_por_M_entrada
+        description: "Precio por millón de tokens de entrada."
+      - name: precio_por_M_salida
+        description: "Precio por millón de tokens de salida."
+      - name: precio_promedio
+        description: "Precio promedio (entrada + salida) / 2."
+      - name: precio_entrada_anterior
+        description: "Precio de entrada en la fecha anterior."
+      - name: precio_salida_anterior
+        description: "Precio de salida en la fecha anterior."
+      - name: precio_promedio_anterior
+        description: "Precio promedio en la fecha anterior."
+      - name: precio_min_entrada
+        description: "Precio mínimo histórico de entrada."
+      - name: precio_max_entrada
+        description: "Precio máximo histórico de entrada."
+      - name: precio_min_salida
+        description: "Precio mínimo histórico de salida."
+      - name: precio_max_salida
+        description: "Precio máximo histórico de salida."
+      - name: num_registros
+        description: "Número de registros de precio para este modelo."
+      - name: pct_cambio_entrada
+        description: "Porcentaje de cambio en precio de entrada vs anterior."
+      - name: pct_cambio_salida
+        description: "Porcentaje de cambio en precio de salida vs anterior."
+      - name: pct_cambio_promedio
+        description: "Porcentaje de cambio en precio promedio vs anterior."
+
+  - name: mrt_reasoning_leaderboard
+    description: "Leaderboard de modelos para tareas de reasoning con rankings por rendimiento y valor."
+    columns:
+      - name: id_model
+        description: "Clave única del modelo."
+        tests:
+          - unique
+          - not_null
+      - name: modelo_nombre
+        description: "Nombre comercial del modelo."
+      - name: nombre_proveedor
+        description: "Proveedor del modelo."
+      - name: familia_nombre
+        description: "Familia tecnológica del modelo."
+      - name: num_benchmarks_reasoning
+        description: "Número de benchmarks de reasoning evaluados."
+      - name: puntuacion_promedio_reasoning
+        description: "Puntuación promedio en benchmarks de reasoning."
+      - name: puntuacion_maxima_reasoning
+        description: "Puntuación máxima en benchmarks de reasoning."
+      - name: puntuacion_minima_reasoning
+        description: "Puntuación mínima en benchmarks de reasoning."
+      - name: precio_promedio_entrada
+        description: "Precio promedio por millón de tokens de entrada."
+      - name: precio_promedio_salida
+        description: "Precio promedio por millón de tokens de salida."
+      - name: precio_promedio_total
+        description: "Precio promedio total."
+      - name: score_valor_reasoning
+        description: "Score de valor para reasoning: puntuacion / precio."
+      - name: ranking_por_rendimiento
+        description: "Ranking por puntuación promedio."
+      - name: ranking_por_valor
+        description: "Ranking por score de valor."
+
+  - name: mrt_api_vs_selfhosted
+    description: "Mart comparativo de costos API vs self-hosted con ratios y recomendaciones por modelo y GPU."
+    columns:
+      - name: modelo_nombre
+        description: "Nombre comercial del modelo."
+        tests:
+          - not_null
+      - name: familia_nombre
+        description: "Familia tecnológica del modelo."
+      - name: api_proveedor
+        description: "Proveedor de API."
+      - name: avg_api_precio_entrada
+        description: "Precio promedio API por millón de tokens de entrada."
+      - name: avg_api_precio_salida
+        description: "Precio promedio API por millón de tokens de salida."
+      - name: avg_api_precio_total
+        description: "Precio promedio API total."
+      - name: costo_api_1B_tokens
+        description: "Costo API por 1 billón de tokens."
+      - name: gpu_nombre
+        description: "Nombre de la GPU para self-hosted."
+      - name: infra_proveedor
+        description: "Proveedor de infraestructura."
+      - name: precio_on_demand_hr
+        description: "Precio on-demand por hora."
+      - name: precio_spot_hr
+        description: "Precio spot por hora."
+      - name: precio_mensual
+        description: "Precio mensual del servidor."
+      - name: num_gpus
+        description: "Número de GPUs."
+      - name: fp16_tflops
+        description: "Rendimiento FP16 en TFLOPS."
+      - name: costo_por_1B_ops_on_demand
+        description: "Costo por 1 billón de operaciones on-demand."
+      - name: costo_por_1B_ops_spot
+        description: "Costo por 1 billón de operaciones spot."
+      - name: ratio_api_vs_selfhosted_on_demand
+        description: "Ratio de costo API vs self-hosted on-demand."
+      - name: ratio_api_vs_selfhosted_spot
+        description: "Ratio de costo API vs self-hosted spot."
+      - name: recomendacion_on_demand
+        description: "Recomendación para on-demand."
+      - name: recomendacion_spot
+        description: "Recomendación para spot."
+
+  - name: mrt_total_cost_of_ownership
+    description: "Calculador TCO que compara costos totales API vs self-hosted para diferentes escenarios de uso."
+    columns:
+      - name: modelo_nombre
+        description: "Nombre comercial del modelo."
+        tests:
+          - not_null
+      - name: api_proveedor
+        description: "Proveedor de API."
+      - name: familia_nombre
+        description: "Familia tecnológica del modelo."
+      - name: escenario
+        description: "Escenario de uso (1M_tokens, 10M_tokens, 100M_tokens, 1B_tokens)."
+      - name: tokens_entrada
+        description: "Número de tokens de entrada."
+      - name: tokens_salida
+        description: "Número de tokens de salida."
+      - name: data_transfer_gb
+        description: "Transferencia de datos en GB."
+      - name: costo_entrada
+        description: "Costo de tokens de entrada."
+      - name: costo_salida
+        description: "Costo de tokens de salida."
+      - name: costo_transferencia_api
+        description: "Costo de transferencia de datos API."
+      - name: costo_total_api
+        description: "Costo total API."
+      - name: gpu_nombre
+        description: "Nombre de la GPU."
+      - name: infra_proveedor
+        description: "Proveedor de infraestructura."
+      - name: precio_on_demand_hr
+        description: "Precio on-demand por hora."
+      - name: precio_spot_hr
+        description: "Precio spot por hora."
+      - name: precio_mensual
+        description: "Precio mensual."
+      - name: num_gpus
+        description: "Número de GPUs."
+      - name: costo_transferencia_infra
+        description: "Costo de transferencia de infraestructura."
+      - name: costo_mensual_on_demand
+        description: "Costo mensual on-demand."
+      - name: costo_mensual_spot
+        description: "Costo mensual spot."
+      - name: costo_mensual_servidor
+        description: "Costo mensual del servidor."
+      - name: ratio_api_vs_dedicado
+        description: "Ratio API vs servidor dedicado."
+      - name: ratio_api_vs_on_demand
+        description: "Ratio API vs on-demand."
+      - name: recomendacion
+        description: "Recomendación basada en TCO."
+
+  - name: mrt_provider_market_analysis
+    description: "Análisis de mercado por proveedor con métricas de modelos, precios e infraestructura."
+    columns:
+      - name: nombre_proveedor
+        description: "Nombre del proveedor."
+        tests:
+          - unique
+          - not_null
+      - name: num_modelos
+        description: "Número de modelos del proveedor."
+      - name: num_familias
+        description: "Número de familias tecnológicas."
+      - name: avg_context_window
+        description: "Ventana de contexto promedio."
+      - name: max_context_window
+        description: "Ventana de contexto máxima."
+      - name: num_modelos_multimodal
+        description: "Número de modelos multimodales."
+      - name: num_modelos_opensource
+        description: "Número de modelos open source."
+      - name: avg_puntuacion
+        description: "Puntuación promedio."
+      - name: num_benchmarks_totales
+        description: "Número total de benchmarks evaluados."
+      - name: avg_precio_entrada
+        description: "Precio promedio de entrada."
+      - name: min_precio_entrada
+        description: "Precio mínimo de entrada."
+      - name: max_precio_entrada
+        description: "Precio máximo de entrada."
+      - name: avg_precio_salida
+        description: "Precio promedio de salida."
+      - name: min_precio_salida
+        description: "Precio mínimo de salida."
+      - name: max_precio_salida
+        description: "Precio máximo de salida."
+      - name: num_modelos_con_precio
+        description: "Número de modelos con precio."
+      - name: num_servidores
+        description: "Número de servidores."
+      - name: num_tipos_gpu
+        description: "Número de tipos de GPU."
+      - name: avg_gpus_por_servidor
+        description: "Promedio de GPUs por servidor."
+      - name: avg_precio_on_demand
+        description: "Precio promedio on-demand."
+      - name: min_precio_on_demand
+        description: "Precio mínimo on-demand."
+      - name: max_precio_on_demand
+        description: "Precio máximo on-demand."
+      - name: avg_precio_spot
+        description: "Precio promedio spot."
+      - name: avg_precio_mensual
+        description: "Precio promedio mensual."
+      - name: avg_egress_fees
+        description: "Promedio de egress fees."
+      - name: avg_fp16_tflops
+        description: "Promedio de TFLOPS FP16."
+      - name: avg_vram_total
+        description: "Promedio de VRAM total."
+      - name: avg_precio_total_tokens
+        description: "Precio promedio total de tokens."
+      - name: ranking_por_num_modelos
+        description: "Ranking por número de modelos."
+      - name: ranking_por_puntuacion
+        description: "Ranking por puntuación."
+      - name: ranking_por_precio_entrada
+        description: "Ranking por precio de entrada."

@@ -2,9 +2,9 @@
 version: 2
 
 sources:
-  - name: raw_llm
-    description: "Tablas RAW cargadas con dlt desde los CSV de LLMs y proveedores."
-    database: MODELOS
+  - name: bronze_raw
+    description: "Tablas RAW cargadas con dlt desde los CSV ."
+    database: DEV_BRONZE_BD_MODELOS
     schema: RAW
 
     tables:
@@ -25,14 +25,15 @@ sources:
       - name: llm_model_comparison_2026
         description: "Comparativa de modelos LLM para 2026."
 
-      - name: aidatahub_llm_models
-        description: "Modelos desde AIDataHub."
+      - name: huggingface_models
+        description: "Modelos desde huggingface."
       - name: openrouter_models
         description: "Modelos desde OpenRouter."
       - name: nuevo_openrouter_modelos
         description: "Modelos OpenRouter enriquecidos."
-      - name: pricepertoken
-        description: "Precio por token de modelos iniciales."
+      - name: new_nuevo_openrouter_modelos
+        description: "Modelos OpenRouter enriquecidos."
+     
 
       - name: proveedores
         description: "Proveedores de infraestructura cloud/HPC."

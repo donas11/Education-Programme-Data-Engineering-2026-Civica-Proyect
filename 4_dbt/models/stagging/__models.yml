@@ -1,0 +1,319 @@
+version: 2
+
+models:
+  - name: area_competencia
+    description: "Tabla de dimensión que consolida de forma única las categorías o áreas de competencia extraídas de las métricas de benchmarks."
+    columns:
+      - name: id_area_competencia
+        description: "Clave subrogada única generada mediante el hash del nombre del área de competencia."
+        tests:
+          - unique
+          - not_null
+      - name: area_competencia
+        description: "Nombre de la categoría del benchmark (ej. MMLU, GSM8K, etc.)."
+        tests:
+          - not_null
+
+  - name: benchmark
+    description: "Dimensión maestra de benchmarks analíticos. Mapea la metadata descriptiva de las pruebas y las asocia a su respectiva área de competencia."
+    columns:
+      - name: id_benchmark
+        description: "Clave primaria subrogada única del benchmark."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_corto
+        description: "Nombre corto identificador del benchmark."
+      - name: descripcion
+        description: "Concatenación del nombre completo original y la descripción detallada del benchmark."
+      - name: id_area_competencia
+        description: "Clave foránea que conecta con la dimensión de áreas de competencia."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('area_competencia')
+                field: id_area_competencia
+
+  - name: familia
+    description: "Dimensión de agrupación tecnológica de modelos. Consolida las agrupaciones base (ej. GPT-4, Claude 3, Llama 3) reduciendo duplicidad."
+    columns:
+      - name: id_familia
+        description: "Clave subrogada única calculada por hash a partir del nombre de la familia."
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        description: "Nombre descriptivo de la familia de modelos."
+
+  - name: modelo
+    description: "Dimensión core de Modelos de IA. Consolida las especificaciones unificadas de contexto, multimodalidad y licenciamiento cruzando claves con proveedores y familias tecnológicas."
+    columns:
+      - name: id_modelo
+        description: "Clave primaria del modelo de IA (mapeada originalmente desde id_model)."
+        tests:
+          - unique
+          - not_null
+      - name: nombre_comercial
+        description: "Nombre comercial estandarizado definitivo del modelo."
+      - name: id_proveedor
+        description: "Clave foránea que mapea al proveedor del modelo."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('proveedor')
+                field: id_proveedor
+      - name: id_familia
+        description: "Clave foránea que referencia a la familia tecnológica."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('familia')
+                field: id_familia
+      - name: context_window
+        description: "Tamaño máximo en tokens de la ventana de contexto del modelo."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: multimodal
+        description: "Flag booleano que determina capacidades nativas multimedia."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['true', 'false']
+      - name: opensource
+        description: "Flag booleano de código abierto u open weights."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['true', 'false']
+      - name: fecha_lanzamiento
+        description: "Fecha oficial de publicación del modelo."
+    tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          arguments:
+            min_value: 10
+
+  - name: moneda
+    description: "Dimensión catálogo de monedas de facturación generada a partir de los datos maestros del seed de monedas."
+    columns:
+      - name: id_moneda
+        description: "Clave primaria subrogada calculada a partir del nombre de la moneda."
+        tests:
+          - unique
+          - not_null
+      - name: moneda
+        description: "Nombre completo de la divisa (ej. Dólar Estadounidense, Euro)."
+      - name: simbolo
+        description: "Símbolo representativo de la moneda (ej. $, €)."
+      - name: abreviatura
+        description: "Código o sigla de identificación financiera de la moneda (ej. USD, EUR)."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR']
+
+  - name: plan_precio
+    description: "Tabla puente/dimensión que unifica y mapea las relaciones entre modelos, regiones geográficas, tipos de plan y sus métricas de cobro."
+    columns:
+      - name: id_plan_precio
+        description: "Clave subrogada combinada única generada mediante el hash de id_modelo, id_region, tipo_plan y unidad_facturacion."
+        tests:
+          - unique
+          - not_null
+      - name: tipo_plan
+        description: "Identificador del plan operativo asociado ('Free', 'Standard', etc.)."
+      - name: unidad_facturacion
+        description: "Métrica de cobro asignada (fijada como 'token por millon')."
+      - name: id_modelo
+        description: "Clave foránea que asocia el plan a un modelo específico de IA."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('modelo')
+                field: id_modelo
+      - name: id_region
+        description: "Clave foránea que asocia la disponibilidad regional geográfica del plan."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('region')
+                field: id_region
+
+  - name: precio_modelo
+    description: "Tabla de hechos incremental que calcula los costos financieros por millón de tokens, aplicando reglas de negocio y descuentos volumétricos. Unique key: hash(id_modelo + tipo_plan). Filtro incremental por fecha para eficiencia. El snapshot snp_precio_modelo captura el histórico SCD2 de cambios de precio."
+    columns:
+      - name: id_precio_modelo
+        description: "Clave subrogada única del registro de precio."
+        tests:
+          - unique
+          - not_null
+      - name: id_modelo
+        description: "Clave foránea que identifica al modelo de IA asociado al precio."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_model_union_ids')
+                field: id_model
+      - name: id_plan_precio
+        description: "Identificador único de la combinación y estructura del plan tarifario."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('plan_precio')
+                field: id_plan_precio
+      - name: precio_por_M_entrada
+        description: "Precio final calculado para la ingesta de un millón de tokens de entrada."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: precio_por_M_salida
+        description: "Precio final calculado para la generación de un millón de tokens de salida."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: fecha
+        description: "Fecha de captura o vigencia asociada a las tarifas del modelo."
+      - name: tipo_plan
+        description: "Tipo de plan (Free, Standard, Reasoning, Cached, Batch)."
+      - name: unidad_facturacion
+        description: "Unidad de facturación (token por millon)."
+
+  - name: proveedor
+    description: "Dimensión consolidada de proveedores de IA. Resuelve mediante un FULL OUTER JOIN los cruces de entidades que actúan tanto a nivel API como proveedores de Infraestructura física, tipificándolos en ('API', 'INSTANCIA', 'BOTH')."
+    columns:
+      - name: id_proveedor
+        description: "Clave primaria subrogada y única para la organización proveedora."
+        tests:
+          - unique
+          - not_null
+      - name: proveedor
+        description: "Nombre consolidado y limpio de la organización proveedora."
+      - name: tipo_proveedor
+        description: "Clasificación de capacidades comerciales ('API', 'INSTANCIA' o 'BOTH')."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['API', 'INSTANCIA', 'BOTH']
+
+  - name: region
+    description: "Dimensión catálogo geográfica de distribución operativa leída desde el seed de regiones."
+    columns:
+      - name: id_region
+        description: "Clave primaria única generada mediante hash a partir del nombre de la región."
+        tests:
+          - unique
+          - not_null
+      - name: region
+        description: "Nombre descriptivo de la zona o cobertura (ej. Global, US-East, Europe)."
+
+  - name: rendimiento_modelo
+    description: "Dimensión de métricas de rendimiento operativo por modelo: índice de inteligencia, velocidad, latencia y precio blended."
+    columns:
+      - name: id_performance
+        description: "Clave subrogada única del registro de rendimiento."
+        tests:
+          - unique
+          - not_null
+      - name: id_modelo
+        description: "Clave foránea que referencia al modelo evaluado."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_model_union_ids')
+                field: id_model
+      - name: intelligence_index
+        description: "Índice compuesto de inteligencia (escala 0-100+)."
+      - name: speed_tps
+        description: "Velocidad de generación en tokens por segundo."
+      - name: latency_s
+        description: "Latencia hasta primer token en segundos."
+      - name: price_blended
+        description: "Precio blended por millón de tokens en USD."
+      - name: tier
+        description: "Categoría de nivel del modelo (Frontier, Advanced, Standard)."
+      - name: fecha
+        description: "Fecha de captura de las métricas."
+      - name: is_current
+        description: "Flag que indica si es la versión más reciente."
+
+  - name: seguridad_modelo
+    description: "Dimensión de métricas de seguridad y comportamiento responsable por modelo: toxicidad, alucinación, jailbreak, factualidad y alineamiento RLHF."
+    columns:
+      - name: id_safety
+        description: "Clave subrogada única del registro de seguridad."
+        tests:
+          - unique
+          - not_null
+      - name: id_modelo
+        description: "Clave foránea que referencia al modelo evaluado."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_model_union_ids')
+                field: id_model
+      - name: toxicity_score
+        description: "Porcentaje de respuestas con contenido tóxico detectado."
+      - name: bias_score
+        description: "Porcentaje de sesgo detectado en las respuestas."
+      - name: refusal_rate
+        description: "Porcentaje de veces que el modelo rechaza responder."
+      - name: hallucination_rate
+        description: "Porcentaje de respuestas con información inventada o incorrecta."
+      - name: instruction_following
+        description: "Porcentaje de veces que el modelo sigue correctamente las instrucciones."
+      - name: jailbreak_resistance
+        description: "Porcentaje de intentos de evasión de filtros que el modelo resiste."
+      - name: factuality_score
+        description: "Porcentaje de afirmaciones factuales correctas y verificables."
+      - name: rlhf_aligned
+        description: "Indicador de si el modelo fue alineado con RLHF."
+      - name: safety_training
+        description: "Método de entrenamiento de seguridad utilizado (PPO, DPO, etc.)."
+      - name: fecha
+        description: "Fecha de captura de las métricas de seguridad."
+      - name: is_current
+        description: "Flag que indica si es la versión más reciente."
+
+  - name: test_benchmark
+    description: "Tabla de hechos incremental que registra los históricos de evaluaciones, métricas de desempeño (scores) y fechas de ejecución de los modelos frente a benchmarks."
+    columns:
+      - name: id_test
+        description: "Clave primaria subrogada única para el registro de la evaluación."
+        tests:
+          - unique
+          - not_null
+      - name: id_benchmark
+        description: "Clave foránea que referencia al benchmark ejecutado."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('benchmark')
+                field: id_benchmark
+      - name: id_model
+        description: "Clave foránea que asocia el resultado al modelo evaluado."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_model_union_ids')
+                field: id_model
+      - name: benchmark_id
+        description: "ID técnico crudo del benchmark evaluado."
+      - name: puntuacion
+        description: "Calificación, porcentaje o score numérico obtenido."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 1000
+              config:
+                severity: warn
+      - name: fecha
+        description: "Fecha exacta en la que se realizó la evaluación."
+    tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          arguments:
+            min_value: 100
