@@ -29,7 +29,7 @@ def main():
         "safety_alignment": ("Nuevo_safety_alignment.csv", "model_id"),
         "llm_model_comparison_2026": ("nuevo_llm-model-comparison-2026.csv", "Model"),
         "llm_complete_dataset": ("Nuevo_llm_complete_dataset.csv", "model_name"),
-        "huggingface_models": ("new_nuevo_hf_reliable_data_all_new.csv", "model_id"),
+        "huggingface_models": ("new_nuevo_hf_reliable_data_all_new.csv", "name"),
         "openrouter_models": ("initial_openrouter_models.csv", "id"),
         "nuevo_openrouter_modelos": ("initial_nuevo_openrouter_modelos.csv", "id"),
         "new_nuevo_openrouter_modelos": ("New_nuevo_openrouter_models.csv", "model_id"),

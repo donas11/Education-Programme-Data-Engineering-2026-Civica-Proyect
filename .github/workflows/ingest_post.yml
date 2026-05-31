@@ -1,0 +1,47 @@
+name: Ingesta archivos CSV a Snowflake
+
+on:
+  workflow_dispatch: {}   # lo lanzas a mano desde Actions
+  push:
+    branches:
+      - POST
+    paths:
+      - "1_data/**"
+      - "3_ingest/**"
+      - "requirements.txt"
+      - ".github/workflows/ingest_post.yml"
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+
+    env:
+      env:
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__USERNAME:  ${{ secrets.SNOWFLAKE_USER_PRO }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__PASSWORD:  ${{ secrets.SNOWFLAKE_PASSWORD_PRO }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__DATABASE:  ${{ secrets.SNOWFLAKE_DATABASE_PRO }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__HOST:      ${{ secrets.SNOWFLAKE_ACCOUNT_HOST }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+      LLM_CSV_INGESTION__DESTINATION__SNOWFLAKE__CREDENTIALS__ROLE:      ${{ secrets.SNOWFLAKE_ROLE_PRO }}
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run dlt ingestion
+        run: |
+          source .venv/bin/activate
+          python 3_ingest/ingest_csv_to_snowflake.py
