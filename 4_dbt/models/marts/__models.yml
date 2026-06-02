@@ -248,13 +248,13 @@ models:
         type: simple
         description: "Average input price per million tokens"
         label: "Avg Input Price"
-        agg: avg
+        agg: average
         expr: precio_por_M_entrada
       - name: avg_precio_salida
         type: simple
         description: "Average output price per million tokens"
         label: "Avg Output Price"
-        agg: avg
+        agg: average
         expr: precio_por_M_salida
       - name: min_precio_entrada
         type: simple
@@ -335,7 +335,7 @@ models:
         type: simple
         description: "Average benchmark score across all evaluations"
         label: "Avg Score"
-        agg: avg
+        agg: average
         expr: puntuacion
       - name: mejor_puntuacion
         type: simple
