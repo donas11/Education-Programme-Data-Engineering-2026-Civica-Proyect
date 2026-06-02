@@ -2,17 +2,27 @@ version: 2
 
 models:
   - name: dim_modelo
+    semantic_model:
+      enabled: true
     description: "Dimensión pura de modelos de IA con atributos de proveedor y familia."
     columns:
       - name: id_modelo
         description: "Clave única del modelo de IA."
+        entity:
+          name: modelo
+          type: primary
         tests:
           - unique
           - not_null
       - name: nombre_comercial
         description: "Nombre comercial del modelo."
+        dimension:
+          type: categorical
       - name: id_proveedor
         description: "FK al proveedor del modelo."
+        entity:
+          name: proveedor
+          type: foreign
         tests:
           - relationships:
               arguments:
@@ -20,108 +30,184 @@ models:
                 field: id_proveedor
       - name: nombre_proveedor
         description: "Nombre del proveedor (OpenAI, Anthropic, Meta, etc.)."
+        dimension:
+          type: categorical
       - name: tipo_proveedor
         description: "Tipo de proveedor (API, INSTANCIA, BOTH)."
+        dimension:
+          type: categorical
       - name: id_familia
         description: "FK a la familia del modelo."
       - name: familia_nombre
         description: "Familia tecnológica del modelo (GPT-4, Claude, Llama, etc.)."
+        dimension:
+          type: categorical
       - name: context_window
         description: "Ventana de contexto en tokens."
+        dimension:
+          type: categorical
       - name: multimodal
         description: "Indicador de soporte multimodal."
+        dimension:
+          type: categorical
       - name: opensource
         description: "Indicador de código/pesos abiertos."
+        dimension:
+          type: categorical
       - name: fecha_lanzamiento
         description: "Fecha de lanzamiento del modelo."
+        granularity: day
+        dimension:
+          type: time
+          name: fecha_lanzamiento
 
   - name: dim_proveedor
+    semantic_model:
+      enabled: true
     description: "Dimensión de proveedores de modelos de IA."
     columns:
       - name: id_proveedor
         description: "Clave única del proveedor."
+        entity:
+          name: proveedor
+          type: primary
         tests:
           - unique
           - not_null
       - name: nombre_proveedor
         description: "Nombre del proveedor."
+        dimension:
+          type: categorical
       - name: tipo_proveedor
         description: "Tipo de proveedor (API, INSTANCIA, BOTH)."
+        dimension:
+          type: categorical
 
   - name: dim_region
+    semantic_model:
+      enabled: true
     description: "Dimensión de regiones geográficas."
     columns:
       - name: id_region
         description: "Clave única de la región."
+        entity:
+          name: region
+          type: primary
         tests:
           - unique
           - not_null
       - name: region
         description: "Nombre de la región."
+        dimension:
+          type: categorical
 
   - name: dim_fecha
+    semantic_model:
+      enabled: true
     description: "Dimensión de fecha con desglose temporal completo."
     columns:
       - name: id_fecha
         description: "Clave única de fecha en formato YYYYMMDD."
+        entity:
+          name: fecha
+          type: primary
         tests:
           - unique
           - not_null
       - name: fecha
         description: "Fecha completa."
+        granularity: day
+        dimension:
+          type: time
+          name: date
       - name: anho
         description: "Año."
+        dimension:
+          type: categorical
       - name: mes
         description: "Mes del año (1-12)."
+        dimension:
+          type: categorical
       - name: trimestre
         description: "Trimestre del año (1-4)."
+        dimension:
+          type: categorical
       - name: semana
         description: "Semana del año (1-53)."
+        dimension:
+          type: categorical
       - name: nombre_dia
         description: "Nombre del día de la semana."
       - name: nombre_mes
         description: "Nombre del mes."
 
   - name: dim_plan
+    semantic_model:
+      enabled: true
     description: "Dimensión de planes tarifarios."
     columns:
       - name: id_plan_precio
         description: "Clave única del plan tarifario."
+        entity:
+          name: plan
+          type: primary
         tests:
           - unique
           - not_null
       - name: tipo_plan
         description: "Tipo de plan (Free, Standard, Reasoning, Cached, Batch)."
+        dimension:
+          type: categorical
       - name: unidad_facturacion
         description: "Unidad de facturación."
+        dimension:
+          type: categorical
 
   - name: dim_benchmark
+    semantic_model:
+      enabled: true
     description: "Dimensión pura de benchmarks de evaluación."
     columns:
       - name: id_benchmark
         description: "Clave única del benchmark."
+        entity:
+          name: benchmark
+          type: primary
         tests:
           - unique
           - not_null
       - name: nombre_corto
         description: "Nombre corto del benchmark (MMLU, GPQA, etc.)."
+        dimension:
+          type: categorical
       - name: descripcion
         description: "Descripción completa del benchmark."
       - name: id_area_competencia
         description: "FK al área de competencia."
       - name: nombre_area_competencia
         description: "Nombre del área de competencia."
+        dimension:
+          type: categorical
 
   - name: fct_precio
+    semantic_model:
+      enabled: true
+    agg_time_dimension: fecha
     description: "Tabla de hechos de precios con FKs a dimensiones."
     columns:
       - name: id_precio_modelo
         description: "Clave única del registro de precio."
+        entity:
+          name: precio
+          type: primary
         tests:
           - unique
           - not_null
       - name: id_modelo
         description: "FK al modelo."
+        entity:
+          name: modelo
+          type: foreign
         tests:
           - relationships:
               arguments:
@@ -129,8 +215,14 @@ models:
                 field: id_modelo
       - name: id_plan_precio
         description: "FK al plan tarifario (incluye contexto de modelo y región)."
+        entity:
+          name: plan
+          type: foreign
       - name: id_region
         description: "FK a la región geográfica."
+        entity:
+          name: region
+          type: foreign
         tests:
           - relationships:
               arguments:
@@ -138,6 +230,10 @@ models:
                 field: id_region
       - name: id_fecha
         description: "FK a la fecha de vigencia del precio."
+        granularity: day
+        dimension:
+          type: time
+          name: fecha
         tests:
           - relationships:
               arguments:
@@ -147,17 +243,63 @@ models:
         description: "Precio por millón de tokens de entrada."
       - name: precio_por_M_salida
         description: "Precio por millón de tokens de salida."
+    metrics:
+      - name: avg_precio_entrada
+        type: simple
+        description: "Average input price per million tokens"
+        label: "Avg Input Price"
+        agg: avg
+        expr: precio_por_M_entrada
+      - name: avg_precio_salida
+        type: simple
+        description: "Average output price per million tokens"
+        label: "Avg Output Price"
+        agg: avg
+        expr: precio_por_M_salida
+      - name: min_precio_entrada
+        type: simple
+        description: "Minimum input price per million tokens"
+        label: "Min Input Price"
+        agg: min
+        expr: precio_por_M_entrada
+      - name: max_precio_entrada
+        type: simple
+        description: "Maximum input price per million tokens"
+        label: "Max Input Price"
+        agg: max
+        expr: precio_por_M_entrada
+      - name: min_precio_salida
+        type: simple
+        description: "Minimum output price per million tokens"
+        label: "Min Output Price"
+        agg: min
+        expr: precio_por_M_salida
+      - name: max_precio_salida
+        type: simple
+        description: "Maximum output price per million tokens"
+        label: "Max Output Price"
+        agg: max
+        expr: precio_por_M_salida
 
   - name: fct_benchmark
+    semantic_model:
+      enabled: true
+    agg_time_dimension: fecha
     description: "Tabla de hechos de scores de benchmark con FKs a dimensiones."
     columns:
       - name: id_test
         description: "Clave única de la evaluación."
+        entity:
+          name: test
+          type: primary
         tests:
           - unique
           - not_null
       - name: id_model
         description: "FK al modelo evaluado."
+        entity:
+          name: modelo
+          type: foreign
         tests:
           - relationships:
               arguments:
@@ -165,6 +307,9 @@ models:
                 field: id_modelo
       - name: id_benchmark
         description: "FK al benchmark evaluado."
+        entity:
+          name: benchmark
+          type: foreign
         tests:
           - relationships:
               arguments:
@@ -172,6 +317,10 @@ models:
                 field: id_benchmark
       - name: id_fecha
         description: "FK a la fecha de la evaluación."
+        granularity: day
+        dimension:
+          type: time
+          name: fecha
         tests:
           - relationships:
               arguments:
@@ -181,6 +330,37 @@ models:
         description: "Puntuación obtenida en la evaluación."
       - name: benchmark_id
         description: "ID original del benchmark en la fuente."
+    metrics:
+      - name: avg_puntuacion
+        type: simple
+        description: "Average benchmark score across all evaluations"
+        label: "Avg Score"
+        agg: avg
+        expr: puntuacion
+      - name: mejor_puntuacion
+        type: simple
+        description: "Maximum (best) benchmark score achieved"
+        label: "Best Score"
+        agg: max
+        expr: puntuacion
+      - name: peor_puntuacion
+        type: simple
+        description: "Minimum (worst) benchmark score achieved"
+        label: "Worst Score"
+        agg: min
+        expr: puntuacion
+      - name: num_evaluaciones
+        type: simple
+        description: "Total number of benchmark evaluations"
+        label: "Evaluations"
+        agg: sum
+        expr: 1
+      - name: num_modelos_evaluados
+        type: simple
+        description: "Number of distinct models evaluated"
+        label: "Models Evaluated"
+        agg: count_distinct
+        expr: id_model
 
   - name: mrt_infraestructura
     description: "Mart de infraestructura con costos de servidores, GPUs y métricas de eficiencia."
