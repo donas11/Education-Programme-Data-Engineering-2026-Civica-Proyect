@@ -1,0 +1,82 @@
+version: 2
+
+semantic_models:
+  - name: fct_precio
+    model: ref('fct_precio')
+    defaults:
+      agg_time_dimension: fecha
+    entities:
+      - name: precio
+        type: primary
+        expr: id_precio_modelo
+      - name: modelo
+        type: foreign
+        expr: id_modelo
+      - name: plan
+        type: foreign
+        expr: id_plan_precio
+      - name: region
+        type: foreign
+        expr: id_region
+    dimensions:
+      - name: fecha
+        type: time
+        type_params:
+          time_granularity: day
+        expr: id_fecha
+    measures:
+      - name: precio_entrada
+        agg: avg
+        expr: precio_por_M_entrada
+      - name: precio_salida
+        agg: avg
+        expr: precio_por_M_salida
+      - name: min_precio_entrada
+        agg: min
+        expr: precio_por_M_entrada
+      - name: max_precio_entrada
+        agg: max
+        expr: precio_por_M_entrada
+      - name: min_precio_salida
+        agg: min
+        expr: precio_por_M_salida
+      - name: max_precio_salida
+        agg: max
+        expr: precio_por_M_salida
+
+  - name: fct_benchmark
+    model: ref('fct_benchmark')
+    defaults:
+      agg_time_dimension: fecha
+    entities:
+      - name: test
+        type: primary
+        expr: id_test
+      - name: modelo
+        type: foreign
+        expr: id_model
+      - name: benchmark
+        type: foreign
+        expr: id_benchmark
+    dimensions:
+      - name: fecha
+        type: time
+        type_params:
+          time_granularity: day
+        expr: id_fecha
+    measures:
+      - name: puntuacion
+        agg: avg
+        expr: puntuacion
+      - name: mejor_puntuacion
+        agg: max
+        expr: puntuacion
+      - name: peor_puntuacion
+        agg: min
+        expr: puntuacion
+      - name: num_evaluaciones
+        agg: sum
+        expr: 1
+      - name: num_modelos_evaluados
+        agg: count_distinct
+        expr: id_model

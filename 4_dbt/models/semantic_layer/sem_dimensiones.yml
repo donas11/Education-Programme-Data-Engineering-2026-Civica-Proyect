@@ -1,0 +1,96 @@
+version: 2
+
+semantic_models:
+  - name: dim_modelo
+    model: ref('dim_modelo')
+    entities:
+      - name: modelo
+        type: primary
+        expr: id_modelo
+    dimensions:
+      - name: nombre_comercial
+        type: categorical
+      - name: nombre_proveedor
+        type: categorical
+      - name: tipo_proveedor
+        type: categorical
+      - name: familia_nombre
+        type: categorical
+      - name: context_window
+        type: categorical
+      - name: multimodal
+        type: categorical
+      - name: opensource
+        type: categorical
+      - name: fecha_lanzamiento
+        type: time
+        type_params:
+          time_granularity: day
+
+  - name: dim_proveedor
+    model: ref('dim_proveedor')
+    entities:
+      - name: proveedor
+        type: primary
+        expr: id_proveedor
+    dimensions:
+      - name: nombre_proveedor
+        type: categorical
+      - name: tipo_proveedor
+        type: categorical
+
+  - name: dim_region
+    model: ref('dim_region')
+    entities:
+      - name: region
+        type: primary
+        expr: id_region
+    dimensions:
+      - name: nombre_region
+        type: categorical
+        expr: region
+
+  - name: dim_benchmark
+    model: ref('dim_benchmark')
+    entities:
+      - name: benchmark
+        type: primary
+        expr: id_benchmark
+    dimensions:
+      - name: nombre_corto
+        type: categorical
+      - name: nombre_area_competencia
+        type: categorical
+
+  - name: dim_plan
+    model: ref('dim_plan')
+    entities:
+      - name: plan
+        type: primary
+        expr: id_plan_precio
+    dimensions:
+      - name: tipo_plan
+        type: categorical
+      - name: unidad_facturacion
+        type: categorical
+
+  - name: dim_fecha
+    model: ref('dim_fecha')
+    entities:
+      - name: fecha
+        type: primary
+        expr: id_fecha
+    dimensions:
+      - name: date
+        type: time
+        type_params:
+          time_granularity: day
+        expr: fecha
+      - name: anho
+        type: categorical
+      - name: mes
+        type: categorical
+      - name: trimestre
+        type: categorical
+      - name: semana
+        type: categorical
