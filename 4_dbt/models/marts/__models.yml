@@ -100,6 +100,7 @@ models:
         description: "Nombre de la región."
         dimension:
           type: categorical
+          name: nombre_region
 
   - name: dim_fecha
     semantic_model:
@@ -192,7 +193,7 @@ models:
   - name: fct_precio
     semantic_model:
       enabled: true
-    agg_time_dimension: fecha
+    agg_time_dimension: date
     description: "Tabla de hechos de precios con FKs a dimensiones."
     columns:
       - name: id_precio_modelo
@@ -233,7 +234,7 @@ models:
         granularity: day
         dimension:
           type: time
-          name: fecha
+          name: date
         tests:
           - relationships:
               arguments:
@@ -284,7 +285,7 @@ models:
   - name: fct_benchmark
     semantic_model:
       enabled: true
-    agg_time_dimension: fecha
+    agg_time_dimension: date
     description: "Tabla de hechos de scores de benchmark con FKs a dimensiones."
     columns:
       - name: id_test
@@ -320,7 +321,7 @@ models:
         granularity: day
         dimension:
           type: time
-          name: fecha
+          name: date
         tests:
           - relationships:
               arguments:
