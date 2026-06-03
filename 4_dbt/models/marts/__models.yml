@@ -231,6 +231,9 @@ models:
                 field: id_region
       - name: id_fecha
         description: "FK a la fecha de vigencia del precio."
+        entity:
+          name: fecha
+          type: foreign
         granularity: day
         dimension:
           type: time
@@ -318,6 +321,9 @@ models:
                 field: id_benchmark
       - name: id_fecha
         description: "FK a la fecha de la evaluación."
+        entity:
+          name: fecha
+          type: foreign
         granularity: day
         dimension:
           type: time
