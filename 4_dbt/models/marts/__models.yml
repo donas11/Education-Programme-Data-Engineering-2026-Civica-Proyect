@@ -91,7 +91,7 @@ models:
       - name: id_region
         description: "Clave única de la región."
         entity:
-          name: region
+          name: region_dim
           type: primary
         tests:
           - unique
@@ -107,7 +107,7 @@ models:
       - name: id_fecha
         description: "Clave única de fecha en formato YYYYMMDD."
         entity:
-          name: fecha
+          name: fecha_dim
           type: primary
         tests:
           - unique
@@ -218,7 +218,7 @@ models:
       - name: id_region
         description: "FK a la región geográfica."
         entity:
-          name: region
+          name: region_dim
           type: foreign
         tests:
           - relationships:
@@ -228,7 +228,7 @@ models:
       - name: id_fecha
         description: "FK a la fecha de vigencia del precio."
         entity:
-          name: fecha
+          name: fecha_dim
           type: foreign
         tests:
           - relationships:
@@ -313,7 +313,7 @@ models:
       - name: id_fecha
         description: "FK a la fecha de la evaluación."
         entity:
-          name: fecha
+          name: fecha_dim
           type: foreign
         tests:
           - relationships:
