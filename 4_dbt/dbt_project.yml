@@ -41,7 +41,7 @@ models:
       +materialized: "view"
 
     marts:
-      +database: DEV_GOLD_BD_MODELOS
+      +database: PRO_GOLD_BD_MODELOS
       dimensions:
         +schema: "gold_core"
         +materialized: "table"
