@@ -190,7 +190,6 @@ models:
   - name: fct_precio
     semantic_model:
       enabled: true
-    agg_time_dimension: date
     description: "Tabla de hechos de precios con FKs a dimensiones."
     columns:
       - name: id_precio_modelo
@@ -231,10 +230,6 @@ models:
         entity:
           name: fecha
           type: foreign
-        dimension:
-          type: time
-          name: date
-          granularity: day
         tests:
           - relationships:
               arguments:
@@ -285,7 +280,6 @@ models:
   - name: fct_benchmark
     semantic_model:
       enabled: true
-    agg_time_dimension: date
     description: "Tabla de hechos de scores de benchmark con FKs a dimensiones."
     columns:
       - name: id_test
@@ -321,10 +315,6 @@ models:
         entity:
           name: fecha
           type: foreign
-        dimension:
-          type: time
-          name: date
-          granularity: day
         tests:
           - relationships:
               arguments:
