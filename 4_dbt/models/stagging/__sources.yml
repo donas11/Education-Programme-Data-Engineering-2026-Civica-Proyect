@@ -4,7 +4,7 @@ version: 2
 sources:
   - name: bronze_raw
     description: "Tablas RAW cargadas con dlt desde los CSV ."
-    database: DEV_BRONZE_BD_MODELOS
+    database: PRO_BRONZE_BD_MODELOS
     schema: RAW
 
     tables:

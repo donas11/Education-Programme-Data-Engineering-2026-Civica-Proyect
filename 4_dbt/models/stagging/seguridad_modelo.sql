@@ -12,7 +12,7 @@ with src as (
         try_cast(factuality_score_pct as float) as factuality_score,
         case when rlhf_aligned ilike '%true%' then true else false end as rlhf_aligned,
         safety_training,
-        current_date() as fecha
+        current_date() as fecha_valor
     from {{ source('bronze_raw', 'safety_alignment') }}
 ),
 
@@ -28,13 +28,13 @@ deduped as (
         factuality_score,
         rlhf_aligned,
         safety_training,
-        fecha,
-        row_number() over (partition by model_name_order order by fecha desc) as rn
+        fecha_valor,
+        row_number() over (partition by model_name_order order by fecha_valor desc) as rn
     from src
 )
 
 select
-    {{ dbt_utils.generate_surrogate_key(['d.model_name_order', 'd.fecha']) }} as id_safety,
+    {{ dbt_utils.generate_surrogate_key(['d.model_name_order', 'd.fecha_valor']) }} as id_safety,
     mid.id_model as id_modelo,
     d.toxicity_score,
     d.bias_score,
@@ -45,7 +45,7 @@ select
     d.factuality_score,
     d.rlhf_aligned,
     d.safety_training,
-    d.fecha,
+    d.fecha_valor,
     case when d.rn = 1 then true else false end as is_current
 from deduped d
 left join {{ ref('stg_model_union_ids') }} mid

@@ -91,12 +91,12 @@ models:
       - name: id_region
         description: "Clave única de la región."
         entity:
-          name: region
+          name: region_dim
           type: primary
         tests:
           - unique
           - not_null
-      - name: region
+      - name: region_nombre
         description: "Nombre de la región."
         dimension:
           type: categorical
@@ -109,17 +109,16 @@ models:
       - name: id_fecha
         description: "Clave única de fecha en formato YYYYMMDD."
         entity:
-          name: fecha
+          name: fecha_dim
           type: primary
         tests:
           - unique
           - not_null
-      - name: fecha
+      - name: fecha_valor
         description: "Fecha completa."
         granularity: day
         dimension:
           type: time
-          name: date
       - name: anho
         description: "Año."
         dimension:
@@ -192,7 +191,6 @@ models:
   - name: fct_precio
     semantic_model:
       enabled: true
-    agg_time_dimension: fecha
     description: "Tabla de hechos de precios con FKs a dimensiones."
     columns:
       - name: id_precio_modelo
@@ -221,7 +219,7 @@ models:
       - name: id_region
         description: "FK a la región geográfica."
         entity:
-          name: region
+          name: region_dim
           type: foreign
         tests:
           - relationships:
@@ -230,10 +228,9 @@ models:
                 field: id_region
       - name: id_fecha
         description: "FK a la fecha de vigencia del precio."
-        granularity: day
-        dimension:
-          type: time
-          name: fecha
+        entity:
+          name: fecha_dim
+          type: foreign
         tests:
           - relationships:
               arguments:
@@ -284,7 +281,6 @@ models:
   - name: fct_benchmark
     semantic_model:
       enabled: true
-    agg_time_dimension: fecha
     description: "Tabla de hechos de scores de benchmark con FKs a dimensiones."
     columns:
       - name: id_test
@@ -317,10 +313,9 @@ models:
                 field: id_benchmark
       - name: id_fecha
         description: "FK a la fecha de la evaluación."
-        granularity: day
-        dimension:
-          type: time
-          name: fecha
+        entity:
+          name: fecha_dim
+          type: foreign
         tests:
           - relationships:
               arguments:
@@ -456,7 +451,7 @@ models:
         description: "Proveedor del modelo."
       - name: familia_nombre
         description: "Familia tecnológica del modelo."
-      - name: fecha
+      - name: fecha_valor
         description: "Fecha de vigencia del precio."
       - name: precio_por_M_entrada
         description: "Precio por millón de tokens de entrada."

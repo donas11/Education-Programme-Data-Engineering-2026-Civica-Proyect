@@ -15,7 +15,7 @@ reasoning_scores as (
         db.nombre_area_competencia,
         db.nombre_corto as benchmark_nombre,
         fb.puntuacion,
-        df.fecha
+        df.fecha_valor
     from {{ ref('fct_benchmark') }} fb
     inner join reasoning_benchmarks rb on fb.id_benchmark = rb.id_benchmark
     join {{ ref('dim_modelo') }} dm on fb.id_model = dm.id_modelo

@@ -2,5 +2,5 @@
 
 select
     id_region,
-    region
+    region_nombre
 from {{ ref('region') }}
