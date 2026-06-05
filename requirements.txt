@@ -1,3 +1,5 @@
 dlt[filesystem,snowflake,parquet]>=1.26.0
 pandas>=2.0.0
 dbt-metricflow[dbt-snowflake]>=1.14.0
+dbt-core==2.0.0a1 
+dbt-snowflake
