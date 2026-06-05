@@ -10,7 +10,7 @@ with date_spine as (
 
 select
     cast(to_number(to_char(date_day, 'YYYYMMDD')) as int) as id_fecha,
-    date_day as fecha,
+    date_day as fecha_valor,
     extract(week from date_day) as semana,
     extract(month from date_day) as mes,
     extract(quarter from date_day) as trimestre,

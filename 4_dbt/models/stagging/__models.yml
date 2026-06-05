@@ -175,7 +175,7 @@ models:
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
                 min_value: 0
-      - name: fecha
+      - name: fecha_valor
         description: "Fecha de captura o vigencia asociada a las tarifas del modelo."
       - name: tipo_plan
         description: "Tipo de plan (Free, Standard, Reasoning, Cached, Batch)."
@@ -207,7 +207,7 @@ models:
         tests:
           - unique
           - not_null
-      - name: region
+      - name: region_nombre
         description: "Nombre descriptivo de la zona o cobertura (ej. Global, US-East, Europe)."
 
   - name: rendimiento_modelo
@@ -235,7 +235,7 @@ models:
         description: "Precio blended por millón de tokens en USD."
       - name: tier
         description: "Categoría de nivel del modelo (Frontier, Advanced, Standard)."
-      - name: fecha
+      - name: fecha_valor
         description: "Fecha de captura de las métricas."
       - name: is_current
         description: "Flag que indica si es la versión más reciente."
@@ -273,7 +273,7 @@ models:
         description: "Indicador de si el modelo fue alineado con RLHF."
       - name: safety_training
         description: "Método de entrenamiento de seguridad utilizado (PPO, DPO, etc.)."
-      - name: fecha
+      - name: fecha_valor
         description: "Fecha de captura de las métricas de seguridad."
       - name: is_current
         description: "Flag que indica si es la versión más reciente."
@@ -311,7 +311,7 @@ models:
                 max_value: 1000
               config:
                 severity: warn
-      - name: fecha
+      - name: fecha_valor
         description: "Fecha exacta en la que se realizó la evaluación."
     tests:
       - dbt_expectations.expect_table_row_count_to_be_between:

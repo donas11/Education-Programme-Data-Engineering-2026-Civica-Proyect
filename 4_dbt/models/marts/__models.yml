@@ -96,8 +96,10 @@ models:
         tests:
           - unique
           - not_null
-      - name: region
+      - name: region_nombre
         description: "Nombre de la región."
+        dimension:
+          type: categorical
 
   - name: dim_fecha
     semantic_model:
@@ -112,12 +114,11 @@ models:
         tests:
           - unique
           - not_null
-      - name: fecha
+      - name: fecha_valor
         description: "Fecha completa."
         granularity: day
         dimension:
           type: time
-          name: date
       - name: anho
         description: "Año."
         dimension:
@@ -450,7 +451,7 @@ models:
         description: "Proveedor del modelo."
       - name: familia_nombre
         description: "Familia tecnológica del modelo."
-      - name: fecha
+      - name: fecha_valor
         description: "Fecha de vigencia del precio."
       - name: precio_por_M_entrada
         description: "Precio por millón de tokens de entrada."

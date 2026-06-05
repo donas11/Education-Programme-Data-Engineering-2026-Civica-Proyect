@@ -8,4 +8,4 @@ select
     tb.puntuacion,
     tb.benchmark_id
 from {{ ref('test_benchmark') }} tb
-join {{ ref('dim_fecha') }} df on tb.fecha = df.fecha
+join {{ ref('dim_fecha') }} df on tb.fecha_valor = df.fecha_valor

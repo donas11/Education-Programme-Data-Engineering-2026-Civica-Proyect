@@ -21,7 +21,7 @@ precios_base as (
     {{clean_price('CACHE_READ_1_M')}} as CACHE_READ_1_M,
     {{clean_price('CACHE_WRITE_1_M')}} as CACHE_WRITE_1_M,
     {{clean_price('REASONING_1_M')}} as REASONING_1_M,
-    created as fecha
+    created as fecha_valor
   from {{ source('bronze_raw', 'new_nuevo_openrouter_modelos') }} raw
   join model_ids mi on mi.model_name_order = {{ model_orden_nombre('model_id') }}
 ),
@@ -39,7 +39,7 @@ joined as (
     {{ dbt_utils.generate_surrogate_key(['p.id_modelo', 'p.tipo_plan']) }} AS id_precio_modelo,
     p.id_modelo,
     pp.id_plan_precio,
-    pb.fecha,
+    pb.fecha_valor,
     p.tipo_plan,
     p.unidad_facturacion,
     case p.tipo_plan
@@ -63,5 +63,5 @@ joined as (
 
 select * from joined
 {% if is_incremental() %}
-  where fecha > (select coalesce(max(fecha), '1900-01-01') from {{ this }})
+  where fecha_valor > (select coalesce(max(fecha_valor), '1900-01-01') from {{ this }})
 {% endif %}

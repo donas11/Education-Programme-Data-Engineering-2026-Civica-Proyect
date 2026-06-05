@@ -1,4 +1,4 @@
 {{ config(materialized='table') }}
 
-select fecha as date_day
+select fecha_valor as date_day
 from {{ ref('dim_fecha') }}

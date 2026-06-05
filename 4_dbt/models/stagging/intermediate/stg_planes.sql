@@ -82,7 +82,7 @@ base AS (
   JOIN planes_activos pa 
     ON m.id_modelo=pa.id_modelo
   LEFT JOIN {{ ref('region') }} r  
-    ON r.region = 'Global'
+    ON r.region_nombre = 'Global'
   
 )
 
