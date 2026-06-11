@@ -1,0 +1,24 @@
+{
+  "target_dir": "/home/donas11/Escritorio/Education Programme-Data Engineering 2026 Cívica/4_dbt/target",
+  "fingerprints": {
+    "catalog.json": {
+      "size": 31340,
+      "modified_secs": 1780674000
+    },
+    "run_results.json": {
+      "size": 76491,
+      "modified_secs": 1780660420
+    },
+    "manifest.json": {
+      "size": 1728676,
+      "modified_secs": 1780660420
+    },
+    "semantic_manifest.json": {
+      "size": 18324,
+      "modified_secs": 1780660413
+    }
+  },
+  "write_source": "DirectWrite",
+  "context_dir": null,
+  "context_fingerprints": {}
+}
